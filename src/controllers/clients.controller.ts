@@ -11,7 +11,7 @@ export class ClientsController {
     public constructor(private readonly clientsService: ClientsService) {}
 
     @Get()
-    public async getAllProducts(): Promise<ClientDto[]> {
+    public async getAllClients(): Promise<ClientDto[]> {
         return this.clientsService.getAll();
     }
 

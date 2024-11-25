@@ -13,7 +13,7 @@ export class AuthController {
     ) {}
 
     @Post('login')
-    public async login(@Body() loginInfo: LoginDto): Promise<{ message: string }> {
+    public async login(@Body() loginInfo: LoginDto): Promise<SuccessDto> {
         return this.authService.login(loginInfo);
     }
 
@@ -26,7 +26,7 @@ export class AuthController {
     public async verifyCode(
         @Body() verifyCodeInfo: VerifyCodeDto,
         @Res({ passthrough: true }) res: Response
-    ): Promise<{ message: string }> {
+    ): Promise<SuccessDto> {
         return this.authService.verifyCode(verifyCodeInfo, res);
     }
 }

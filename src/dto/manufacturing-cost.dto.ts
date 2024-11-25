@@ -39,7 +39,7 @@ export class ManufacturingCostJobDto {
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => JobDto)
-    public job: JobDto[];
+    public jobs: JobDto[];
 }
 
 export class ManufacturingCostInventoryDto {

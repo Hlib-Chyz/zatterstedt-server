@@ -7,6 +7,7 @@ import { User } from 'src/entities/user.entity';
 import { Response } from 'express';
 import { LoginDto, VerifyCodeDto } from 'src/dto/auth.dto';
 import { ConfigService } from '@nestjs/config';
+import { SuccessDto } from '@dto/shared.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
         private configService: ConfigService
     ) {}
 
-    public async login(loginInfo: LoginDto): Promise<{ message: string }> {
+    public async login(loginInfo: LoginDto): Promise<SuccessDto> {
         try {
             const user = await this.userService.findByEmail(loginInfo.email);
             if (!user || loginInfo.password !== user.password) {
@@ -30,17 +31,17 @@ export class AuthService {
 
             await this.sendVerificationEmail(loginInfo.email, verificationCode);
 
-            return { message: 'Verification code sent to email' };
+            return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to login');
-            return { message: 'Failed to login' };
+            return { success: false };
         }
     }
 
     public async verifyCode(
         verifyCodeInfo: VerifyCodeDto,
         res: Response
-    ): Promise<{ message: string }> {
+    ): Promise<SuccessDto> {
         try {
             const user = await this.userService.findByEmail(verifyCodeInfo.email);
             if (user?.emailVerificationCode === verifyCodeInfo.code) {
@@ -49,13 +50,13 @@ export class AuthService {
                     httpOnly: true,
                     maxAge: 86400000,
                 });
-                return { message: 'Logged in successfully' };
+                return { success: true };
             } else {
                 throw new NotFoundException('Invalid verification code');
             }
         } catch (error) {
             this.errorService.throwError(error, 'Failed to verify code');
-            return { message: 'Failed to verify code' };
+            return { success: false };
         }
     }
 
