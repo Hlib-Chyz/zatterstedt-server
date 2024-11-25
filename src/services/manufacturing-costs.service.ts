@@ -46,7 +46,7 @@ export class ManufacturingCostsService {
         }
     }
 
-    public async update(_id: ObjectId, job: ManufacturingCostJobDto['job']): Promise<SuccessDto> {
+    public async update(_id: ObjectId, job: ManufacturingCostJobDto['jobs']): Promise<SuccessDto> {
         try {
             const foundManufacturingCost = await this.manufacturingCostsRepository.findOne({
                 where: { _id },

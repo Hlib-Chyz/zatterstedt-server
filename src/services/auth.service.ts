@@ -38,10 +38,7 @@ export class AuthService {
         }
     }
 
-    public async verifyCode(
-        verifyCodeInfo: VerifyCodeDto,
-        res: Response
-    ): Promise<SuccessDto> {
+    public async verifyCode(verifyCodeInfo: VerifyCodeDto, res: Response): Promise<SuccessDto> {
         try {
             const user = await this.userService.findByEmail(verifyCodeInfo.email);
             if (user?.emailVerificationCode === verifyCodeInfo.code) {

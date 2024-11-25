@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdditionalCost } from 'src/entities/additional-cost.entity';
 import { Client } from 'src/entities/client.entity';
@@ -30,12 +31,15 @@ export const entities = [
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mongodb',
-            url: process.env['MONGO_URL']!,
-            database: process.env['DATABASE_NAME']!,
-            entities,
-            synchronize: true,
+        TypeOrmModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                type: 'mongodb',
+                url: configService.get<string>('MONGO_URL')!,
+                database: configService.get<string>('DATABASE_NAME')!,
+                entities,
+                synchronize: true,
+            }),
         }),
     ],
 })

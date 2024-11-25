@@ -10,7 +10,8 @@ import { OtherCostsController } from '@controllers/other-costs.controller';
 import { ProductsController } from '@controllers/products.controller';
 import { VariantsController } from '@controllers/variants.controller';
 import { Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdditionalCostsService } from '@services/additional-costs.service';
 import { AuthService } from '@services/auth.service';
@@ -25,11 +26,10 @@ import { OtherCostsService } from '@services/other-costs.service';
 import { ProductsService } from '@services/products.service';
 import { UserService } from '@services/user.service';
 import { VariantsService } from '@services/variants.service';
-import { ZatterstedtJwtModule } from './modules/jwt.module';
+import { JwtStrategy } from '@strategies/jwt.strategy';
 import { ZatterstedtMailerModule } from './modules/mailer.module';
 import { entities, ZatterstedtTypeOrmModule } from './modules/type-orm.module';
 import { StockService } from './services/stock.service';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
@@ -38,7 +38,13 @@ import { ConfigModule } from '@nestjs/config';
         }),
         TypeOrmModule.forFeature(entities),
         ZatterstedtTypeOrmModule,
-        ZatterstedtJwtModule,
+        JwtModule.registerAsync({
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                secret: configService.get<string>('JWT_SECRET')!,
+                signOptions: { expiresIn: '24h' },
+            }),
+        }),
         ZatterstedtMailerModule,
     ],
     controllers: [
@@ -67,7 +73,7 @@ import { ConfigModule } from '@nestjs/config';
         ClientsService,
         AuthService,
         UserService,
-        JwtService,
+        JwtStrategy,
         AdditionalCostsService,
         ErrorService,
     ],
