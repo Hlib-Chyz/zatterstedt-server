@@ -67,7 +67,7 @@ export class ProductManufacturingCostDto {
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductManufacturingCostJobDto)
-    public jobs: ProductManufacturingCostJobDto[];
+    public job: ProductManufacturingCostJobDto[];
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -197,7 +197,6 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto {
-    @IsString()
     @IsNotEmpty()
     @Transform(({ value }) => new ObjectId(value))
     public _id: ObjectId;
@@ -218,7 +217,7 @@ export class UpdateProductDto {
 }
 
 export class ProductPriceDto {
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     public price: number;
 }

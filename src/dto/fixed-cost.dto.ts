@@ -12,7 +12,6 @@ export class CreateFixedCostDto {
 }
 
 export class UpdateFixedCostDto {
-    @IsString()
     @IsNotEmpty()
     @Transform(({ value }) => new ObjectId(value))
     public _id: ObjectId;

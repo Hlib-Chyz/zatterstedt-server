@@ -1,9 +1,8 @@
 import { Transform } from 'class-transformer';
+import { IsMongoId, IsNotEmpty, IsNumber } from 'class-validator';
 import { ObjectId } from 'mongodb';
-import { IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class UpdateAdditionalCostDto {
-    @IsString()
     @IsNotEmpty()
     @Transform(({ value }) => new ObjectId(value))
     public _id: ObjectId;

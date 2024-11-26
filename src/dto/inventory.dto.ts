@@ -3,7 +3,6 @@ import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ObjectId } from 'mongodb';
 
 export class UpdateInventoryDto {
-    @IsString()
     @IsNotEmpty()
     @Transform(({ value }) => new ObjectId(value))
     public _id: ObjectId;

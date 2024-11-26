@@ -38,7 +38,11 @@ export class ManufacturingCostsService {
 
     public async create(manufacturingCost: CreateManufacturingCostDto): Promise<SuccessDto> {
         try {
-            await this.manufacturingCostsRepository.save(manufacturingCost);
+            await this.manufacturingCostsRepository.save({
+                ...manufacturingCost,
+                job: [],
+                inventory: [],
+            });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create manufacturing cost');
@@ -46,7 +50,7 @@ export class ManufacturingCostsService {
         }
     }
 
-    public async update(_id: ObjectId, job: ManufacturingCostJobDto['jobs']): Promise<SuccessDto> {
+    public async update(_id: ObjectId, job: ManufacturingCostJobDto['job']): Promise<SuccessDto> {
         try {
             const foundManufacturingCost = await this.manufacturingCostsRepository.findOne({
                 where: { _id },

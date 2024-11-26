@@ -96,7 +96,7 @@ export class ProductsService {
                     manufacturingCost: {
                         _id: manufacturingCost._id,
                         inventory: manufacturingCost.inventory,
-                        jobs: manufacturingCost.job,
+                        job: manufacturingCost.job,
                     },
 
                     orders,

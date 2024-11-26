@@ -12,16 +12,14 @@ export class ManufacturingCost {
     @IsNotEmpty()
     @IsMongoId()
     public productId: string;
-    @Column({ default: [] })
-    @IsNotEmpty()
+    @Column()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => JobDto)
-    public job: JobDto[];
-    @Column({ default: [] })
-    @IsNotEmpty()
+    public job: JobDto[] = [];
+    @Column()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => InventoryDto)
-    public inventory: InventoryDto[];
+    public inventory: InventoryDto[] = [];
 }

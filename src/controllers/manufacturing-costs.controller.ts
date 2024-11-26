@@ -18,9 +18,9 @@ export class ManufacturingCostsController {
     @Put('job-cost/:id')
     public async changeJobCost(
         @Param('id', ParseObjectIdPipe) id: ObjectId,
-        @Body() { jobs }: ManufacturingCostJobDto
+        @Body() { job }: ManufacturingCostJobDto
     ): Promise<SuccessDto> {
-        return this.manufacturingCostsService.update(id, jobs);
+        return this.manufacturingCostsService.update(id, job);
     }
 
     @Put('inventory/:id')

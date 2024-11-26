@@ -33,7 +33,7 @@ export class AdditionalCostsService {
 
     public async addOne(additionalCost: CreateAdditionalCostDto): Promise<SuccessDto> {
         try {
-            await this.additionalCostsRepository.save(additionalCost);
+            await this.additionalCostsRepository.save({ ...additionalCost, cost: 0 });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add additional cost');

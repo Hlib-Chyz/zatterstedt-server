@@ -53,7 +53,7 @@ export class StockService {
             if (existingStock) {
                 throw new ConflictException('A stock with the given variant already exists');
             }
-            await this.stockRepository.save(stock);
+            await this.stockRepository.save({ ...stock, sold: 0 });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new stock');

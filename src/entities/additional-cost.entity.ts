@@ -10,7 +10,7 @@ export class AdditionalCost {
     @IsNotEmpty()
     @IsMongoId()
     public productId: string;
-    @Column({ default: 0 })
+    @Column()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;

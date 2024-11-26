@@ -10,7 +10,7 @@ export class Stock {
     @IsNotEmpty()
     @IsMongoId()
     public variantId: string;
-    @Column({ default: 0 })
+    @Column()
     @IsNotEmpty()
     @IsNumber()
     public sold: number;
