@@ -82,7 +82,7 @@ export class OrdersService {
                     if (!inventory.duringManufacture) {
                         await this.inventoryService.changeInventoryAmount(
                             inventory.inventoryId,
-                            variant.quantity
+                            variant.quantity * inventory.quantityInUse
                         );
                     }
                 }

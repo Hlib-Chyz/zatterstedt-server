@@ -69,7 +69,7 @@ export class StockService {
             if (!stock) {
                 throw new NotFoundException('Stock not found');
             }
-            await this.stockRepository.save({ _id: stock._id, sold: stock.sold + quantity });
+            await this.stockRepository.save({ ...stock, sold: stock.sold + quantity });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to increase sold');

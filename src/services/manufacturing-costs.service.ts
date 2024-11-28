@@ -58,7 +58,7 @@ export class ManufacturingCostsService {
             if (!foundManufacturingCost) {
                 throw new NotFoundException('Manufacturing cost not found');
             }
-            await this.manufacturingCostsRepository.save({ _id, job });
+            await this.manufacturingCostsRepository.save({ ...foundManufacturingCost, job });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update manufacturing cost');
@@ -85,7 +85,7 @@ export class ManufacturingCostsService {
                     );
                 }
             }
-            this.manufacturingCostsRepository.save({ _id, inventory });
+            this.manufacturingCostsRepository.save({ ...foundManufacturingCost, inventory });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add inventory');

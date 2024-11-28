@@ -41,7 +41,7 @@ export class ClientsService {
             if (!client) {
                 throw new NotFoundException('Client not found');
             }
-            await this.clientsRepository.save({ _id, contacts: contactsInfo });
+            await this.clientsRepository.save({ ...client, contacts: contactsInfo });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set contacts info');

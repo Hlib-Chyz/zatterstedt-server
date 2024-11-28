@@ -67,7 +67,11 @@ export class InventoryService {
             if (!foundInventory) {
                 throw new NotFoundException('Inventory not found');
             }
-            await this.inventoryRepository.save({ _id, used: foundInventory.used + used });
+            await this.inventoryRepository.save({
+                ...foundInventory,
+                _id: new ObjectId(_id),
+                used: foundInventory.used + used,
+            });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete inventory');
