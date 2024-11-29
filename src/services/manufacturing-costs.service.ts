@@ -81,7 +81,8 @@ export class ManufacturingCostsService {
                 if (inv.duringManufacture) {
                     await this.inventoryService.changeInventoryAmount(
                         inv.inventoryId,
-                        inv.quantityInUse
+                        inv.quantityInUse,
+                        inv.quantityInCost
                     );
                 }
             }

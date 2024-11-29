@@ -24,6 +24,10 @@ export class Inventory {
     public used: number;
     @Column()
     @IsNotEmpty()
+    @IsNumber()
+    public paid: number;
+    @Column()
+    @IsNotEmpty()
     @IsDateString()
     public date: string;
 }

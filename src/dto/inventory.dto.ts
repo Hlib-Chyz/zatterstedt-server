@@ -57,6 +57,9 @@ export class InventoryDto {
     @IsNumber()
     public used: number;
     @IsNotEmpty()
+    @IsNumber()
+    public paid: number;
+    @IsNotEmpty()
     @IsDateString()
     public date: string;
 }

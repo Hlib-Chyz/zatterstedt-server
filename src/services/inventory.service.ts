@@ -25,7 +25,7 @@ export class InventoryService {
 
     public async create(inventory: CreateInventoryDto): Promise<SuccessDto> {
         try {
-            await this.inventoryRepository.save(inventory);
+            await this.inventoryRepository.save({ ...inventory, paid: 0 });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create inventory');
@@ -41,7 +41,7 @@ export class InventoryService {
             if (!foundInventory) {
                 throw new NotFoundException('Inventory not found');
             }
-            await this.inventoryRepository.save(inventory);
+            await this.inventoryRepository.save({ ...foundInventory, ...inventory });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update inventory');
@@ -59,7 +59,11 @@ export class InventoryService {
         }
     }
 
-    public async changeInventoryAmount(_id: string, used: number): Promise<SuccessDto> {
+    public async changeInventoryAmount(
+        _id: string,
+        used: number,
+        paid: number
+    ): Promise<SuccessDto> {
         try {
             const foundInventory = await this.inventoryRepository.findOne({
                 where: { _id: new ObjectId(_id) },
@@ -71,6 +75,7 @@ export class InventoryService {
                 ...foundInventory,
                 _id: new ObjectId(_id),
                 used: foundInventory.used + used,
+                paid: foundInventory.paid + paid,
             });
             return { success: true };
         } catch (error) {
