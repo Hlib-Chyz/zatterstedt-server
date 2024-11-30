@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 import { DevelopmentCost } from 'src/entities/development-cost.entity';
 import { Repository } from 'typeorm';
 import { ErrorService } from './error.service';
-import { CreateDevelopmentCostDto, DevelopmentCostDto } from 'src/dto/development-cost.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
+import {
+    CreateDevelopmentCostDto,
+    DevelopmentCostDto,
+    UpdateDevelopmentCostDto,
+} from 'src/dto/development-cost.dto';
+import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
 
 @Injectable()
 export class DevelopmentCostsService {
@@ -33,6 +37,35 @@ export class DevelopmentCostsService {
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add development cost');
             return { success: false };
+        }
+    }
+
+    public async update(developmentCost: UpdateDevelopmentCostDto): Promise<SuccessDto> {
+        try {
+            const foundDevelopmentCost = await this.developmentCostsRepository.findOne({
+                where: { _id: developmentCost._id },
+            });
+            if (!foundDevelopmentCost) {
+                throw new NotFoundException('Development Cost not found');
+            }
+            await this.developmentCostsRepository.save({
+                ...foundDevelopmentCost,
+                ...developmentCost,
+            });
+            return { success: true };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to add development cost');
+            return { success: false };
+        }
+    }
+
+    public async delete(_id: ObjectId): Promise<DeleteGetDto> {
+        try {
+            await this.developmentCostsRepository.delete({ _id });
+            return { _id };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to delete development cost');
+            return { _id };
         }
     }
 }
