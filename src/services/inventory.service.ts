@@ -16,7 +16,8 @@ export class InventoryService {
 
     public async getAll(): Promise<InventoryDto[]> {
         try {
-            return await this.inventoryRepository.find();
+            const inventory = await this.inventoryRepository.find();
+            return inventory.reverse();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all inventory');
             return [];
