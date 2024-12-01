@@ -1,8 +1,10 @@
 import { VariantLockupDto } from '@dto/variant.dto';
-import { Controller, Get } from '@nestjs/common';
+import { JwtAuthGuard } from '@guards/jwt-auth.guard';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { VariantsService } from 'src/services/variants.service';
 
 @Controller('variants')
+@UseGuards(JwtAuthGuard)
 export class VariantsController {
     public constructor(private variantsService: VariantsService) {}
 

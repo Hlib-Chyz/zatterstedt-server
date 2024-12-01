@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { JwtAuthGuard } from '@guards/jwt-auth.guard';
+import { Body, Controller, Get, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import {
     CreateProductDto,
@@ -12,6 +13,7 @@ import { ProductsService } from 'src/services/products.service';
 
 @Controller('products')
 @UseFilters(new HttpExceptionFilter())
+@UseGuards(JwtAuthGuard)
 export class ProductsController {
     public constructor(private readonly productsService: ProductsService) {}
 

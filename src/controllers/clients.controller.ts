@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Put, UseFilters } from '@nestjs/common';
+import { JwtAuthGuard } from '@guards/jwt-auth.guard';
+import { Body, Controller, Get, Param, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { ClientDto, UpdateClientContactsDto } from 'src/dto/client.dto';
 import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
@@ -7,6 +8,7 @@ import { ClientsService } from 'src/services/clients.service';
 
 @Controller('clients')
 @UseFilters(new HttpExceptionFilter())
+@UseGuards(JwtAuthGuard)
 export class ClientsController {
     public constructor(private readonly clientsService: ClientsService) {}
 
