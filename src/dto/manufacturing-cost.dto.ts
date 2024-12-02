@@ -48,6 +48,11 @@ export class ManufacturingCostInventoryDto {
     @ValidateNested({ each: true })
     @Type(() => InventoryDto)
     public inventory: InventoryDto[];
+    @IsNotEmpty()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => InventoryDto)
+    public oldInventory: InventoryDto[];
 }
 
 export class JobDto {

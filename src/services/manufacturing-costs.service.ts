@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { InventoryService } from '@services/inventory.service';
 import { ObjectId } from 'mongodb';
 import {
     CreateManufacturingCostDto,
+    InventoryDto,
     ManufacturingCostInventoryDto,
     ManufacturingCostJobDto,
 } from 'src/dto/manufacturing-cost.dto';
@@ -10,7 +12,6 @@ import { SuccessDto } from 'src/dto/shared.dto';
 import { ManufacturingCost } from 'src/entities/manufacturing-cost.entity';
 import { Repository } from 'typeorm';
 import { ErrorService } from './error.service';
-import { InventoryService } from './inventory.service';
 
 @Injectable()
 export class ManufacturingCostsService {
@@ -68,7 +69,7 @@ export class ManufacturingCostsService {
 
     public async addInventory(
         _id: ObjectId,
-        inventory: ManufacturingCostInventoryDto['inventory']
+        manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto> {
         try {
             const foundManufacturingCost = await this.manufacturingCostsRepository.findOne({
@@ -77,20 +78,33 @@ export class ManufacturingCostsService {
             if (!foundManufacturingCost) {
                 throw new NotFoundException('Manufacturing cost not found');
             }
-            for (const inv of inventory) {
-                if (inv.duringManufacture) {
-                    await this.inventoryService.changeInventoryAmount(
-                        inv.inventoryId,
-                        inv.quantityInUse,
-                        inv.quantityInCost
-                    );
-                }
+            if (manufacturingCostInventory.oldInventory.length) {
+                this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true);
             }
-            this.manufacturingCostsRepository.save({ ...foundManufacturingCost, inventory });
+            this.changeInventoryAmount(manufacturingCostInventory.inventory, false);
+            this.manufacturingCostsRepository.save({
+                ...foundManufacturingCost,
+                inventory: manufacturingCostInventory.inventory,
+            });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add inventory');
             return { success: false };
+        }
+    }
+
+    private async changeInventoryAmount(
+        inventory: InventoryDto[],
+        negative: boolean
+    ): Promise<void> {
+        for (const inv of inventory) {
+            if (inv.duringManufacture) {
+                await this.inventoryService.changeInventoryAmount(
+                    inv.inventoryId,
+                    negative ? -inv.quantityInUse : inv.quantityInUse,
+                    negative ? -inv.quantityInCost : inv.quantityInCost
+                );
+            }
         }
     }
 }

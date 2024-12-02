@@ -26,8 +26,8 @@ export class ManufacturingCostsController {
     @Put('inventory/:id')
     public async addInventory(
         @Param('id', ParseObjectIdPipe) id: ObjectId,
-        @Body() { inventory }: ManufacturingCostInventoryDto
+        @Body() manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto> {
-        return this.manufacturingCostsService.addInventory(id, inventory);
+        return this.manufacturingCostsService.addInventory(id, manufacturingCostInventory);
     }
 }
