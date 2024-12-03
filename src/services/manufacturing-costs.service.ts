@@ -1,8 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InventoryService } from '@services/inventory.service';
+import { OrdersService } from '@services/orders.service';
 import { ObjectId } from 'mongodb';
 import {
+    CanSaveInventoryDto,
+    CanSaveInventoryResponseDto,
     CreateManufacturingCostDto,
     InventoryDto,
     ManufacturingCostInventoryDto,
@@ -19,7 +22,8 @@ export class ManufacturingCostsService {
         @InjectRepository(ManufacturingCost)
         private manufacturingCostsRepository: Repository<ManufacturingCost>,
         private readonly errorService: ErrorService,
-        private readonly inventoryService: InventoryService
+        private readonly inventoryService: InventoryService,
+        private readonly ordersService: OrdersService
     ) {}
 
     public async getByProductId(productId: ObjectId | string): Promise<ManufacturingCost> {
@@ -90,6 +94,25 @@ export class ManufacturingCostsService {
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add inventory');
             return { success: false };
+        }
+    }
+
+    public async canSaveInventory({
+        variantIds,
+    }: CanSaveInventoryDto): Promise<CanSaveInventoryResponseDto> {
+        try {
+            let canSaveInventory = true;
+            for (const id of variantIds) {
+                const orders = await this.ordersService.getByVariantId(id);
+                if (orders.length) {
+                    canSaveInventory = false;
+                    break;
+                }
+            }
+            return { canSaveInventory };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to add inventory');
+            return { canSaveInventory: false };
         }
     }
 

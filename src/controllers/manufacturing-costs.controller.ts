@@ -1,6 +1,8 @@
-import { Body, Controller, Param, Put, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import {
+    CanSaveInventoryDto,
+    CanSaveInventoryResponseDto,
     ManufacturingCostInventoryDto,
     ManufacturingCostJobDto,
 } from 'src/dto/manufacturing-cost.dto';
@@ -29,5 +31,12 @@ export class ManufacturingCostsController {
         @Body() manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto> {
         return this.manufacturingCostsService.addInventory(id, manufacturingCostInventory);
+    }
+
+    @Post('can-save-inventory')
+    public async canSaveInventory(
+        @Body() body: CanSaveInventoryDto
+    ): Promise<CanSaveInventoryResponseDto> {
+        return this.manufacturingCostsService.canSaveInventory(body);
     }
 }

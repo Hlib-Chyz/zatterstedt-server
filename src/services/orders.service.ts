@@ -1,3 +1,4 @@
+import { ManufacturingCost } from '@entities/manufacturing-cost.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOrderDto, OrderDto, OrderVariantDto } from 'src/dto/order.dto';
@@ -7,7 +8,6 @@ import { MongoRepository, Repository } from 'typeorm';
 import { ClientsService } from './clients.service';
 import { ErrorService } from './error.service';
 import { InventoryService } from './inventory.service';
-import { ManufacturingCostsService } from './manufacturing-costs.service';
 import { StockService } from './stock.service';
 import { VariantsService } from './variants.service';
 
@@ -15,9 +15,10 @@ import { VariantsService } from './variants.service';
 export class OrdersService {
     public constructor(
         @InjectRepository(Order) private ordersRepository: Repository<Order>,
+        @InjectRepository(ManufacturingCost)
+        private manufacturingCostsRepository: Repository<ManufacturingCost>,
         private readonly errorService: ErrorService,
         private readonly stockService: StockService,
-        private readonly manufacturingCostsService: ManufacturingCostsService,
         private readonly inventoryService: InventoryService,
         private readonly clientsService: ClientsService,
         private readonly variantsService: VariantsService
@@ -76,8 +77,9 @@ export class OrdersService {
             });
             for (const variant of order.variants) {
                 const productId = await this.variantsService.getProductId(variant._id);
-                const manufacturingCost =
-                    await this.manufacturingCostsService.getByProductId(productId);
+                const manufacturingCost = await this.manufacturingCostsRepository.findOne({
+                    where: { productId },
+                });
                 for (const inventory of manufacturingCost?.inventory ?? []) {
                     if (!inventory.duringManufacture) {
                         await this.inventoryService.changeInventoryAmount(

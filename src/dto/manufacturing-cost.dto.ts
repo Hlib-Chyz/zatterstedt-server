@@ -81,3 +81,16 @@ export class InventoryDto {
     @IsNotEmpty()
     public cost: number;
 }
+
+export class CanSaveInventoryDto {
+    @IsNotEmpty()
+    @IsArray()
+    @IsString({ each: true })
+    public variantIds: string[];
+}
+
+export class CanSaveInventoryResponseDto {
+    @IsNotEmpty()
+    @IsBoolean()
+    public canSaveInventory: boolean;
+}
