@@ -15,12 +15,12 @@ export class CreateOrderDto {
     @IsNotEmpty()
     @IsDateString()
     public date: string;
-    @IsNotEmpty()
     @IsString()
     public contacts: string;
-    @IsNotEmpty()
     @IsString()
     public userName: string;
+    @IsMongoId()
+    public userId: string;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })

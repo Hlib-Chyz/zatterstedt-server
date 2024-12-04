@@ -33,6 +33,25 @@ export class ClientsService {
         }
     }
 
+    public async setPurchases(_id: string, purchases: string): Promise<SuccessDto> {
+        try {
+            const client = await this.clientsRepository.findOne({
+                where: { _id: new ObjectId(_id) },
+            });
+            if (!client) {
+                throw new NotFoundException('Client not found');
+            }
+            await this.clientsRepository.save({
+                ...client,
+                purchases: client.purchases + purchases,
+            });
+            return { success: true };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to add client');
+            return { success: false };
+        }
+    }
+
     public async setContactsInfo(_id: ObjectId, contactsInfo: string): Promise<SuccessDto> {
         try {
             const client = await this.clientsRepository.findOne({

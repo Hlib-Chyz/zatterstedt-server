@@ -70,11 +70,15 @@ export class OrdersService {
                 const newPurchase = `${await this.variantsService.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`;
                 purchases += `${newPurchase}\n`;
             }
-            await this.clientsService.add({
-                name: order.userName,
-                contacts: order.contacts,
-                purchases,
-            });
+            if (order.userId) {
+                await this.clientsService.setPurchases(order.userId, purchases);
+            } else {
+                await this.clientsService.add({
+                    name: order.userName,
+                    contacts: order.contacts,
+                    purchases,
+                });
+            }
             for (const variant of order.variants) {
                 const productId = await this.variantsService.getProductId(variant._id);
                 const manufacturingCost = await this.manufacturingCostsRepository.findOne({
