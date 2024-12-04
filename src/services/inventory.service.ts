@@ -80,7 +80,7 @@ export class InventoryService {
             });
             return { success: true };
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to delete inventory');
+            this.errorService.throwError(error, 'Failed to change inventory amount');
             return { success: false };
         }
     }

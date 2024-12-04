@@ -83,10 +83,10 @@ export class ManufacturingCostsService {
                 throw new NotFoundException('Manufacturing cost not found');
             }
             if (manufacturingCostInventory.oldInventory.length) {
-                this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true);
+                await this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true);
             }
-            this.changeInventoryAmount(manufacturingCostInventory.inventory, false);
-            this.manufacturingCostsRepository.save({
+            await this.changeInventoryAmount(manufacturingCostInventory.inventory, false);
+            await this.manufacturingCostsRepository.save({
                 ...foundManufacturingCost,
                 inventory: manufacturingCostInventory.inventory,
             });
