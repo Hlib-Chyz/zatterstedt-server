@@ -5,7 +5,6 @@ import {
     CreateProductDto,
     ProductAdminDto,
     ProductDto,
-    ProductOrderDto,
     ProductVariantDto,
     UpdateProductDto,
 } from 'src/dto/product.dto';
@@ -16,7 +15,6 @@ import { AdditionalCostsService } from './additional-costs.service';
 import { DevelopmentCostsService } from './development-costs.service';
 import { ErrorService } from './error.service';
 import { ManufacturingCostsService } from './manufacturing-costs.service';
-import { OrdersService } from './orders.service';
 import { StockService } from './stock.service';
 import { VariantsService } from './variants.service';
 
@@ -28,7 +26,6 @@ export class ProductsService {
         private readonly additionalCostsService: AdditionalCostsService,
         private readonly developmentCostsService: DevelopmentCostsService,
         private readonly variantsService: VariantsService,
-        private readonly ordersService: OrdersService,
         private readonly stockService: StockService,
         private readonly manufacturingCostsService: ManufacturingCostsService
     ) {}
@@ -47,25 +44,8 @@ export class ProductsService {
                 const manufacturingCost = await this.manufacturingCostsService.getByProductId(
                     product._id
                 );
-                let orders: ProductOrderDto[] = [];
                 const resVariants: ProductVariantDto[] = [];
                 for (const variant of variants) {
-                    const curOrders = await this.ordersService.getByVariantId(
-                        variant._id.toString()
-                    );
-                    orders = [
-                        ...orders,
-                        ...curOrders.map((ord) => ({
-                            _id: ord._id,
-                            date: ord.date,
-                            userName: ord.contacts,
-                            variants: ord.variants.map((vari) => ({
-                                name: `${ord.userName} - ${variant._id.toString()}`,
-                                quantity: vari.quantity,
-                                cost: 0,
-                            })),
-                        })),
-                    ];
                     const stock = await this.stockService.getByVariantId(variant._id);
                     resVariants.push({
                         _id: variant._id,
@@ -98,8 +78,6 @@ export class ProductsService {
                         inventory: manufacturingCost.inventory,
                         job: manufacturingCost.job,
                     },
-
-                    orders,
                 });
             }
             return res;

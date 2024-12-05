@@ -18,9 +18,9 @@ export class CreateOrderDto {
     @IsString()
     public contacts: string;
     @IsString()
-    public userName: string;
+    public clientName: string;
     @IsMongoId()
-    public userId: string;
+    public clientId: string;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -36,7 +36,7 @@ export class OrderDto {
     public date: string;
     @IsNotEmpty()
     @IsString()
-    public contacts: string;
+    public client: string;
     @IsNotEmpty()
     @IsArray()
     @ArrayNotEmpty()
@@ -52,10 +52,7 @@ export class OrderVariantDto {
     public date: string;
     @IsNotEmpty()
     @IsString()
-    public contacts: string;
-    @IsNotEmpty()
-    @IsString()
-    public userName: string;
+    public clientId: string;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })

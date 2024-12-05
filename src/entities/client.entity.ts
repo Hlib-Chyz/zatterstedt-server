@@ -14,8 +14,4 @@ export class Client {
     @IsNotEmpty()
     @IsString()
     public contacts: string;
-    @Column()
-    @IsNotEmpty()
-    @IsString()
-    public purchases: string;
 }

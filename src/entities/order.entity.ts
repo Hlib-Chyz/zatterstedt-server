@@ -15,11 +15,7 @@ export class Order {
     @Column()
     @IsNotEmpty()
     @IsString()
-    public contacts: string;
-    @Column()
-    @IsNotEmpty()
-    @IsString()
-    public userName: string;
+    public clientId: string;
     @Column()
     @IsNotEmpty()
     @IsArray()

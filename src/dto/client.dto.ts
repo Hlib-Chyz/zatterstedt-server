@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { ObjectId } from 'mongodb';
 
 export class ClientDto {
@@ -11,9 +11,10 @@ export class ClientDto {
     @IsString()
     @IsNotEmpty()
     public contacts: string;
-    @IsString()
     @IsNotEmpty()
-    public purchases: string;
+    @IsArray()
+    @IsString({ each: true })
+    public purchases: string[];
 }
 
 export class CreateClientContactsDto {
@@ -23,9 +24,6 @@ export class CreateClientContactsDto {
     @IsString()
     @IsNotEmpty()
     public contacts: string;
-    @IsString()
-    @IsNotEmpty()
-    public purchases: string;
 }
 
 export class UpdateClientContactsDto {

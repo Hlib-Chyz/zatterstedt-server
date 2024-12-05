@@ -75,34 +75,6 @@ export class ProductManufacturingCostDto {
     public inventory: ProductManufacturingCostInventoryDto[];
 }
 
-export class ProductOrderVariantDto {
-    @IsNotEmpty()
-    @IsString()
-    public name: string;
-    @IsNotEmpty()
-    @IsNumber()
-    public quantity: number;
-    @IsNotEmpty()
-    @IsNumber()
-    public cost: number;
-}
-
-export class ProductOrderDto {
-    @IsNotEmpty()
-    public _id: ObjectId;
-    @IsNotEmpty()
-    @IsDateString()
-    public date: string;
-    @IsNotEmpty()
-    @IsString()
-    public userName: string;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => ProductOrderVariantDto)
-    public variants: ProductOrderVariantDto[];
-}
-
 export class ProductStockDto {
     @IsNumber()
     @IsNotEmpty()
@@ -157,11 +129,6 @@ export class ProductAdminDto {
     @IsNotEmpty()
     @Type(() => ProductManufacturingCostDto)
     public manufacturingCost: ProductManufacturingCostDto;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => ProductOrderDto)
-    public orders: ProductOrderDto[];
 }
 
 export class ProductVariantUpdateDto {

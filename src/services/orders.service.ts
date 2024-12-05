@@ -29,16 +29,18 @@ export class OrdersService {
             const orders = await this.ordersRepository.find();
             const res: OrderDto[] = [];
             for (const order of orders) {
+                const client = await this.clientsService.getByClientId(order.clientId);
                 const resVariant: string[] = [];
                 for (const variant of order.variants) {
                     resVariant.push(
                         `${await this.variantsService.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`
                     );
                 }
+
                 res.push({
                     _id: order._id,
                     date: order.date,
-                    contacts: `${order.userName} - ${order.contacts}`,
+                    client: `${client.name} - ${client.contacts}`,
                     variants: resVariant,
                 });
             }
@@ -65,19 +67,14 @@ export class OrdersService {
 
     public async add(order: CreateOrderDto): Promise<SuccessDto> {
         try {
-            let purchases = '';
-            for (const variant of order.variants) {
-                const newPurchase = `${await this.variantsService.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`;
-                purchases += `${newPurchase}\n`;
-            }
-            if (order.userId) {
-                await this.clientsService.setPurchases(order.userId, purchases);
-            } else {
-                await this.clientsService.add({
-                    name: order.userName,
-                    contacts: order.contacts,
-                    purchases,
-                });
+            let clientId = '';
+            if (!order.clientId) {
+                clientId = (
+                    await this.clientsService.add({
+                        name: order.clientName,
+                        contacts: order.contacts,
+                    })
+                ).toString();
             }
             for (const variant of order.variants) {
                 const productId = await this.variantsService.getProductId(variant._id);
@@ -95,7 +92,11 @@ export class OrdersService {
                 }
                 await this.stockService.increaseSold(variant._id, variant.quantity);
             }
-            await this.ordersRepository.save(order);
+            await this.ordersRepository.save({
+                clientId: clientId || order.clientId,
+                date: order.date,
+                variants: order.variants,
+            });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create manufacturing cost');
