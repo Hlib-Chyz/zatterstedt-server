@@ -42,6 +42,7 @@ export class OrdersService {
                     date: order.date,
                     client: `${client.name} - ${client.contacts}`,
                     variants: resVariant,
+                    orderNumber: order.orderNumber,
                 });
             }
             return res;
@@ -92,10 +93,12 @@ export class OrdersService {
                 }
                 await this.stockService.increaseSold(variant._id, variant.quantity);
             }
+            const orders = await this.ordersRepository.find();
             await this.ordersRepository.save({
                 clientId: clientId || order.clientId,
                 date: order.date,
                 variants: order.variants,
+                orderNumber: (orders.length + 1).toString().padStart(5, '0'),
             });
             return { success: true };
         } catch (error) {

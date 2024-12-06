@@ -36,6 +36,9 @@ export class OrderDto {
     public date: string;
     @IsNotEmpty()
     @IsString()
+    public orderNumber: string;
+    @IsNotEmpty()
+    @IsString()
     public client: string;
     @IsNotEmpty()
     @IsArray()

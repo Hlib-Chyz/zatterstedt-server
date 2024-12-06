@@ -15,6 +15,10 @@ export class Order {
     @Column()
     @IsNotEmpty()
     @IsString()
+    public orderNumber: string;
+    @Column()
+    @IsNotEmpty()
+    @IsString()
     public clientId: string;
     @Column()
     @IsNotEmpty()
