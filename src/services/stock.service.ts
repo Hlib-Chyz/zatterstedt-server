@@ -1,6 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectId } from 'mongodb';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { CreateStockDto, StockDto } from 'src/dto/stock.dto';
 import { Stock } from 'src/entities/stock.entity';
@@ -14,10 +13,10 @@ export class StockService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByVariantId(variantId: ObjectId): Promise<StockDto> {
+    public async getByVariantId(variantId: string): Promise<StockDto> {
         try {
             const stock = await this.stockRepository.findOne({
-                where: { variantId: variantId.toString() },
+                where: { variantId },
             });
             if (!stock) {
                 throw new NotFoundException('Stock not found');
@@ -29,7 +28,7 @@ export class StockService {
         }
     }
 
-    public async removeByVariantId(variantIds: ObjectId[]): Promise<SuccessDto> {
+    public async removeByVariantId(variantIds: string[]): Promise<SuccessDto> {
         try {
             for (const variantId of variantIds) {
                 const stock = await this.getByVariantId(variantId);

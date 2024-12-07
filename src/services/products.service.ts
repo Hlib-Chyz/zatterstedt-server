@@ -46,7 +46,7 @@ export class ProductsService {
                 );
                 const resVariants: ProductVariantDto[] = [];
                 for (const variant of variants) {
-                    const stock = await this.stockService.getByVariantId(variant._id);
+                    const stock = await this.stockService.getByVariantId(variant._id.toString());
                     resVariants.push({
                         _id: variant._id,
                         size: variant.size,
@@ -106,18 +106,6 @@ export class ProductsService {
             await this.manufacturingCostsService.create({
                 productId: newProduct._id.toString(),
             });
-            for (const variant of product.variants) {
-                const newVariantId = await this.variantsService.add({
-                    size: variant.size,
-                    color: variant.color,
-                    productId: newProduct._id.toString(),
-                });
-                await this.stockService.add({
-                    total: variant.quantity,
-                    variantId: newVariantId.toString(),
-                    realizedParty: variant.realizedParty,
-                });
-            }
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new product');
@@ -133,27 +121,7 @@ export class ProductsService {
             if (!updatedProduct) {
                 throw new NotFoundException('Product not found');
             }
-            updatedProduct.name = product.name;
-            updatedProduct.price = product.price;
-            updatedProduct.description = product.description;
-            await this.productsRepository.save(updatedProduct);
-            const variantIds = await this.variantsService.getVariantIdsByProductId(
-                product._id.toString()
-            );
-            await this.stockService.removeByVariantId(variantIds);
-            await this.variantsService.deleteVariantsByProductId(product._id.toString());
-            for (const variant of product.variants) {
-                const newVariantId = await this.variantsService.add({
-                    size: variant.size,
-                    color: variant.color,
-                    productId: updatedProduct._id.toString(),
-                });
-                await this.stockService.add({
-                    total: variant.quantity,
-                    variantId: newVariantId.toString(),
-                    realizedParty: variant.realizedParty,
-                });
-            }
+            await this.productsRepository.save(product);
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update a product');

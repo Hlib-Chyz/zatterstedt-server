@@ -2,17 +2,28 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 import { SuccessDto } from 'src/dto/shared.dto';
-import { CreateVariantDto, VariantDto, VariantLockupDto } from 'src/dto/variant.dto';
+import {
+    CanSaveVariantsDto,
+    CanSaveVariantsResponseDto,
+    CreateVariantDto,
+    CreateVariantsDto,
+    VariantDto,
+    VariantLockupDto,
+} from 'src/dto/variant.dto';
 import { Product } from 'src/entities/product.entity';
 import { Variant } from 'src/entities/variant.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository, Repository } from 'typeorm';
 import { ErrorService } from './error.service';
+import { StockService } from '@services/stock.service';
+import { Order } from '@entities/order.entity';
 
 @Injectable()
 export class VariantsService {
     public constructor(
         @InjectRepository(Variant) private variantsRepository: Repository<Variant>,
         @InjectRepository(Product) private productsRepository: Repository<Product>,
+        @InjectRepository(Order) private ordersRepository: Repository<Order>,
+        private readonly stockService: StockService,
         private readonly errorService: ErrorService
     ) {}
 
@@ -21,18 +32,6 @@ export class VariantsService {
             return await this.variantsRepository.find({
                 where: { productId },
             });
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to get variants by product id');
-            return [];
-        }
-    }
-
-    public async getVariantIdsByProductId(productId: string): Promise<ObjectId[]> {
-        try {
-            const variants = await this.variantsRepository.find({
-                where: { productId },
-            });
-            return variants.map((variant) => variant._id);
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get variants by product id');
             return [];
@@ -111,6 +110,53 @@ export class VariantsService {
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new variant');
             return '' as unknown as ObjectId;
+        }
+    }
+
+    public async setVariants(createVariants: CreateVariantsDto): Promise<SuccessDto> {
+        try {
+            await this.deleteVariantsByProductId(createVariants.productId);
+            await this.stockService.removeByVariantId(createVariants.oldVariantIds);
+            for (const variant of createVariants.variants) {
+                const newVariantId = await this.add({
+                    size: variant.size,
+                    color: variant.color,
+                    productId: createVariants.productId,
+                });
+                await this.stockService.add({
+                    total: variant.quantity,
+                    variantId: newVariantId.toString(),
+                    realizedParty: variant.realizedParty,
+                });
+            }
+            return { success: true };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to set variants');
+            return { success: false };
+        }
+    }
+
+    public async canSaveVariants({
+        variantIds,
+    }: CanSaveVariantsDto): Promise<CanSaveVariantsResponseDto> {
+        try {
+            let canSaveVariants = true;
+            for (const id of variantIds) {
+                const mongoRepository = this.ordersRepository as MongoRepository<Order>;
+                const orders = await mongoRepository.find({
+                    where: {
+                        variants: { $elemMatch: { _id: id } },
+                    },
+                });
+                if (orders.length) {
+                    canSaveVariants = false;
+                    break;
+                }
+            }
+            return { canSaveVariants };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to add inventory');
+            return { canSaveVariants: false };
         }
     }
 }

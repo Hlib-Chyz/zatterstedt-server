@@ -131,21 +131,6 @@ export class ProductAdminDto {
     public manufacturingCost: ProductManufacturingCostDto;
 }
 
-export class ProductVariantUpdateDto {
-    @IsString()
-    @IsNotEmpty()
-    public size: string;
-    @IsString()
-    @IsNotEmpty()
-    public color: string;
-    @IsNumber()
-    @IsNotEmpty()
-    public quantity: number;
-    @IsNumber()
-    @IsNotEmpty()
-    public realizedParty: number;
-}
-
 export class CreateProductDto {
     @IsNumber()
     @IsNotEmpty()
@@ -156,11 +141,6 @@ export class CreateProductDto {
     @IsString()
     @IsNotEmpty()
     public name: string;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => ProductVariantUpdateDto)
-    public variants: ProductVariantUpdateDto[];
 }
 
 export class UpdateProductDto {
@@ -176,11 +156,6 @@ export class UpdateProductDto {
     @IsString()
     @IsNotEmpty()
     public name: string;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => ProductVariantUpdateDto)
-    public variants: ProductVariantUpdateDto[];
 }
 
 export class ProductPriceDto {
