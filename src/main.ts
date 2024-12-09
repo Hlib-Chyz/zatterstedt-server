@@ -7,7 +7,7 @@ import 'tsconfig-paths/register';
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
     app.enableCors({
-        origin: 'http://localhost:4200',
+        origin: ['http://localhost:4200', 'https://zatterstedt-admin.vercel.app'],
         credentials: true,
     });
     app.use(cookieParser());
@@ -19,6 +19,7 @@ async function bootstrap(): Promise<void> {
             transformOptions: { enableImplicitConversion: true },
         })
     );
-    await app.listen(3000);
+    const port = process.env['PORT'] || 3000;
+    await app.listen(port);
 }
 bootstrap();

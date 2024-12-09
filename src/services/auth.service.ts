@@ -45,6 +45,8 @@ export class AuthService {
                 const token = await this.generateJwtToken(user);
                 res.cookie('jwt', token, {
                     httpOnly: true,
+                    secure: true,
+                    sameSite: 'none',
                     maxAge: 86400000,
                 });
                 return { success: true };
