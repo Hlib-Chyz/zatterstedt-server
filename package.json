@@ -18,7 +18,8 @@
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:e2e": "jest --config ./test/jest-e2e.json",
-        "prepare": "husky"
+        "prepare": "husky",
+        "lint-staged": "npx lint-staged"
     },
     "dependencies": {
         "@nestjs-modules/mailer": "^2.0.2",
@@ -48,6 +49,7 @@
         "typeorm": "^0.3.20"
     },
     "devDependencies": {
+        "@commitlint/config-conventional": "^19.6.0",
         "@eslint/js": "^9.4.0",
         "@nestjs/cli": "^10.0.0",
         "@nestjs/schematics": "^10.0.0",
@@ -62,6 +64,7 @@
         "@typescript-eslint/eslint-plugin": "8.14.0",
         "@typescript-eslint/parser": "8.14.0",
         "@typescript-eslint/utils": "8.14.0",
+        "commitlint": "^19.6.0",
         "eslint": "9.6.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-json": "^4.0.1",
@@ -90,6 +93,10 @@
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
         },
+        "moduleNameMapper": {
+            "^@guards/(.*)$": "<rootDir>/guards/$1",
+            "^src/(.*)$": "<rootDir>/$1"
+        },
         "collectCoverageFrom": [
             "**/*.(t|j)s"
         ],
@@ -98,7 +105,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged"
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     },
     "lint-staged": {
