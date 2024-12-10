@@ -35,8 +35,8 @@ export const entities = [
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
                 type: 'mongodb',
-                url: configService.get<string>('MONGO_URL')!,
-                database: configService.get<string>('DATABASE_NAME')!,
+                url: configService.get<string>('MONGO_URL') ?? '',
+                database: configService.get<string>('DATABASE_NAME') ?? '',
                 entities,
                 synchronize: true,
             }),

@@ -65,7 +65,7 @@ export class AuthService {
 
     private async sendVerificationEmail(email: string, code: string): Promise<void> {
         await this.mailerService.sendMail({
-            from: this.configService.get<string>('MAIL')!,
+            from: this.configService.get<string>('MAIL') ?? '',
             to: email,
             subject: 'Welcome!',
             text: `Your verification code is: ${code}`,

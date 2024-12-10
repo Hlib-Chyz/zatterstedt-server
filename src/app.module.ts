@@ -41,7 +41,7 @@ import { StockService } from './services/stock.service';
         JwtModule.registerAsync({
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_SECRET')!,
+                secret: configService.get<string>('JWT_SECRET') ?? '',
                 signOptions: { expiresIn: '24h' },
             }),
         }),
