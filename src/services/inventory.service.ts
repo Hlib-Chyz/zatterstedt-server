@@ -36,12 +36,7 @@ export class InventoryService {
 
     public async update(inventory: UpdateInventoryDto): Promise<SuccessDto> {
         try {
-            const foundInventory = await this.inventoryRepository.findOne({
-                where: { _id: inventory._id },
-            });
-            if (!foundInventory) {
-                throw new NotFoundException('Inventory not found');
-            }
+            const foundInventory = await this.getInventory(inventory._id);
             await this.inventoryRepository.save({ ...foundInventory, ...inventory });
             return { success: true };
         } catch (error) {
@@ -66,12 +61,7 @@ export class InventoryService {
         paid: number
     ): Promise<SuccessDto> {
         try {
-            const foundInventory = await this.inventoryRepository.findOne({
-                where: { _id: new ObjectId(_id) },
-            });
-            if (!foundInventory) {
-                throw new NotFoundException('Inventory not found');
-            }
+            const foundInventory = await this.getInventory(new ObjectId(_id));
             await this.inventoryRepository.save({
                 ...foundInventory,
                 _id: new ObjectId(_id),
@@ -83,5 +73,15 @@ export class InventoryService {
             this.errorService.throwError(error, 'Failed to change inventory amount');
             return { success: false };
         }
+    }
+
+    private async getInventory(_id: ObjectId): Promise<Inventory> {
+        const foundInventory = await this.inventoryRepository.findOne({
+            where: { _id },
+        });
+        if (!foundInventory) {
+            throw new NotFoundException('Inventory not found');
+        }
+        return foundInventory;
     }
 }

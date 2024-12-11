@@ -44,12 +44,7 @@ export class ClientsService {
 
     public async getByClientId(clientId: string): Promise<Omit<ClientDto, 'purchases'>> {
         try {
-            const client = await this.clientsRepository.findOne({
-                where: { _id: new ObjectId(clientId) },
-            });
-            if (!client) {
-                throw new NotFoundException('Client not found');
-            }
+            const client = await this.getClient(new ObjectId(clientId));
             return client;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all clients');
@@ -69,17 +64,22 @@ export class ClientsService {
 
     public async setContactsInfo(_id: ObjectId, contactsInfo: string): Promise<SuccessDto> {
         try {
-            const client = await this.clientsRepository.findOne({
-                where: { _id },
-            });
-            if (!client) {
-                throw new NotFoundException('Client not found');
-            }
+            const client = await this.getClient(_id);
             await this.clientsRepository.save({ ...client, contacts: contactsInfo });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set contacts info');
             return { success: false };
         }
+    }
+
+    private async getClient(_id: ObjectId): Promise<Client> {
+        const client = await this.clientsRepository.findOne({
+            where: { _id },
+        });
+        if (!client) {
+            throw new NotFoundException('Client not found');
+        }
+        return client;
     }
 }

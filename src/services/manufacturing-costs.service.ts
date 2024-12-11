@@ -28,12 +28,9 @@ export class ManufacturingCostsService {
 
     public async getByProductId(productId: ObjectId | string): Promise<ManufacturingCost> {
         try {
-            const manufacturingCost = await this.manufacturingCostsRepository.findOne({
-                where: { productId: productId.toString() },
+            const manufacturingCost = await this.getManufacturingCost({
+                productId: productId.toString(),
             });
-            if (!manufacturingCost) {
-                throw new NotFoundException('Manufacturing cost not found');
-            }
             return manufacturingCost;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get manufacturing cost by product id');
@@ -57,13 +54,8 @@ export class ManufacturingCostsService {
 
     public async update(_id: ObjectId, job: ManufacturingCostJobDto['job']): Promise<SuccessDto> {
         try {
-            const foundManufacturingCost = await this.manufacturingCostsRepository.findOne({
-                where: { _id },
-            });
-            if (!foundManufacturingCost) {
-                throw new NotFoundException('Manufacturing cost not found');
-            }
-            await this.manufacturingCostsRepository.save({ ...foundManufacturingCost, job });
+            const manufacturingCost = await this.getManufacturingCost({ _id });
+            await this.manufacturingCostsRepository.save({ ...manufacturingCost, job });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update manufacturing cost');
@@ -76,18 +68,13 @@ export class ManufacturingCostsService {
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto> {
         try {
-            const foundManufacturingCost = await this.manufacturingCostsRepository.findOne({
-                where: { _id },
-            });
-            if (!foundManufacturingCost) {
-                throw new NotFoundException('Manufacturing cost not found');
-            }
+            const manufacturingCost = await this.getManufacturingCost({ _id });
             if (manufacturingCostInventory.oldInventory.length) {
                 await this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true);
             }
             await this.changeInventoryAmount(manufacturingCostInventory.inventory, false);
             await this.manufacturingCostsRepository.save({
-                ...foundManufacturingCost,
+                ...manufacturingCost,
                 inventory: manufacturingCostInventory.inventory,
             });
             return { success: true };
@@ -129,5 +116,17 @@ export class ManufacturingCostsService {
                 );
             }
         }
+    }
+
+    private async getManufacturingCost(
+        where: Partial<ManufacturingCost>
+    ): Promise<ManufacturingCost> {
+        const manufacturingCost = await this.manufacturingCostsRepository.findOne({
+            where,
+        });
+        if (!manufacturingCost) {
+            throw new NotFoundException('Manufacturing cost not found');
+        }
+        return manufacturingCost;
     }
 }

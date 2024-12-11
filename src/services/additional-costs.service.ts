@@ -17,12 +17,9 @@ export class AdditionalCostsService {
 
     public async update(additionalCost: UpdateAdditionalCostDto): Promise<SuccessDto> {
         try {
-            const existingAdditionalCost = await this.additionalCostsRepository.findOne({
-                where: { _id: additionalCost._id },
+            await this.getAdditionalCost({
+                _id: additionalCost._id,
             });
-            if (!existingAdditionalCost) {
-                throw new NotFoundException('Additional cost not found');
-            }
             await this.additionalCostsRepository.save(additionalCost);
             return { success: true };
         } catch (error) {
@@ -43,16 +40,23 @@ export class AdditionalCostsService {
 
     public async getAdditionalCostByProductId(productId: ObjectId): Promise<AdditionalCost> {
         try {
-            const additionalCost = await this.additionalCostsRepository.findOne({
-                where: { productId: productId.toString() },
+            const additionalCost = await this.getAdditionalCost({
+                productId: productId.toString(),
             });
-            if (!additionalCost) {
-                throw new NotFoundException('Additional cost not found');
-            }
             return additionalCost;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get additional cost by product id');
             return {} as AdditionalCost;
         }
+    }
+
+    private async getAdditionalCost(where: Partial<AdditionalCost>): Promise<AdditionalCost> {
+        const additionalCost = await this.additionalCostsRepository.findOne({
+            where,
+        });
+        if (!additionalCost) {
+            throw new NotFoundException('Additional cost not found');
+        }
+        return additionalCost;
     }
 }

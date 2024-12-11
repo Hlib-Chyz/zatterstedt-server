@@ -115,12 +115,7 @@ export class ProductsService {
 
     public async update(product: UpdateProductDto): Promise<SuccessDto> {
         try {
-            const updatedProduct = await this.productsRepository.findOne({
-                where: { _id: new ObjectId(product._id) },
-            });
-            if (!updatedProduct) {
-                throw new NotFoundException('Product not found');
-            }
+            await this.getProduct(new ObjectId(product._id));
             await this.productsRepository.save(product);
             return { success: true };
         } catch (error) {
@@ -131,12 +126,7 @@ export class ProductsService {
 
     public async getOneById(productId: ObjectId): Promise<ProductDto> {
         try {
-            const product = await this.productsRepository.findOne({
-                where: { _id: new ObjectId(productId) },
-            });
-            if (!product) {
-                throw new NotFoundException('Product not found');
-            }
+            const product = await this.getProduct(new ObjectId(productId));
             return product;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get one product');
@@ -154,5 +144,15 @@ export class ProductsService {
             this.errorService.throwError(error, 'Failed to change price of product');
             return { success: false };
         }
+    }
+
+    private async getProduct(_id: ObjectId): Promise<Product> {
+        const product = await this.productsRepository.findOne({
+            where: { _id },
+        });
+        if (!product) {
+            throw new NotFoundException('Product not found');
+        }
+        return product;
     }
 }

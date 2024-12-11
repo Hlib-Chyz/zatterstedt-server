@@ -15,12 +15,7 @@ export class StockService {
 
     public async getByVariantId(variantId: string): Promise<StockDto> {
         try {
-            const stock = await this.stockRepository.findOne({
-                where: { variantId },
-            });
-            if (!stock) {
-                throw new NotFoundException('Stock not found');
-            }
+            const stock = await this.getStock(variantId);
             return stock;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get stock by variant id');
@@ -32,9 +27,6 @@ export class StockService {
         try {
             for (const variantId of variantIds) {
                 const stock = await this.getByVariantId(variantId);
-                if (!stock) {
-                    throw new NotFoundException('Stock not found');
-                }
                 await this.stockRepository.delete({ _id: stock._id });
             }
             return { success: true };
@@ -62,17 +54,22 @@ export class StockService {
 
     public async increaseSold(variantId: string, quantity = 1): Promise<SuccessDto> {
         try {
-            const stock = await this.stockRepository.findOne({
-                where: { variantId },
-            });
-            if (!stock) {
-                throw new NotFoundException('Stock not found');
-            }
+            const stock = await this.getStock(variantId);
             await this.stockRepository.save({ ...stock, sold: stock.sold + quantity });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to increase sold');
             return { success: false };
         }
+    }
+
+    private async getStock(variantId: string): Promise<Stock> {
+        const stock = await this.stockRepository.findOne({
+            where: { variantId },
+        });
+        if (!stock) {
+            throw new NotFoundException('Stock not found');
+        }
+        return stock;
     }
 }
