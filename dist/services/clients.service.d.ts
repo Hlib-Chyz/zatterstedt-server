@@ -11,9 +11,15 @@ export declare class ClientsService {
     private ordersRepository;
     private readonly variantsService;
     private readonly errorService;
-    constructor(clientsRepository: Repository<Client>, ordersRepository: Repository<Order>, variantsService: VariantsService, errorService: ErrorService);
+    constructor(
+        clientsRepository: Repository<Client>,
+        ordersRepository: Repository<Order>,
+        variantsService: VariantsService,
+        errorService: ErrorService
+    );
     getAll(): Promise<ClientDto[]>;
     getByClientId(clientId: string): Promise<Omit<ClientDto, 'purchases'>>;
     add(client: CreateClientContactsDto): Promise<ObjectId>;
     setContactsInfo(_id: ObjectId, contactsInfo: string): Promise<SuccessDto>;
+    private getClient;
 }

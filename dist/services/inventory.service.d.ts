@@ -3,7 +3,12 @@ import { Inventory } from 'src/entities/inventory.entity';
 import { Repository } from 'typeorm';
 import { ErrorService } from './error.service';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
-import { CreateInventoryDto, InventoryDto, UpdateInventoryDto } from 'src/dto/inventory.dto';
+import {
+    CreateInventoryDto,
+    InventoryDto,
+    SetUsedFieldDto,
+    UpdateInventoryDto,
+} from 'src/dto/inventory.dto';
 export declare class InventoryService {
     private inventoryRepository;
     private readonly errorService;
@@ -13,4 +18,6 @@ export declare class InventoryService {
     update(inventory: UpdateInventoryDto): Promise<SuccessDto>;
     delete(_id: ObjectId): Promise<DeleteGetDto>;
     changeInventoryAmount(_id: string, used: number, paid: number): Promise<SuccessDto>;
+    setUsedField(body: SetUsedFieldDto): Promise<SuccessDto>;
+    private getInventory;
 }

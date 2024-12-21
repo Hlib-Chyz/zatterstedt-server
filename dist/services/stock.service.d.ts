@@ -11,4 +11,5 @@ export declare class StockService {
     removeByVariantId(variantIds: string[]): Promise<SuccessDto>;
     add(stock: CreateStockDto): Promise<SuccessDto>;
     increaseSold(variantId: string, quantity?: number): Promise<SuccessDto>;
+    private getStock;
 }

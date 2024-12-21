@@ -11,4 +11,5 @@ export declare class AdditionalCostsService {
     update(additionalCost: UpdateAdditionalCostDto): Promise<SuccessDto>;
     addOne(additionalCost: CreateAdditionalCostDto): Promise<SuccessDto>;
     getAdditionalCostByProductId(productId: ObjectId): Promise<AdditionalCost>;
+    private getAdditionalCost;
 }

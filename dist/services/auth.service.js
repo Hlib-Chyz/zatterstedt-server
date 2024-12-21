@@ -1,13 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.AuthService = void 0;
-const tslib_1 = require("tslib");
-const mailer_1 = require("@nestjs-modules/mailer");
-const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
-const error_service_1 = require("./error.service");
-const user_service_1 = require("./user.service");
-const config_1 = require("@nestjs/config");
+const tslib_1 = require('tslib');
+const mailer_1 = require('@nestjs-modules/mailer');
+const common_1 = require('@nestjs/common');
+const jwt_1 = require('@nestjs/jwt');
+const error_service_1 = require('./error.service');
+const user_service_1 = require('./user.service');
+const config_1 = require('@nestjs/config');
 let AuthService = class AuthService {
     constructor(userService, jwtService, errorService, mailerService, configService) {
         this.userService = userService;
@@ -26,8 +26,7 @@ let AuthService = class AuthService {
             await this.userService.updateVerificationCode(user.email, verificationCode);
             await this.sendVerificationEmail(loginInfo.email, verificationCode);
             return { success: true };
-        }
-        catch (error) {
+        } catch (error) {
             this.errorService.throwError(error, 'Failed to login');
             return { success: false };
         }
@@ -44,12 +43,10 @@ let AuthService = class AuthService {
                     maxAge: 86400000,
                 });
                 return { success: true };
-            }
-            else {
+            } else {
                 throw new common_1.NotFoundException('Invalid verification code');
             }
-        }
-        catch (error) {
+        } catch (error) {
             this.errorService.throwError(error, 'Failed to verify code');
             return { success: false };
         }
@@ -59,7 +56,7 @@ let AuthService = class AuthService {
     }
     async sendVerificationEmail(email, code) {
         await this.mailerService.sendMail({
-            from: this.configService.get('MAIL'),
+            from: this.configService.get('MAIL') ?? '',
             to: email,
             subject: 'Welcome!',
             text: `Your verification code is: ${code}`,
@@ -70,12 +67,17 @@ let AuthService = class AuthService {
     }
 };
 exports.AuthService = AuthService;
-exports.AuthService = AuthService = tslib_1.__decorate([
-    (0, common_1.Injectable)(),
-    tslib_1.__metadata("design:paramtypes", [user_service_1.UserService,
-        jwt_1.JwtService,
-        error_service_1.ErrorService,
-        mailer_1.MailerService,
-        config_1.ConfigService])
-], AuthService);
+exports.AuthService = AuthService = tslib_1.__decorate(
+    [
+        (0, common_1.Injectable)(),
+        tslib_1.__metadata('design:paramtypes', [
+            user_service_1.UserService,
+            jwt_1.JwtService,
+            error_service_1.ErrorService,
+            mailer_1.MailerService,
+            config_1.ConfigService,
+        ]),
+    ],
+    AuthService
+);
 //# sourceMappingURL=auth.service.js.map

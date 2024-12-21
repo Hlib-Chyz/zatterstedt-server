@@ -23,3 +23,7 @@ export declare class InventoryDto {
     paid: number;
     date: string;
 }
+export declare class SetUsedFieldDto {
+    _id: ObjectId;
+    used: number;
+}
