@@ -98,7 +98,7 @@ export class OrdersService {
                 clientId: clientId || order.clientId,
                 date: order.date,
                 variants: order.variants,
-                orderNumber: (orders.length + 1).toString().padStart(5, '0'),
+                orderNumber: (orders.length + 2).toString().padStart(5, '0'),
             });
             return { success: true };
         } catch (error) {

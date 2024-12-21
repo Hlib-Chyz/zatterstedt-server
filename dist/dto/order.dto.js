@@ -35,8 +35,8 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
-        (0, class_validator_1.IsOptional)(),
         (0, class_validator_1.IsMongoId)(),
+        (0, class_validator_1.ValidateIf)((_, value) => Boolean(value)),
         tslib_1.__metadata('design:type', String),
     ],
     CreateOrderDto.prototype,

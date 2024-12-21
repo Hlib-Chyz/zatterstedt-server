@@ -6,8 +6,8 @@ import {
     IsMongoId,
     IsNotEmpty,
     IsNumber,
-    IsOptional,
     IsString,
+    ValidateIf,
     ValidateNested,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
@@ -20,8 +20,8 @@ export class CreateOrderDto {
     public contacts: string;
     @IsString()
     public clientName: string;
-    @IsOptional()
     @IsMongoId()
+    @ValidateIf((_, value) => Boolean(value))
     public clientId: string;
     @IsNotEmpty()
     @IsArray()
