@@ -6,6 +6,7 @@ import {
     IsMongoId,
     IsNotEmpty,
     IsNumber,
+    IsOptional,
     IsString,
     ValidateNested,
 } from 'class-validator';
@@ -19,6 +20,7 @@ export class CreateOrderDto {
     public contacts: string;
     @IsString()
     public clientName: string;
+    @IsOptional()
     @IsMongoId()
     public clientId: string;
     @IsNotEmpty()
