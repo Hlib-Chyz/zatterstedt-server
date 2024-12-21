@@ -5,7 +5,12 @@ import { Inventory } from 'src/entities/inventory.entity';
 import { Repository } from 'typeorm';
 import { ErrorService } from './error.service';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
-import { CreateInventoryDto, InventoryDto, UpdateInventoryDto } from 'src/dto/inventory.dto';
+import {
+    CreateInventoryDto,
+    InventoryDto,
+    SetUsedFieldDto,
+    UpdateInventoryDto,
+} from 'src/dto/inventory.dto';
 
 @Injectable()
 export class InventoryService {
@@ -71,6 +76,20 @@ export class InventoryService {
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change inventory amount');
+            return { success: false };
+        }
+    }
+
+    public async setUsedField(body: SetUsedFieldDto): Promise<SuccessDto> {
+        try {
+            const inventory = await this.getInventory(body._id);
+            await this.inventoryRepository.save({
+                ...inventory,
+                used: body.used,
+            });
+            return { success: true };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to set used field');
             return { success: false };
         }
     }

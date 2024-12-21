@@ -10,7 +10,12 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { CreateInventoryDto, InventoryDto, UpdateInventoryDto } from 'src/dto/inventory.dto';
+import {
+    CreateInventoryDto,
+    InventoryDto,
+    SetUsedFieldDto,
+    UpdateInventoryDto,
+} from 'src/dto/inventory.dto';
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -38,6 +43,11 @@ export class InventoryController {
     @Put()
     public async update(@Body() inventory: UpdateInventoryDto): Promise<SuccessDto> {
         return this.inventoryService.update(inventory);
+    }
+
+    @Put('used')
+    public async setUsedField(@Body() body: SetUsedFieldDto): Promise<SuccessDto> {
+        return this.inventoryService.setUsedField(body);
     }
 
     @Delete(':id')

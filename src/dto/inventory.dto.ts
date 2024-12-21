@@ -63,3 +63,12 @@ export class InventoryDto {
     @IsDateString()
     public date: string;
 }
+
+export class SetUsedFieldDto {
+    @IsNotEmpty()
+    @Transform(({ value }) => new ObjectId(value))
+    public _id: ObjectId;
+    @IsNotEmpty()
+    @IsNumber()
+    public used: number;
+}
