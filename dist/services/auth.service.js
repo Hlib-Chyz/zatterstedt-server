@@ -41,6 +41,8 @@ let AuthService = class AuthService {
                     secure: true,
                     sameSite: 'none',
                     maxAge: 86400000,
+                    partitioned: true,
+                    path: '/',
                 });
                 return { success: true };
             } else {
