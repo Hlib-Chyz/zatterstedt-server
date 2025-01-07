@@ -1,5 +1,5 @@
 import { SuccessDto } from 'src/dto/shared.dto';
-import { CreateStockDto, StockDto } from 'src/dto/stock.dto';
+import { CreateStockDto, SetRealizedPartyDto, StockDto } from 'src/dto/stock.dto';
 import { Stock } from 'src/entities/stock.entity';
 import { Repository } from 'typeorm';
 import { ErrorService } from './error.service';
@@ -11,5 +11,6 @@ export declare class StockService {
     removeByVariantId(variantIds: string[]): Promise<SuccessDto>;
     add(stock: CreateStockDto): Promise<SuccessDto>;
     increaseSold(variantId: string, quantity?: number): Promise<SuccessDto>;
+    setRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<SuccessDto>;
     private getStock;
 }

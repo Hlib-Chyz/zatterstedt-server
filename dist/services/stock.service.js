@@ -60,6 +60,19 @@ let StockService = class StockService {
             return { success: false };
         }
     }
+    async setRealizedParty(realizedPartyDto) {
+        try {
+            const stock = await this.getStock(realizedPartyDto.variantId);
+            await this.stockRepository.save({
+                ...stock,
+                realizedParty: realizedPartyDto.realizedParty,
+            });
+            return { success: true };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to set realized party');
+            return { success: false };
+        }
+    }
     async getStock(variantId) {
         const stock = await this.stockRepository.findOne({
             where: { variantId },

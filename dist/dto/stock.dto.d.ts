@@ -11,3 +11,7 @@ export declare class CreateStockDto {
     total: number;
     realizedParty: number;
 }
+export declare class SetRealizedPartyDto {
+    variantId: string;
+    realizedParty: number;
+}

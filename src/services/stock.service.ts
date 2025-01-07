@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SuccessDto } from 'src/dto/shared.dto';
-import { CreateStockDto, StockDto } from 'src/dto/stock.dto';
+import { CreateStockDto, SetRealizedPartyDto, StockDto } from 'src/dto/stock.dto';
 import { Stock } from 'src/entities/stock.entity';
 import { Repository } from 'typeorm';
 import { ErrorService } from './error.service';
@@ -59,6 +59,20 @@ export class StockService {
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to increase sold');
+            return { success: false };
+        }
+    }
+
+    public async setRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<SuccessDto> {
+        try {
+            const stock = await this.getStock(realizedPartyDto.variantId);
+            await this.stockRepository.save({
+                ...stock,
+                realizedParty: realizedPartyDto.realizedParty,
+            });
+            return { success: true };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to set realized party');
             return { success: false };
         }
     }

@@ -12,6 +12,7 @@ const manufacturing_costs_controller_1 = require('./controllers/manufacturing-co
 const orders_controller_1 = require('./controllers/orders.controller');
 const other_costs_controller_1 = require('./controllers/other-costs.controller');
 const products_controller_1 = require('./controllers/products.controller');
+const stock_controller_1 = require('./controllers/stock.controller');
 const variants_controller_1 = require('./controllers/variants.controller');
 const common_1 = require('@nestjs/common');
 const config_1 = require('@nestjs/config');
@@ -66,6 +67,7 @@ exports.AppModule = AppModule = tslib_1.__decorate(
                 clients_controller_1.ClientsController,
                 auth_controller_1.AuthController,
                 additional_costs_controller_1.AdditionalCostsController,
+                stock_controller_1.StockController,
             ],
             providers: [
                 variants_service_1.VariantsService,

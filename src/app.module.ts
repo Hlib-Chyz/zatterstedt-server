@@ -8,6 +8,7 @@ import { ManufacturingCostsController } from '@controllers/manufacturing-costs.c
 import { OrdersController } from '@controllers/orders.controller';
 import { OtherCostsController } from '@controllers/other-costs.controller';
 import { ProductsController } from '@controllers/products.controller';
+import { StockController } from '@controllers/stock.controller';
 import { VariantsController } from '@controllers/variants.controller';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -59,6 +60,7 @@ import { StockService } from './services/stock.service';
         ClientsController,
         AuthController,
         AdditionalCostsController,
+        StockController,
     ],
     providers: [
         VariantsService,

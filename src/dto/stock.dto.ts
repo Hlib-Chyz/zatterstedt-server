@@ -29,3 +29,12 @@ export class CreateStockDto {
     @IsNumber()
     public realizedParty: number;
 }
+
+export class SetRealizedPartyDto {
+    @IsNotEmpty()
+    @IsMongoId()
+    public variantId: string;
+    @IsNotEmpty()
+    @IsNumber()
+    public realizedParty: number;
+}
