@@ -18,7 +18,6 @@ declare class VariantUpdateDto {
     size: string;
     color: string;
     quantity: number;
-    realizedParty: number;
 }
 export declare class CreateVariantsDto {
     productId: string;

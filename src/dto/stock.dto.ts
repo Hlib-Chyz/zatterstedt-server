@@ -25,9 +25,6 @@ export class CreateStockDto {
     @IsNotEmpty()
     @IsNumber()
     public total: number;
-    @IsNotEmpty()
-    @IsNumber()
-    public realizedParty: number;
 }
 
 export class SetRealizedPartyDto {

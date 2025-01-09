@@ -126,7 +126,6 @@ export class VariantsService {
                 await this.stockService.add({
                     total: variant.quantity,
                     variantId: newVariantId.toString(),
-                    realizedParty: variant.realizedParty,
                 });
             }
             return { success: true };

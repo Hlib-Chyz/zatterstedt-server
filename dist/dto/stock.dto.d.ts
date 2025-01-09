@@ -9,7 +9,6 @@ export declare class StockDto {
 export declare class CreateStockDto {
     variantId: string;
     total: number;
-    realizedParty: number;
 }
 export declare class SetRealizedPartyDto {
     variantId: string;

@@ -74,16 +74,6 @@ tslib_1.__decorate(
     'total',
     void 0
 );
-tslib_1.__decorate(
-    [
-        (0, class_validator_1.IsNotEmpty)(),
-        (0, class_validator_1.IsNumber)(),
-        tslib_1.__metadata('design:type', Number),
-    ],
-    CreateStockDto.prototype,
-    'realizedParty',
-    void 0
-);
 class SetRealizedPartyDto {}
 exports.SetRealizedPartyDto = SetRealizedPartyDto;
 tslib_1.__decorate(

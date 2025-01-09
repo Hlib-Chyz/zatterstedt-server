@@ -12,5 +12,6 @@ export declare class StockService {
     add(stock: CreateStockDto): Promise<SuccessDto>;
     increaseSold(variantId: string, quantity?: number): Promise<SuccessDto>;
     setRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<SuccessDto>;
+    decreaseRealizedParty(variantId: string, amount: number): Promise<SuccessDto>;
     private getStock;
 }

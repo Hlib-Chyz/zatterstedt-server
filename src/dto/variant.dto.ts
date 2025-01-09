@@ -54,9 +54,6 @@ class VariantUpdateDto {
     @IsNumber()
     @IsNotEmpty()
     public quantity: number;
-    @IsNumber()
-    @IsNotEmpty()
-    public realizedParty: number;
 }
 
 export class CreateVariantsDto {

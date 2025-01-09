@@ -81,6 +81,9 @@ let OrdersService = class OrdersService {
                 ).toString();
             }
             for (const variant of order.variants) {
+                if (variant.price === 0) {
+                    await this.stockService.decreaseRealizedParty(variant._id, variant.quantity);
+                }
                 const productId = await this.variantsService.getProductId(variant._id);
                 const manufacturingCost = await this.manufacturingCostsRepository.findOne({
                     where: { productId },

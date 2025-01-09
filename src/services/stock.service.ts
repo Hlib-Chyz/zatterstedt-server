@@ -44,7 +44,7 @@ export class StockService {
             if (existingStock) {
                 throw new ConflictException('A stock with the given variant already exists');
             }
-            await this.stockRepository.save({ ...stock, sold: 0 });
+            await this.stockRepository.save({ ...stock, sold: 0, realizedParty: stock.total });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new stock');
@@ -73,6 +73,20 @@ export class StockService {
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set realized party');
+            return { success: false };
+        }
+    }
+
+    public async decreaseRealizedParty(variantId: string, amount: number): Promise<SuccessDto> {
+        try {
+            const stock = await this.getStock(variantId);
+            await this.stockRepository.save({
+                ...stock,
+                realizedParty: stock.realizedParty - amount,
+            });
+            return { success: true };
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to decrease realized party');
             return { success: false };
         }
     }
