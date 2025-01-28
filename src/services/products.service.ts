@@ -1,115 +1,25 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
-import {
-    CreateProductDto,
-    ProductAdminDto,
-    ProductDto,
-    ProductVariantDto,
-    UpdateProductDto,
-} from 'src/dto/product.dto';
+import { CreateProductDto, UpdateProductDto } from 'src/dto/product.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { Product } from 'src/entities/product.entity';
 import { Repository } from 'typeorm';
-import { AdditionalCostsService } from './additional-costs.service';
-import { DevelopmentCostsService } from './development-costs.service';
 import { ErrorService } from './error.service';
-import { ManufacturingCostsService } from './manufacturing-costs.service';
-import { StockService } from './stock.service';
-import { VariantsService } from './variants.service';
 
 @Injectable()
 export class ProductsService {
     public constructor(
         @InjectRepository(Product) private productsRepository: Repository<Product>,
-        private readonly errorService: ErrorService,
-        private readonly additionalCostsService: AdditionalCostsService,
-        private readonly developmentCostsService: DevelopmentCostsService,
-        private readonly variantsService: VariantsService,
-        private readonly stockService: StockService,
-        private readonly manufacturingCostsService: ManufacturingCostsService
+        private readonly errorService: ErrorService
     ) {}
 
-    public async getAllProductsForAdmin(): Promise<ProductAdminDto[]> {
+    public async getAll(): Promise<Product[]> {
         try {
-            const res: ProductAdminDto[] = [];
-            const products = await this.productsRepository.find();
-            for (const product of products) {
-                const additionalCost =
-                    await this.additionalCostsService.getAdditionalCostByProductId(product._id);
-                const developmentCosts = await this.developmentCostsService.getByProductId(
-                    product._id
-                );
-                const variants = await this.variantsService.getByProductId(product._id.toString());
-                const manufacturingCost = await this.manufacturingCostsService.getByProductId(
-                    product._id
-                );
-                const resVariants: ProductVariantDto[] = [];
-                for (const variant of variants) {
-                    const stock = await this.stockService.getByVariantId(variant._id.toString());
-                    resVariants.push({
-                        _id: variant._id,
-                        size: variant.size,
-                        color: variant.color,
-                        stock: {
-                            total: stock.total,
-                            sold: stock.sold,
-                            realizedParty: stock.realizedParty,
-                        },
-                    });
-                }
-                res.push({
-                    _id: product._id,
-                    name: product.name,
-                    description: product.description,
-                    price: product.price,
-
-                    variants: resVariants,
-
-                    developmentCosts: developmentCosts?.map((val) => ({
-                        _id: val._id,
-                        date: val.date,
-                        description: val.description,
-                        cost: val.cost,
-                    })),
-                    additionalCost: { _id: additionalCost?._id, cost: additionalCost?.cost },
-                    manufacturingCost: {
-                        _id: manufacturingCost._id,
-                        inventory: manufacturingCost.inventory,
-                        job: manufacturingCost.job,
-                    },
-                });
-            }
-            return res;
+            return this.productsRepository.find();
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to get all products');
+            this.errorService.throwError(error, 'Failed to get products');
             return [];
-        }
-    }
-
-    public async add(product: CreateProductDto): Promise<SuccessDto> {
-        try {
-            const existingProduct = await this.productsRepository.findOne({
-                where: { name: product.name },
-            });
-            if (existingProduct) {
-                throw new ConflictException('A product with the given name already exists');
-            }
-            const newProduct = await this.productsRepository.save({
-                name: product.name,
-                price: product.price,
-                description: product.description,
-            });
-            await this.additionalCostsService.addOne({
-                productId: newProduct._id.toString(),
-            });
-            await this.manufacturingCostsService.create({
-                productId: newProduct._id.toString(),
-            });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to create a new product');
-            return { success: false };
         }
     }
 
@@ -124,19 +34,9 @@ export class ProductsService {
         }
     }
 
-    public async getOneById(productId: ObjectId): Promise<ProductDto> {
-        try {
-            const product = await this.getProduct(new ObjectId(productId));
-            return product;
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to get one product');
-            return {} as ProductDto;
-        }
-    }
-
     public async changePrice(productId: ObjectId, newPrice: number): Promise<SuccessDto> {
         try {
-            const product = await this.getOneById(productId);
+            const product = await this.getProduct(productId);
             product.price = newPrice;
             await this.productsRepository.save(product);
             return { success: true };
@@ -146,13 +46,47 @@ export class ProductsService {
         }
     }
 
-    private async getProduct(_id: ObjectId): Promise<Product> {
-        const product = await this.productsRepository.findOne({
-            where: { _id },
-        });
-        if (!product) {
-            throw new NotFoundException('Product not found');
+    public async getProductByName(name: string): Promise<Product> {
+        try {
+            const product = await this.productsRepository.findOne({
+                where: { name },
+            });
+            if (!product) {
+                throw new NotFoundException('Product not found');
+            }
+            return product;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get product');
+            return {} as Product;
         }
-        return product;
+    }
+
+    public async add(product: CreateProductDto): Promise<Product> {
+        try {
+            const newProduct = await this.productsRepository.save({
+                name: product.name,
+                price: product.price,
+                description: product.description,
+            });
+            return newProduct;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to add product');
+            return {} as Product;
+        }
+    }
+
+    public async getProduct(_id: ObjectId): Promise<Product> {
+        try {
+            const product = await this.productsRepository.findOne({
+                where: { _id },
+            });
+            if (!product) {
+                throw new NotFoundException('Product not found');
+            }
+            return product;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get product');
+            return {} as Product;
+        }
     }
 }

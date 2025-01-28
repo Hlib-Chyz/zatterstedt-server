@@ -8,6 +8,7 @@ import {
     UpdateProductDto,
 } from 'src/dto/product.dto';
 import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
+import { ProductFacade } from 'src/facades/product.facade';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { ProductsService } from 'src/services/products.service';
 
@@ -15,16 +16,19 @@ import { ProductsService } from 'src/services/products.service';
 @UseFilters(new HttpExceptionFilter())
 @UseGuards(JwtAuthGuard)
 export class ProductsController {
-    public constructor(private readonly productsService: ProductsService) {}
+    public constructor(
+        private readonly productsService: ProductsService,
+        private readonly productFacade: ProductFacade
+    ) {}
 
     @Get('admin')
     public async getAllProductsForAdmin(): Promise<ProductAdminDto[]> {
-        return this.productsService.getAllProductsForAdmin();
+        return this.productFacade.getAll();
     }
 
     @Post()
     public async createProduct(@Body() product: CreateProductDto): Promise<SuccessDto> {
-        return this.productsService.add(product);
+        return this.productFacade.add(product);
     }
 
     @Put()

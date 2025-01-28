@@ -3,6 +3,7 @@ import { Body, Controller, Get, Param, Put, UseFilters, UseGuards } from '@nestj
 import { ObjectId } from 'mongodb';
 import { ClientDto, UpdateClientContactsDto } from 'src/dto/client.dto';
 import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
+import { ClientFacade } from 'src/facades/client.facade';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { ClientsService } from 'src/services/clients.service';
 
@@ -10,11 +11,14 @@ import { ClientsService } from 'src/services/clients.service';
 @UseFilters(new HttpExceptionFilter())
 @UseGuards(JwtAuthGuard)
 export class ClientsController {
-    public constructor(private readonly clientsService: ClientsService) {}
+    public constructor(
+        private readonly clientsService: ClientsService,
+        private readonly clientFacade: ClientFacade
+    ) {}
 
     @Get()
     public async getAllClients(): Promise<ClientDto[]> {
-        return this.clientsService.getAll();
+        return this.clientFacade.getAll();
     }
 
     @Put('contacts/:id')

@@ -6,41 +6,13 @@ import { SuccessDto } from 'src/dto/shared.dto';
 import { Client } from 'src/entities/client.entity';
 import { Repository } from 'typeorm';
 import { ErrorService } from './error.service';
-import { Order } from '@entities/order.entity';
-import { VariantsService } from '@services/variants.service';
 
 @Injectable()
 export class ClientsService {
     public constructor(
         @InjectRepository(Client) private clientsRepository: Repository<Client>,
-        @InjectRepository(Order) private ordersRepository: Repository<Order>,
-        private readonly variantsService: VariantsService,
         private readonly errorService: ErrorService
     ) {}
-
-    public async getAll(): Promise<ClientDto[]> {
-        try {
-            const res: ClientDto[] = [];
-            const clients = await this.clientsRepository.find();
-            for (const client of clients) {
-                const orders = await this.ordersRepository.find({
-                    where: { clientId: client._id.toString() },
-                });
-                const purchases: string[] = [];
-                for (const order of orders) {
-                    for (const variant of order.variants) {
-                        const newPurchase = `${await this.variantsService.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`;
-                        purchases.push(newPurchase);
-                    }
-                }
-                res.push({ ...client, purchases });
-            }
-            return res;
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to get all clients');
-            return [];
-        }
-    }
 
     public async getByClientId(clientId: string): Promise<Omit<ClientDto, 'purchases'>> {
         try {
@@ -73,13 +45,27 @@ export class ClientsService {
         }
     }
 
-    private async getClient(_id: ObjectId): Promise<Client> {
-        const client = await this.clientsRepository.findOne({
-            where: { _id },
-        });
-        if (!client) {
-            throw new NotFoundException('Client not found');
+    public async getAll(): Promise<Client[]> {
+        try {
+            return await this.clientsRepository.find();
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get all Clients');
+            return [];
         }
-        return client;
+    }
+
+    private async getClient(_id: ObjectId): Promise<Client> {
+        try {
+            const client = await this.clientsRepository.findOne({
+                where: { _id },
+            });
+            if (!client) {
+                throw new NotFoundException('Client not found');
+            }
+            return client;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get client');
+            return {} as Client;
+        }
     }
 }

@@ -2,16 +2,16 @@ import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CreateOrderDto, OrderDto } from 'src/dto/order.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
-import { OrdersService } from 'src/services/orders.service';
+import { OrderFacade } from 'src/facades/order.facade';
 
 @Controller('orders')
 @UseGuards(JwtAuthGuard)
 export class OrdersController {
-    public constructor(private readonly ordersService: OrdersService) {}
+    public constructor(private readonly orderFacade: OrderFacade) {}
 
     @Get()
     public async getAll(): Promise<OrderDto[]> {
-        return this.ordersService.getAll();
+        return this.orderFacade.getAll();
     }
 
     @Post()
@@ -19,6 +19,6 @@ export class OrdersController {
         @Body()
         order: CreateOrderDto
     ): Promise<SuccessDto> {
-        return this.ordersService.add(order);
+        return this.orderFacade.add(order);
     }
 }

@@ -31,6 +31,11 @@ import { JwtStrategy } from '@strategies/jwt.strategy';
 import { ZatterstedtMailerModule } from './modules/mailer.module';
 import { entities, ZatterstedtTypeOrmModule } from './modules/type-orm.module';
 import { StockService } from './services/stock.service';
+import { ProductFacade } from 'src/facades/product.facade';
+import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
+import { OrderFacade } from 'src/facades/order.facade';
+import { ClientFacade } from 'src/facades/client.facade';
+import { VariantFacade } from 'src/facades/variant.facade';
 
 @Module({
     imports: [
@@ -78,6 +83,11 @@ import { StockService } from './services/stock.service';
         JwtStrategy,
         AdditionalCostsService,
         ErrorService,
+        ProductFacade,
+        ManufacturingCostFacade,
+        OrderFacade,
+        ClientFacade,
+        VariantFacade,
     ],
 })
 export class AppModule {}
