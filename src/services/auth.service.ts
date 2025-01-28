@@ -19,18 +19,21 @@ export class AuthService {
         private configService: ConfigService
     ) {}
 
-    public async login(loginInfo: LoginDto): Promise<SuccessDto> {
+    public async login(loginInfo: LoginDto, res: Response): Promise<SuccessDto> {
         try {
             const user = await this.userService.findByEmail(loginInfo.email);
             if (!user || loginInfo.password !== user.password) {
                 throw new NotFoundException('Invalid credentials');
             }
-
-            const verificationCode = this.generateVerificationCode();
-            await this.userService.updateVerificationCode(user.email, verificationCode);
-
-            await this.sendVerificationEmail(loginInfo.email, verificationCode);
-
+            const token = await this.generateJwtToken(user);
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                maxAge: 86400000,
+                partitioned: true,
+                path: '/',
+            });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to login');
@@ -61,11 +64,11 @@ export class AuthService {
         }
     }
 
-    private generateVerificationCode(): string {
+    public generateVerificationCode(): string {
         return Math.floor(100000 + Math.random() * 900000).toString();
     }
 
-    private async sendVerificationEmail(email: string, code: string): Promise<void> {
+    public async sendVerificationEmail(email: string, code: string): Promise<void> {
         await this.mailerService.sendMail({
             from: this.configService.get<string>('MAIL') ?? '',
             to: email,

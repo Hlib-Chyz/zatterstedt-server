@@ -16,15 +16,21 @@ let AuthService = class AuthService {
         this.mailerService = mailerService;
         this.configService = configService;
     }
-    async login(loginInfo) {
+    async login(loginInfo, res) {
         try {
             const user = await this.userService.findByEmail(loginInfo.email);
             if (!user || loginInfo.password !== user.password) {
                 throw new common_1.NotFoundException('Invalid credentials');
             }
-            const verificationCode = this.generateVerificationCode();
-            await this.userService.updateVerificationCode(user.email, verificationCode);
-            await this.sendVerificationEmail(loginInfo.email, verificationCode);
+            const token = await this.generateJwtToken(user);
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                maxAge: 86400000,
+                partitioned: true,
+                path: '/',
+            });
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to login');

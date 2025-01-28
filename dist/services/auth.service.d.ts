@@ -12,10 +12,16 @@ export declare class AuthService {
     private errorService;
     private mailerService;
     private configService;
-    constructor(userService: UserService, jwtService: JwtService, errorService: ErrorService, mailerService: MailerService, configService: ConfigService);
-    login(loginInfo: LoginDto): Promise<SuccessDto>;
+    constructor(
+        userService: UserService,
+        jwtService: JwtService,
+        errorService: ErrorService,
+        mailerService: MailerService,
+        configService: ConfigService
+    );
+    login(loginInfo: LoginDto, res: Response): Promise<SuccessDto>;
     verifyCode(verifyCodeInfo: VerifyCodeDto, res: Response): Promise<SuccessDto>;
-    private generateVerificationCode;
-    private sendVerificationEmail;
+    generateVerificationCode(): string;
+    sendVerificationEmail(email: string, code: string): Promise<void>;
     private generateJwtToken;
 }
