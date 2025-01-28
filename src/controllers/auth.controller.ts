@@ -1,9 +1,8 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import { AuthService } from 'src/services/auth.service';
-import { Response } from 'express';
-import { UserService } from 'src/services/user.service';
-import { LoginDto, VerifyCodeDto } from 'src/dto/auth.dto';
 import { SuccessDto } from '@dto/shared.dto';
+import { Body, Controller, Post } from '@nestjs/common';
+import { LoginDto, VerifyCodeDto } from 'src/dto/auth.dto';
+import { AuthService } from 'src/services/auth.service';
+import { UserService } from 'src/services/user.service';
 
 @Controller('auth')
 export class AuthController {
@@ -13,11 +12,8 @@ export class AuthController {
     ) {}
 
     @Post('login')
-    public async login(
-        @Body() loginInfo: LoginDto,
-        @Res({ passthrough: true }) res: Response
-    ): Promise<SuccessDto> {
-        return this.authService.login(loginInfo, res);
+    public async login(@Body() loginInfo: LoginDto): Promise<SuccessDto> {
+        return this.authService.login(loginInfo);
     }
 
     @Post('add')
@@ -26,10 +22,7 @@ export class AuthController {
     }
 
     @Post('verify-code')
-    public async verifyCode(
-        @Body() verifyCodeInfo: VerifyCodeDto,
-        @Res({ passthrough: true }) res: Response
-    ): Promise<SuccessDto> {
-        return this.authService.verifyCode(verifyCodeInfo, res);
+    public async verifyCode(@Body() verifyCodeInfo: VerifyCodeDto): Promise<SuccessDto> {
+        return this.authService.verifyCode(verifyCodeInfo);
     }
 }

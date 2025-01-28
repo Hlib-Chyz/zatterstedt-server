@@ -4,10 +4,10 @@ exports.AuthService = void 0;
 const tslib_1 = require('tslib');
 const mailer_1 = require('@nestjs-modules/mailer');
 const common_1 = require('@nestjs/common');
+const config_1 = require('@nestjs/config');
 const jwt_1 = require('@nestjs/jwt');
 const error_service_1 = require('./error.service');
 const user_service_1 = require('./user.service');
-const config_1 = require('@nestjs/config');
 let AuthService = class AuthService {
     constructor(userService, jwtService, errorService, mailerService, configService) {
         this.userService = userService;
@@ -16,47 +16,31 @@ let AuthService = class AuthService {
         this.mailerService = mailerService;
         this.configService = configService;
     }
-    async login(loginInfo, res) {
+    async login(loginInfo) {
         try {
             const user = await this.userService.findByEmail(loginInfo.email);
             if (!user || loginInfo.password !== user.password) {
                 throw new common_1.NotFoundException('Invalid credentials');
             }
             const token = await this.generateJwtToken(user);
-            res.cookie('jwt', token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
-                maxAge: 86400000,
-                partitioned: true,
-                path: '/',
-            });
-            return { success: true };
+            return { success: true, token };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to login');
-            return { success: false };
+            return { success: false, token: '' };
         }
     }
-    async verifyCode(verifyCodeInfo, res) {
+    async verifyCode(verifyCodeInfo) {
         try {
             const user = await this.userService.findByEmail(verifyCodeInfo.email);
             if (user?.emailVerificationCode === verifyCodeInfo.code) {
                 const token = await this.generateJwtToken(user);
-                res.cookie('jwt', token, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'none',
-                    maxAge: 86400000,
-                    partitioned: true,
-                    path: '/',
-                });
-                return { success: true };
+                return { success: true, token };
             } else {
                 throw new common_1.NotFoundException('Invalid verification code');
             }
         } catch (error) {
             this.errorService.throwError(error, 'Failed to verify code');
-            return { success: false };
+            return { success: false, token: '' };
         }
     }
     generateVerificationCode() {
@@ -71,7 +55,7 @@ let AuthService = class AuthService {
         });
     }
     async generateJwtToken(user) {
-        return this.jwtService.sign({ email: user.email, sub: user._id });
+        return this.jwtService.sign({ email: user.email, sub: user._id }, { expiresIn: '7d' });
     }
 };
 exports.AuthService = AuthService;

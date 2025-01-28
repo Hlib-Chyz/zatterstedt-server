@@ -1,11 +1,9 @@
 import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto, LoginResponseDto, VerifyCodeDto } from 'src/dto/auth.dto';
 import { ErrorService } from './error.service';
 import { UserService } from './user.service';
-import { Response } from 'express';
-import { LoginDto, VerifyCodeDto } from 'src/dto/auth.dto';
-import { ConfigService } from '@nestjs/config';
-import { SuccessDto } from '@dto/shared.dto';
 export declare class AuthService {
     private userService;
     private jwtService;
@@ -19,8 +17,8 @@ export declare class AuthService {
         mailerService: MailerService,
         configService: ConfigService
     );
-    login(loginInfo: LoginDto, res: Response): Promise<SuccessDto>;
-    verifyCode(verifyCodeInfo: VerifyCodeDto, res: Response): Promise<SuccessDto>;
+    login(loginInfo: LoginDto): Promise<LoginResponseDto>;
+    verifyCode(verifyCodeInfo: VerifyCodeDto): Promise<LoginResponseDto>;
     generateVerificationCode(): string;
     sendVerificationEmail(email: string, code: string): Promise<void>;
     private generateJwtToken;

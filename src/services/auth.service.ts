@@ -1,13 +1,11 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto, LoginResponseDto, VerifyCodeDto } from 'src/dto/auth.dto';
+import { User } from 'src/entities/user.entity';
 import { ErrorService } from './error.service';
 import { UserService } from './user.service';
-import { User } from 'src/entities/user.entity';
-import { Response } from 'express';
-import { LoginDto, VerifyCodeDto } from 'src/dto/auth.dto';
-import { ConfigService } from '@nestjs/config';
-import { SuccessDto } from '@dto/shared.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,48 +17,32 @@ export class AuthService {
         private configService: ConfigService
     ) {}
 
-    public async login(loginInfo: LoginDto, res: Response): Promise<SuccessDto> {
+    public async login(loginInfo: LoginDto): Promise<LoginResponseDto> {
         try {
             const user = await this.userService.findByEmail(loginInfo.email);
             if (!user || loginInfo.password !== user.password) {
                 throw new NotFoundException('Invalid credentials');
             }
             const token = await this.generateJwtToken(user);
-            res.cookie('jwt', token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
-                maxAge: 86400000,
-                partitioned: true,
-                path: '/',
-            });
-            return { success: true };
+            return { success: true, token };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to login');
-            return { success: false };
+            return { success: false, token: '' };
         }
     }
 
-    public async verifyCode(verifyCodeInfo: VerifyCodeDto, res: Response): Promise<SuccessDto> {
+    public async verifyCode(verifyCodeInfo: VerifyCodeDto): Promise<LoginResponseDto> {
         try {
             const user = await this.userService.findByEmail(verifyCodeInfo.email);
             if (user?.emailVerificationCode === verifyCodeInfo.code) {
                 const token = await this.generateJwtToken(user);
-                res.cookie('jwt', token, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'none',
-                    maxAge: 86400000,
-                    partitioned: true,
-                    path: '/',
-                });
-                return { success: true };
+                return { success: true, token };
             } else {
                 throw new NotFoundException('Invalid verification code');
             }
         } catch (error) {
             this.errorService.throwError(error, 'Failed to verify code');
-            return { success: false };
+            return { success: false, token: '' };
         }
     }
 
@@ -78,6 +60,6 @@ export class AuthService {
     }
 
     private async generateJwtToken(user: User): Promise<string> {
-        return this.jwtService.sign({ email: user.email, sub: user._id });
+        return this.jwtService.sign({ email: user.email, sub: user._id }, { expiresIn: '7d' });
     }
 }

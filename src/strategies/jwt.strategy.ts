@@ -7,13 +7,13 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 export class JwtStrategy extends PassportStrategy(Strategy) {
     public constructor(public readonly configService: ConfigService) {
         super({
-            jwtFromRequest: ExtractJwt.fromExtractors([(req): string | null => req.cookies['jwt']]),
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             secretOrKey: configService.get<string>('JWT_SECRET'),
         });
     }
 
-    public async validate(): Promise<object> {
-        return {};
+    public async validate(payload: { email: string; sub: string }): Promise<object> {
+        return { userId: payload.sub, email: payload.email };
     }
 }
