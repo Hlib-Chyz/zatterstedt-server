@@ -1,23 +1,14 @@
-import { ManufacturingCost } from '@entities/manufacturing-cost.entity';
-import { CreateOrderDto, OrderDto, OrderVariantDto } from 'src/dto/order.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
+import { CreateOrderDto, OrderVariantDto } from 'src/dto/order.dto';
 import { Order } from 'src/entities/order.entity';
 import { Repository } from 'typeorm';
-import { ClientsService } from './clients.service';
 import { ErrorService } from './error.service';
-import { InventoryService } from './inventory.service';
-import { StockService } from './stock.service';
-import { VariantsService } from './variants.service';
+import { SuccessDto } from '@dto/shared.dto';
 export declare class OrdersService {
     private ordersRepository;
-    private manufacturingCostsRepository;
     private readonly errorService;
-    private readonly stockService;
-    private readonly inventoryService;
-    private readonly clientsService;
-    private readonly variantsService;
-    constructor(ordersRepository: Repository<Order>, manufacturingCostsRepository: Repository<ManufacturingCost>, errorService: ErrorService, stockService: StockService, inventoryService: InventoryService, clientsService: ClientsService, variantsService: VariantsService);
-    getAll(): Promise<OrderDto[]>;
+    constructor(ordersRepository: Repository<Order>, errorService: ErrorService);
     getByVariantId(variantId: string): Promise<OrderVariantDto[]>;
-    add(order: CreateOrderDto): Promise<SuccessDto>;
+    getOrdersByClientId(clientId: string): Promise<OrderVariantDto[]>;
+    getAll(): Promise<Order[]>;
+    add(clientId: string, order: CreateOrderDto, ordersLength: number): Promise<SuccessDto>;
 }

@@ -87,13 +87,18 @@ let StockService = class StockService {
         }
     }
     async getStock(variantId) {
-        const stock = await this.stockRepository.findOne({
-            where: { variantId },
-        });
-        if (!stock) {
-            throw new common_1.NotFoundException('Stock not found');
+        try {
+            const stock = await this.stockRepository.findOne({
+                where: { variantId },
+            });
+            if (!stock) {
+                throw new common_1.NotFoundException('Stock not found');
+            }
+            return stock;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get stock');
+            return {};
         }
-        return stock;
     }
 };
 exports.StockService = StockService;

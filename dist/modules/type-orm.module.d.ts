@@ -8,6 +8,16 @@ import { Product } from 'src/entities/product.entity';
 import { Stock } from 'src/entities/stock.entity';
 import { User } from 'src/entities/user.entity';
 import { Variant } from 'src/entities/variant.entity';
-export declare const entities: (typeof AdditionalCost | typeof User | typeof Client | typeof Order | typeof Product | typeof Variant | typeof Stock | typeof FixedCost | typeof Inventory | typeof ManufacturingCost)[];
-export declare class ZatterstedtTypeOrmModule {
-}
+export declare const entities: (
+    | typeof AdditionalCost
+    | typeof User
+    | typeof Client
+    | typeof Order
+    | typeof Product
+    | typeof Stock
+    | typeof Variant
+    | typeof FixedCost
+    | typeof Inventory
+    | typeof ManufacturingCost
+)[];
+export declare class ZatterstedtTypeOrmModule {}

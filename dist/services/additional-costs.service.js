@@ -35,23 +35,27 @@ let AdditionalCostsService = class AdditionalCostsService {
     }
     async getAdditionalCostByProductId(productId) {
         try {
-            const additionalCost = await this.getAdditionalCost({
+            return await this.getAdditionalCost({
                 productId: productId.toString(),
             });
-            return additionalCost;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get additional cost by product id');
             return {};
         }
     }
     async getAdditionalCost(where) {
-        const additionalCost = await this.additionalCostsRepository.findOne({
-            where,
-        });
-        if (!additionalCost) {
-            throw new common_1.NotFoundException('Additional cost not found');
+        try {
+            const additionalCost = await this.additionalCostsRepository.findOne({
+                where,
+            });
+            if (!additionalCost) {
+                throw new common_1.NotFoundException('Additional cost not found');
+            }
+            return additionalCost;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get additional cost');
+            return {};
         }
-        return additionalCost;
     }
 };
 exports.AdditionalCostsService = AdditionalCostsService;
