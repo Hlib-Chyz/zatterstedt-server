@@ -84,7 +84,7 @@ export class OrderFacade {
             await this.ordersService.add(clientId, order, orders.length);
             return { success: true };
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to create manufacturing cost');
+            this.errorService.throwError(error, 'Failed to add order');
             return { success: false };
         }
     }

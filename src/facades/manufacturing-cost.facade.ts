@@ -58,7 +58,7 @@ export class ManufacturingCostFacade {
             }
             return { canSaveInventory };
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to add inventory');
+            this.errorService.throwError(error, 'Failed to get can save inventory property');
             return { canSaveInventory: false };
         }
     }

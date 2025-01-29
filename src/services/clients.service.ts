@@ -16,8 +16,7 @@ export class ClientsService {
 
     public async getByClientId(clientId: string): Promise<Omit<ClientDto, 'purchases'>> {
         try {
-            const client = await this.getClient(new ObjectId(clientId));
-            return client;
+            return await this.getClient(new ObjectId(clientId));
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all clients');
             return {} as never;

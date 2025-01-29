@@ -95,12 +95,17 @@ export class InventoryService {
     }
 
     private async getInventory(_id: ObjectId): Promise<Inventory> {
-        const foundInventory = await this.inventoryRepository.findOne({
-            where: { _id },
-        });
-        if (!foundInventory) {
-            throw new NotFoundException('Inventory not found');
+        try {
+            const foundInventory = await this.inventoryRepository.findOne({
+                where: { _id },
+            });
+            if (!foundInventory) {
+                throw new NotFoundException('Inventory not found');
+            }
+            return foundInventory;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get inventory');
+            return {} as Inventory;
         }
-        return foundInventory;
     }
 }

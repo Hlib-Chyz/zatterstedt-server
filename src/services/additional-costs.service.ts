@@ -40,10 +40,9 @@ export class AdditionalCostsService {
 
     public async getAdditionalCostByProductId(productId: ObjectId): Promise<AdditionalCost> {
         try {
-            const additionalCost = await this.getAdditionalCost({
+            return await this.getAdditionalCost({
                 productId: productId.toString(),
             });
-            return additionalCost;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get additional cost by product id');
             return {} as AdditionalCost;
@@ -51,12 +50,17 @@ export class AdditionalCostsService {
     }
 
     private async getAdditionalCost(where: Partial<AdditionalCost>): Promise<AdditionalCost> {
-        const additionalCost = await this.additionalCostsRepository.findOne({
-            where,
-        });
-        if (!additionalCost) {
-            throw new NotFoundException('Additional cost not found');
+        try {
+            const additionalCost = await this.additionalCostsRepository.findOne({
+                where,
+            });
+            if (!additionalCost) {
+                throw new NotFoundException('Additional cost not found');
+            }
+            return additionalCost;
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get additional cost');
+            return {} as AdditionalCost;
         }
-        return additionalCost;
     }
 }

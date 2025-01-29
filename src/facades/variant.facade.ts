@@ -97,7 +97,7 @@ export class VariantFacade {
             }
             return { canSaveVariants };
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to add inventory');
+            this.errorService.throwError(error, 'Failed to get canSaveVariants property');
             return { canSaveVariants: false };
         }
     }
