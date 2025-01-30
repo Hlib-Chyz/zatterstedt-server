@@ -41,6 +41,7 @@ import { VariantFacade } from 'src/facades/variant.facade';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
+            envFilePath: `.env.${process.env['NODE_ENV'] || 'demo'}`,
         }),
         TypeOrmModule.forFeature(entities),
         ZatterstedtTypeOrmModule,
