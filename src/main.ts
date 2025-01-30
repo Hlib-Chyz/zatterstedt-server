@@ -6,7 +6,11 @@ import 'tsconfig-paths/register';
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
     app.enableCors({
-        origin: ['http://localhost:4200', 'https://zatterstedt-admin.vercel.app'],
+        origin: [
+            'http://localhost:4200',
+            'https://zatterstedt-admin.vercel.app',
+            'https://demo-zatterstedt-admin.vercel.app',
+        ],
     });
     app.useGlobalPipes(
         new ValidationPipe({
