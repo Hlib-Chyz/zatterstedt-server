@@ -7,11 +7,7 @@ require('tsconfig-paths/register');
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
-        origin: [
-            'http://localhost:4200',
-            'https://zatterstedt-admin.vercel.app',
-            'https://demo-zatterstedt-admin.vercel.app',
-        ],
+        origin: '*',
         allowedHeaders: '*',
     });
     app.useGlobalPipes(
