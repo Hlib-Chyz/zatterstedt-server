@@ -11,7 +11,9 @@ async function bootstrap() {
             'http://localhost:4200',
             'https://zatterstedt-admin.vercel.app',
             'https://demo-zatterstedt-admin.vercel.app',
+            'https://vercel.com',
         ],
+        allowedHeaders: ['x-vercel-protection-bypass', 'Authorization'],
     });
     app.useGlobalPipes(
         new common_1.ValidationPipe({
