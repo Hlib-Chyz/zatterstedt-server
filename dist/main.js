@@ -12,6 +12,7 @@ async function bootstrap() {
             'https://zatterstedt-admin.vercel.app',
             'https://demo-zatterstedt-admin.vercel.app',
         ],
+        allowedHeaders: '*',
     });
     app.useGlobalPipes(
         new common_1.ValidationPipe({

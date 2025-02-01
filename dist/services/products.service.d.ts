@@ -12,6 +12,7 @@ export declare class ProductsService {
     update(product: UpdateProductDto): Promise<SuccessDto>;
     changePrice(productId: ObjectId, newPrice: number): Promise<SuccessDto>;
     getProductByName(name: string): Promise<Product>;
+    getProductByNameWithoutCheck(name: string): Promise<Product | null>;
     add(product: CreateProductDto): Promise<Product>;
     getProduct(_id: ObjectId): Promise<Product>;
 }

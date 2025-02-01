@@ -80,7 +80,9 @@ export class ProductFacade {
 
     public async add(product: CreateProductDto): Promise<SuccessDto> {
         try {
-            const existingProduct = await this.productsService.getProductByName(product.name);
+            const existingProduct = await this.productsService.getProductByNameWithoutCheck(
+                product.name
+            );
             if (existingProduct) {
                 throw new ConflictException('A product with the given name already exists');
             }
