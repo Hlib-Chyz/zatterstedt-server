@@ -14,6 +14,9 @@ let AuthController = class AuthController {
     async login(loginInfo) {
         return this.authService.login(loginInfo);
     }
+    async loging() {
+        return { success: true };
+    }
     async add(loginInfo) {
         return this.userService.createUser(loginInfo);
     }
@@ -32,6 +35,17 @@ tslib_1.__decorate(
     ],
     AuthController.prototype,
     'login',
+    null
+);
+tslib_1.__decorate(
+    [
+        (0, common_1.Get)('login'),
+        tslib_1.__metadata('design:type', Function),
+        tslib_1.__metadata('design:paramtypes', []),
+        tslib_1.__metadata('design:returntype', Promise),
+    ],
+    AuthController.prototype,
+    'loging',
     null
 );
 tslib_1.__decorate(
