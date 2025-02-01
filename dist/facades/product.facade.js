@@ -84,7 +84,9 @@ let ProductFacade = class ProductFacade {
     }
     async add(product) {
         try {
-            const existingProduct = await this.productsService.getProductByName(product.name);
+            const existingProduct = await this.productsService.getProductByNameWithoutCheck(
+                product.name
+            );
             if (existingProduct) {
                 throw new common_1.ConflictException(
                     'A product with the given name already exists'

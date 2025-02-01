@@ -56,6 +56,16 @@ let ProductsService = class ProductsService {
             return {};
         }
     }
+    async getProductByNameWithoutCheck(name) {
+        try {
+            return await this.productsRepository.findOne({
+                where: { name },
+            });
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to get product');
+            return null;
+        }
+    }
     async add(product) {
         try {
             const newProduct = await this.productsRepository.save({
