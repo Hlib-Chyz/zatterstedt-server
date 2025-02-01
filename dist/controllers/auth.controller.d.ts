@@ -7,7 +7,6 @@ export declare class AuthController {
     private userService;
     constructor(authService: AuthService, userService: UserService);
     login(loginInfo: LoginDto): Promise<SuccessDto>;
-    loging(): Promise<SuccessDto>;
     add(loginInfo: LoginDto): Promise<SuccessDto>;
     verifyCode(verifyCodeInfo: VerifyCodeDto): Promise<SuccessDto>;
 }

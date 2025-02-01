@@ -7,6 +7,7 @@ const mongodb_1 = require('mongodb');
 const fixed_cost_dto_1 = require('../dto/fixed-cost.dto');
 const shared_dto_1 = require('../dto/shared.dto');
 const error_filter_1 = require('../filters/error.filter');
+const jwt_auth_guard_1 = require('../guards/jwt-auth.guard');
 const fixed_costs_service_1 = require('../services/fixed-costs.service');
 let FixedCostsController = class FixedCostsController {
     constructor(fixedCostsService) {
@@ -77,6 +78,7 @@ exports.FixedCostsController = FixedCostsController = tslib_1.__decorate(
     [
         (0, common_1.Controller)('fixed-costs'),
         (0, common_1.UseFilters)(new error_filter_1.HttpExceptionFilter()),
+        (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
         tslib_1.__metadata('design:paramtypes', [fixed_costs_service_1.FixedCostsService]),
     ],
     FixedCostsController
