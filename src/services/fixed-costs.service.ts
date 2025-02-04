@@ -35,12 +35,7 @@ export class FixedCostsService {
 
     public async update(fixedCost: UpdateFixedCostDto): Promise<SuccessDto> {
         try {
-            const foundFixedCost = await this.fixedCostsRepository.findOne({
-                where: { _id: fixedCost._id },
-            });
-            if (!foundFixedCost) {
-                throw new NotFoundException('Fixed cost not found');
-            }
+            await this.getFixedCost(fixedCost._id);
             await this.fixedCostsRepository.save(fixedCost);
             return { success: true };
         } catch (error) {
@@ -51,11 +46,22 @@ export class FixedCostsService {
 
     public async delete(_id: ObjectId): Promise<DeleteGetDto> {
         try {
-            await this.fixedCostsRepository.delete({ _id });
+            const fixedCost = await this.getFixedCost(_id);
+            await this.fixedCostsRepository.remove(fixedCost);
             return { _id };
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to delete cost field');
+            this.errorService.throwError(error, 'Failed to delete fixed cost');
             return { _id };
         }
+    }
+
+    private async getFixedCost(_id: ObjectId): Promise<FixedCost> {
+        const fixedCost = await this.fixedCostsRepository.findOne({
+            where: { _id },
+        });
+        if (!fixedCost) {
+            throw new NotFoundException('Fixed cost not found');
+        }
+        return fixedCost;
     }
 }

@@ -27,7 +27,7 @@ export class StockService {
         try {
             for (const variantId of variantIds) {
                 const stock = await this.getByVariantId(variantId);
-                await this.stockRepository.delete({ _id: stock._id });
+                await this.stockRepository.remove(stock);
             }
             return { success: true };
         } catch (error) {

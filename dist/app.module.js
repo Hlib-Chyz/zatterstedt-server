@@ -32,14 +32,14 @@ const products_service_1 = require('./services/products.service');
 const user_service_1 = require('./services/user.service');
 const variants_service_1 = require('./services/variants.service');
 const jwt_strategy_1 = require('./strategies/jwt.strategy');
+const client_facade_1 = require('./facades/client.facade');
+const manufacturing_cost_facade_1 = require('./facades/manufacturing-cost.facade');
+const order_facade_1 = require('./facades/order.facade');
+const product_facade_1 = require('./facades/product.facade');
+const variant_facade_1 = require('./facades/variant.facade');
 const mailer_module_1 = require('./modules/mailer.module');
 const type_orm_module_1 = require('./modules/type-orm.module');
 const stock_service_1 = require('./services/stock.service');
-const product_facade_1 = require('./facades/product.facade');
-const manufacturing_cost_facade_1 = require('./facades/manufacturing-cost.facade');
-const order_facade_1 = require('./facades/order.facade');
-const client_facade_1 = require('./facades/client.facade');
-const variant_facade_1 = require('./facades/variant.facade');
 let AppModule = class AppModule {};
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = tslib_1.__decorate(
@@ -96,6 +96,7 @@ exports.AppModule = AppModule = tslib_1.__decorate(
                 order_facade_1.OrderFacade,
                 client_facade_1.ClientFacade,
                 variant_facade_1.VariantFacade,
+                ...type_orm_module_1.subscribers,
             ],
         }),
     ],

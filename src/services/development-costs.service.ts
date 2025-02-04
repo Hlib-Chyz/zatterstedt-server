@@ -42,12 +42,7 @@ export class DevelopmentCostsService {
 
     public async update(developmentCost: UpdateDevelopmentCostDto): Promise<SuccessDto> {
         try {
-            const foundDevelopmentCost = await this.developmentCostsRepository.findOne({
-                where: { _id: developmentCost._id },
-            });
-            if (!foundDevelopmentCost) {
-                throw new NotFoundException('Development Cost not found');
-            }
+            const foundDevelopmentCost = await this.getDevelopmentCost(developmentCost._id);
             await this.developmentCostsRepository.save({
                 ...foundDevelopmentCost,
                 ...developmentCost,
@@ -61,11 +56,22 @@ export class DevelopmentCostsService {
 
     public async delete(_id: ObjectId): Promise<DeleteGetDto> {
         try {
-            await this.developmentCostsRepository.delete({ _id });
+            const developmentCost = await this.getDevelopmentCost(_id);
+            await this.developmentCostsRepository.remove(developmentCost);
             return { _id };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete development cost');
             return { _id };
         }
+    }
+
+    private async getDevelopmentCost(_id: ObjectId): Promise<DevelopmentCost> {
+        const developmentCost = await this.developmentCostsRepository.findOne({
+            where: { _id },
+        });
+        if (!developmentCost) {
+            throw new NotFoundException('Development cost not found');
+        }
+        return developmentCost;
     }
 }

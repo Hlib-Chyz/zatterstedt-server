@@ -12,4 +12,5 @@ export declare class FixedCostsService {
     create(fixedCost: CreateFixedCostDto): Promise<SuccessDto>;
     update(fixedCost: UpdateFixedCostDto): Promise<SuccessDto>;
     delete(_id: ObjectId): Promise<DeleteGetDto>;
+    private getFixedCost;
 }

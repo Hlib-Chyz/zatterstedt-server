@@ -11,7 +11,6 @@ async function bootstrap(): Promise<void> {
             'https://zatterstedt-admin.vercel.app',
             'https://demo-zatterstedt-admin.vercel.app',
         ],
-        allowedHeaders: '*',
     });
     app.useGlobalPipes(
         new ValidationPipe({
