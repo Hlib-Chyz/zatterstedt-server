@@ -43,7 +43,8 @@ let InventoryService = class InventoryService {
     }
     async delete(_id) {
         try {
-            await this.inventoryRepository.delete({ _id });
+            const inventory = await this.getInventory(_id);
+            await this.inventoryRepository.remove(inventory);
             return { _id };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete inventory');

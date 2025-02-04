@@ -35,12 +35,7 @@ export class OtherCostsService {
 
     public async update(otherCost: UpdateOtherCostDto): Promise<SuccessDto> {
         try {
-            const foundOtherCosts = await this.otherCostsRepository.findOne({
-                where: { _id: otherCost._id },
-            });
-            if (!foundOtherCosts) {
-                throw new NotFoundException('Other cost not found');
-            }
+            await this.getOtherCost(otherCost._id);
             await this.otherCostsRepository.save(otherCost);
             return { success: true };
         } catch (error) {
@@ -51,11 +46,22 @@ export class OtherCostsService {
 
     public async delete(_id: ObjectId): Promise<DeleteGetDto> {
         try {
-            await this.otherCostsRepository.delete({ _id: new ObjectId(_id) });
+            const otherCost = await this.getOtherCost(_id);
+            await this.otherCostsRepository.remove(otherCost);
             return { _id };
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to delete cost field');
+            this.errorService.throwError(error, 'Failed to delete other cost');
             return { _id };
         }
+    }
+
+    private async getOtherCost(_id: ObjectId): Promise<OtherCost> {
+        const otherCost = await this.otherCostsRepository.findOne({
+            where: { _id },
+        });
+        if (!otherCost) {
+            throw new NotFoundException('Other cost not found');
+        }
+        return otherCost;
     }
 }

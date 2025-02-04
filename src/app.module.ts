@@ -28,14 +28,14 @@ import { ProductsService } from '@services/products.service';
 import { UserService } from '@services/user.service';
 import { VariantsService } from '@services/variants.service';
 import { JwtStrategy } from '@strategies/jwt.strategy';
-import { ZatterstedtMailerModule } from './modules/mailer.module';
-import { entities, ZatterstedtTypeOrmModule } from './modules/type-orm.module';
-import { StockService } from './services/stock.service';
-import { ProductFacade } from 'src/facades/product.facade';
+import { ClientFacade } from 'src/facades/client.facade';
 import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
 import { OrderFacade } from 'src/facades/order.facade';
-import { ClientFacade } from 'src/facades/client.facade';
+import { ProductFacade } from 'src/facades/product.facade';
 import { VariantFacade } from 'src/facades/variant.facade';
+import { ZatterstedtMailerModule } from './modules/mailer.module';
+import { entities, subscribers, ZatterstedtTypeOrmModule } from './modules/type-orm.module';
+import { StockService } from './services/stock.service';
 
 @Module({
     imports: [
@@ -89,6 +89,7 @@ import { VariantFacade } from 'src/facades/variant.facade';
         OrderFacade,
         ClientFacade,
         VariantFacade,
+        ...subscribers,
     ],
 })
 export class AppModule {}

@@ -12,4 +12,5 @@ export declare class OtherCostsService {
     create(otherCost: CreateOtherCostDto): Promise<SuccessDto>;
     update(otherCost: UpdateOtherCostDto): Promise<SuccessDto>;
     delete(_id: ObjectId): Promise<DeleteGetDto>;
+    private getOtherCost;
 }

@@ -158,7 +158,7 @@ describe('OtherCostsService', () => {
             const result = await service.delete(mockId);
             expect(errorService.throwError).toHaveBeenCalledWith(
                 expect.any(Error),
-                'Failed to delete cost field'
+                'Failed to delete other cost'
             );
             expect(result).toEqual({ _id: mockId });
         });
