@@ -2,7 +2,7 @@ import { Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
-    IsDateString,
+    IsDate,
     IsMongoId,
     IsNotEmpty,
     IsNumber,
@@ -10,19 +10,24 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class ProductDevelopmentCostDto {
     @IsNotEmpty()
     public _id: ObjectId;
     @IsNotEmpty()
-    @IsDateString()
-    public date: string;
-    @IsNotEmpty()
-    @IsString()
-    public description: string;
+    @IsDate()
+    public date: Date;
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
+    @IsNotEmpty()
+    @IsString()
+    public description: string;
+
+    public constructor(partial: ProductDevelopmentCostDto) {
+        Object.assign(this, partial);
+    }
 }
 
 export class ProductAdditionalCostDto {
@@ -31,6 +36,10 @@ export class ProductAdditionalCostDto {
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
+
+    public constructor(partial: ProductAdditionalCostDto) {
+        Object.assign(this, partial);
+    }
 }
 
 export class ProductManufacturingCostJobDto {
@@ -45,7 +54,7 @@ export class ProductManufacturingCostJobDto {
 export class ProductManufacturingCostInventoryDto {
     @IsNotEmpty()
     @IsMongoId()
-    public inventoryId: string;
+    public inventoryId: Types.ObjectId;
     @IsNotEmpty()
     @IsNumber()
     public quantityInUse: number;
@@ -73,6 +82,10 @@ export class ProductManufacturingCostDto {
     @ValidateNested({ each: true })
     @Type(() => ProductManufacturingCostInventoryDto)
     public inventory: ProductManufacturingCostInventoryDto[];
+
+    public constructor(partial: ProductManufacturingCostDto) {
+        Object.assign(this, partial);
+    }
 }
 
 export class ProductStockDto {
@@ -101,15 +114,39 @@ export class ProductVariantDto {
     public stock: ProductStockDto;
 }
 
-export class ProductAdminDto {
+export class CreateProductDto {
+    @IsNumber()
+    @IsNotEmpty()
+    public price: number;
+    @IsString()
+    @IsNotEmpty()
+    public name: string;
+}
+
+export class UpdateProductDto {
+    @IsNotEmpty()
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public _id: ObjectId;
+    @IsNumber()
+    @IsNotEmpty()
+    public price: number;
+    @IsString()
+    @IsNotEmpty()
+    public name: string;
+}
+
+export class ProductPriceDto {
+    @IsNumber()
+    @IsNotEmpty()
+    public price: number;
+}
+
+export class ProductDto {
     @IsNotEmpty()
     public _id: ObjectId;
     @IsString()
     @IsNotEmpty()
     public name: string;
-    @IsString()
-    @IsNotEmpty()
-    public description: string;
     @IsNumber()
     @IsNotEmpty()
     public price: number;
@@ -129,51 +166,8 @@ export class ProductAdminDto {
     @IsNotEmpty()
     @Type(() => ProductManufacturingCostDto)
     public manufacturingCost: ProductManufacturingCostDto;
-}
 
-export class CreateProductDto {
-    @IsNumber()
-    @IsNotEmpty()
-    public price: number;
-    @IsString()
-    @IsNotEmpty()
-    public description: string;
-    @IsString()
-    @IsNotEmpty()
-    public name: string;
-}
-
-export class UpdateProductDto {
-    @IsNotEmpty()
-    @Transform(({ value }) => new ObjectId(value))
-    public _id: ObjectId;
-    @IsNumber()
-    @IsNotEmpty()
-    public price: number;
-    @IsString()
-    @IsNotEmpty()
-    public description: string;
-    @IsString()
-    @IsNotEmpty()
-    public name: string;
-}
-
-export class ProductPriceDto {
-    @IsNumber()
-    @IsNotEmpty()
-    public price: number;
-}
-
-export class ProductDto {
-    @IsNotEmpty()
-    public _id: ObjectId;
-    @IsNotEmpty()
-    @IsString()
-    public name: string;
-    @IsNotEmpty()
-    @IsNumber()
-    public price: number;
-    @IsNotEmpty()
-    @IsString()
-    public description: string;
+    public constructor(partial: ProductDto) {
+        Object.assign(this, partial);
+    }
 }

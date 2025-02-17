@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
@@ -9,6 +9,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class ManufacturingCostDto {
     @IsNotEmpty()
@@ -31,7 +32,7 @@ export class ManufacturingCostDto {
 export class CreateManufacturingCostDto {
     @IsNotEmpty()
     @IsMongoId()
-    public productId: string;
+    public productId: Types.ObjectId;
 }
 
 export class ManufacturingCostJobDto {
@@ -67,7 +68,8 @@ export class JobDto {
 export class InventoryDto {
     @IsNotEmpty()
     @IsMongoId()
-    public inventoryId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public inventoryId: Types.ObjectId;
     @IsNumber()
     @IsNotEmpty()
     public quantityInCost: number;
@@ -86,7 +88,10 @@ export class CanSaveInventoryDto {
     @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
-    public variantIds: string[];
+    @Transform(({ value }: { value: string[] }) =>
+        value.map((id: string) => new Types.ObjectId(id))
+    )
+    public variantIds: Types.ObjectId[];
 }
 
 export class CanSaveInventoryResponseDto {

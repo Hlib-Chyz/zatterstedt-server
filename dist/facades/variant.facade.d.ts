@@ -1,30 +1,31 @@
 import { SuccessDto } from '@dto/shared.dto';
 import {
-    CanSaveVariantsDto,
-    CanSaveVariantsResponseDto,
-    CreateVariantsDto,
+    CanSaveVariantDto,
+    CanSaveVariantResponseDto,
+    UpdateVariantDto,
     VariantLockupDto,
 } from '@dto/variant.dto';
 import { ErrorService } from '@services/error.service';
-import { OrdersService } from '@services/orders.service';
-import { ProductsService } from '@services/products.service';
+import { OrderService } from '@services/order.service';
+import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
-import { VariantsService } from '@services/variants.service';
+import { VariantService } from '@services/variant.service';
+import { ObjectId } from 'mongodb';
 export declare class VariantFacade {
     private readonly stockService;
-    private readonly variantsService;
-    private readonly productsService;
-    private readonly ordersService;
+    private readonly variantService;
+    private readonly productService;
+    private readonly orderService;
     private readonly errorService;
     constructor(
         stockService: StockService,
-        variantsService: VariantsService,
-        productsService: ProductsService,
-        ordersService: OrdersService,
+        variantService: VariantService,
+        productService: ProductService,
+        orderService: OrderService,
         errorService: ErrorService
     );
-    getVariants(): Promise<VariantLockupDto[]>;
-    getVariantInfo(variantId: string, additionalInfo: string): Promise<string>;
-    setVariants(createVariants: CreateVariantsDto): Promise<SuccessDto>;
-    canSaveVariants({ variantIds }: CanSaveVariantsDto): Promise<CanSaveVariantsResponseDto>;
+    getAll(): Promise<VariantLockupDto[]>;
+    getVariantInfo(variantId: ObjectId, additionalInfo: string): Promise<string>;
+    updateVariant(createVariant: UpdateVariantDto): Promise<SuccessDto>;
+    canSaveVariants({ variantIds }: CanSaveVariantDto): Promise<CanSaveVariantResponseDto>;
 }

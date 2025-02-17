@@ -10,7 +10,7 @@ export class StockController {
     public constructor(private stockService: StockService) {}
 
     @Put('realized-party')
-    public async setRealizedParty(@Body() body: SetRealizedPartyDto): Promise<SuccessDto> {
-        return this.stockService.setRealizedParty(body);
+    public async updateRealizedParty(@Body() body: SetRealizedPartyDto): Promise<SuccessDto> {
+        return this.stockService.updateRealizedParty(body);
     }
 }

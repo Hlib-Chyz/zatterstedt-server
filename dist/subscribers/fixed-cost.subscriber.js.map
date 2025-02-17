@@ -1,1 +1,0 @@
-{"version":3,"file":"fixed-cost.subscriber.js","sourceRoot":"","sources":["../../src/subscribers/fixed-cost.subscriber.ts"],"names":[],"mappings":";;;;AAAA,qEAAwD;AACxD,qEAA8E;AAC9E,qCAA0C;AAGnC,IAAM,mBAAmB,GAAzB,MAAM,mBAAoB,SAAQ,6CAA+B;IACpD,QAAQ;QACpB,OAAO,6BAAS,CAAC;IACrB,CAAC;CACJ,CAAA;AAJY,kDAAmB;8BAAnB,mBAAmB;IAD/B,IAAA,yBAAe,GAAE;GACL,mBAAmB,CAI/B"}

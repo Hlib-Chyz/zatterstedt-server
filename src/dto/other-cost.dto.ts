@@ -1,11 +1,12 @@
 import { Transform } from 'class-transformer';
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class UpdateOtherCostDto {
     @IsNotEmpty()
-    @Transform(({ value }) => new ObjectId(value))
-    public _id: ObjectId;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsDateString()
     public date: string;

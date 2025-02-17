@@ -1,29 +1,29 @@
 import { SuccessDto } from '@dto/shared.dto';
-import { AdditionalCostsService } from '@services/additional-costs.service';
-import { DevelopmentCostsService } from '@services/development-costs.service';
+import { AdditionalCostService } from '@services/additional-cost.service';
+import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
-import { ManufacturingCostsService } from '@services/manufacturing-costs.service';
-import { ProductsService } from '@services/products.service';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
-import { VariantsService } from '@services/variants.service';
-import { CreateProductDto, ProductAdminDto } from 'src/dto/product.dto';
+import { VariantService } from '@services/variant.service';
+import { CreateProductDto, ProductDto } from 'src/dto/product.dto';
 export declare class ProductFacade {
     private readonly errorService;
-    private readonly productsService;
-    private readonly additionalCostsService;
-    private readonly developmentCostsService;
-    private readonly variantsService;
+    private readonly productService;
+    private readonly additionalCostService;
+    private readonly developmentCostService;
+    private readonly variantService;
     private readonly stockService;
-    private readonly manufacturingCostsService;
+    private readonly manufacturingCostService;
     constructor(
         errorService: ErrorService,
-        productsService: ProductsService,
-        additionalCostsService: AdditionalCostsService,
-        developmentCostsService: DevelopmentCostsService,
-        variantsService: VariantsService,
+        productService: ProductService,
+        additionalCostService: AdditionalCostService,
+        developmentCostService: DevelopmentCostService,
+        variantService: VariantService,
         stockService: StockService,
-        manufacturingCostsService: ManufacturingCostsService
+        manufacturingCostService: ManufacturingCostService
     );
-    getAll(): Promise<ProductAdminDto[]>;
+    getAll(): Promise<ProductDto[]>;
     add(product: CreateProductDto): Promise<SuccessDto>;
 }

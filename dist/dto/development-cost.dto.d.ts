@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class CreateDevelopmentCostDto {
     date: string;
     description: string;
@@ -6,7 +7,7 @@ export declare class CreateDevelopmentCostDto {
     productId: string;
 }
 export declare class UpdateDevelopmentCostDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     date: string;
     description: string;
     cost: number;

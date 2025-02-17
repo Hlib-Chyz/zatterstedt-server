@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     IsNotEmpty,
     IsString,
@@ -9,6 +9,7 @@ import {
     IsBoolean,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class VariantDto {
     @IsNotEmpty()
@@ -33,7 +34,7 @@ export class CreateVariantDto {
     public size: string;
     @IsNotEmpty()
     @IsMongoId()
-    public productId: string;
+    public productId: Types.ObjectId;
 }
 
 export class VariantLockupDto {
@@ -56,10 +57,11 @@ class VariantUpdateDto {
     public quantity: number;
 }
 
-export class CreateVariantsDto {
+export class UpdateVariantDto {
     @IsNotEmpty()
     @IsMongoId()
-    public productId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public productId: Types.ObjectId;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -67,18 +69,24 @@ export class CreateVariantsDto {
     public variants: VariantUpdateDto[];
     @IsArray()
     @IsString({ each: true })
-    public oldVariantIds: string[];
+    @Transform(({ value }: { value: string[] }) =>
+        value.map((id: string) => new Types.ObjectId(id))
+    )
+    public oldVariantIds: Types.ObjectId[];
 }
 
-export class CanSaveVariantsDto {
+export class CanSaveVariantDto {
     @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
-    public variantIds: string[];
+    @Transform(({ value }: { value: string[] }) =>
+        value.map((id: string) => new Types.ObjectId(id))
+    )
+    public variantIds: Types.ObjectId[];
 }
 
-export class CanSaveVariantsResponseDto {
+export class CanSaveVariantResponseDto {
     @IsNotEmpty()
     @IsBoolean()
-    public canSaveVariants: boolean;
+    public canSaveVariant: boolean;
 }

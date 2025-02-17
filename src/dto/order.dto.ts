@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
     ArrayNotEmpty,
     IsArray,
+    IsDate,
     IsDateString,
     IsMongoId,
     IsNotEmpty,
@@ -11,13 +12,14 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class CreateOrderDto {
     @IsNotEmpty()
     @IsDateString()
     public date: string;
     @IsString()
-    public contacts: string;
+    public contact: string;
     @IsString()
     public clientName: string;
     @IsMongoId()
@@ -34,8 +36,8 @@ export class OrderDto {
     @IsNotEmpty()
     public _id: ObjectId;
     @IsNotEmpty()
-    @IsDateString()
-    public date: string;
+    @IsDate()
+    public date: Date;
     @IsNotEmpty()
     @IsString()
     public orderNumber: string;
@@ -47,6 +49,10 @@ export class OrderDto {
     @ArrayNotEmpty()
     @IsString({ each: true })
     public variants: string[];
+
+    public constructor(partial: OrderDto) {
+        Object.assign(this, partial);
+    }
 }
 
 export class OrderVariantDto {
@@ -68,7 +74,7 @@ export class OrderVariantDto {
 export class VariantOrderDto {
     @IsNotEmpty()
     @IsMongoId()
-    public _id: string;
+    public _id: Types.ObjectId;
     @IsNumber()
     @IsNotEmpty()
     public quantity: number;

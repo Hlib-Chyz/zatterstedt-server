@@ -3,40 +3,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const tslib_1 = require("tslib");
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("@nestjs/typeorm");
-const user_entity_1 = require("../entities/user.entity");
-const typeorm_2 = require("typeorm");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+const user_schema_1 = require("../schemas/user.schema");
 const error_service_1 = require("./error.service");
 let UserService = class UserService {
-    constructor(userRepository, errorService) {
-        this.userRepository = userRepository;
+    constructor(userModel, errorService) {
+        this.userModel = userModel;
         this.errorService = errorService;
     }
     async findByEmail(email) {
         try {
-            return this.userRepository.findOne({ where: { email } });
+            return this.userModel.findOne({ email }).exec();
         }
         catch (error) {
-            this.errorService.throwError(error, 'Failed to login');
+            this.errorService.throwError(error, 'Failed to find user by email');
             return null;
         }
     }
     async updateVerificationCode(email, code) {
         try {
-            await this.userRepository.update({ email }, { emailVerificationCode: code });
+            const result = await this.userModel
+                .updateOne({ email }, { emailVerificationCode: code })
+                .exec();
+            if (!result) {
+                throw new common_1.NotFoundException('User not found');
+            }
         }
         catch (error) {
-            this.errorService.throwError(error, 'Failed to login');
+            this.errorService.throwError(error, 'Failed to update verification code');
         }
     }
-    async createUser(loginInfo) {
+    async add(loginInfo) {
         try {
-            const newUser = this.userRepository.create(loginInfo);
-            await this.userRepository.save(newUser);
+            const newUser = new this.userModel(loginInfo);
+            await newUser.save();
             return { success: true };
         }
         catch (error) {
-            this.errorService.throwError(error, 'Failed to login');
+            this.errorService.throwError(error, 'Failed to create user');
             return { success: false };
         }
     }
@@ -44,8 +49,8 @@ let UserService = class UserService {
 exports.UserService = UserService;
 exports.UserService = UserService = tslib_1.__decorate([
     (0, common_1.Injectable)(),
-    tslib_1.__param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    tslib_1.__metadata("design:paramtypes", [typeorm_2.Repository,
+    tslib_1.__param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    tslib_1.__metadata("design:paramtypes", [mongoose_2.Model,
         error_service_1.ErrorService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

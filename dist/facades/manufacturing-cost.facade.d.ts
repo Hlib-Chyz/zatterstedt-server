@@ -6,22 +6,22 @@ import {
 import { SuccessDto } from '@dto/shared.dto';
 import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
-import { ManufacturingCostsService } from '@services/manufacturing-costs.service';
-import { OrdersService } from '@services/orders.service';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { OrderService } from '@services/order.service';
 import { ObjectId } from 'mongodb';
 export declare class ManufacturingCostFacade {
     private readonly errorService;
     private readonly inventoryService;
-    private readonly ordersService;
-    private readonly manufacturingCostsService;
+    private readonly orderService;
+    private readonly manufacturingCostService;
     constructor(
         errorService: ErrorService,
         inventoryService: InventoryService,
-        ordersService: OrdersService,
-        manufacturingCostsService: ManufacturingCostsService
+        orderService: OrderService,
+        manufacturingCostService: ManufacturingCostService
     );
-    addInventory(
-        _id: ObjectId,
+    updateInventory(
+        id: ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto>;
     canSaveInventory({ variantIds }: CanSaveInventoryDto): Promise<CanSaveInventoryResponseDto>;

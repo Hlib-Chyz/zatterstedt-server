@@ -1,44 +1,50 @@
 import { SuccessDto } from '@dto/shared.dto';
 import { ConflictException, Injectable } from '@nestjs/common';
-import { AdditionalCostsService } from '@services/additional-costs.service';
-import { DevelopmentCostsService } from '@services/development-costs.service';
+import { AdditionalCostService } from '@services/additional-cost.service';
+import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
-import { ManufacturingCostsService } from '@services/manufacturing-costs.service';
-import { ProductsService } from '@services/products.service';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
-import { VariantsService } from '@services/variants.service';
-import { CreateProductDto, ProductAdminDto, ProductVariantDto } from 'src/dto/product.dto';
+import { VariantService } from '@services/variant.service';
+import {
+    CreateProductDto,
+    ProductAdditionalCostDto,
+    ProductDevelopmentCostDto,
+    ProductDto,
+    ProductManufacturingCostDto,
+    ProductVariantDto,
+} from 'src/dto/product.dto';
 
 @Injectable()
 export class ProductFacade {
     public constructor(
         private readonly errorService: ErrorService,
-        private readonly productsService: ProductsService,
-        private readonly additionalCostsService: AdditionalCostsService,
-        private readonly developmentCostsService: DevelopmentCostsService,
-        private readonly variantsService: VariantsService,
+        private readonly productService: ProductService,
+        private readonly additionalCostService: AdditionalCostService,
+        private readonly developmentCostService: DevelopmentCostService,
+        private readonly variantService: VariantService,
         private readonly stockService: StockService,
-        private readonly manufacturingCostsService: ManufacturingCostsService
+        private readonly manufacturingCostService: ManufacturingCostService
     ) {}
 
-    public async getAll(): Promise<ProductAdminDto[]> {
+    public async getAll(): Promise<ProductDto[]> {
         try {
-            const res: ProductAdminDto[] = [];
-            const products = await this.productsService.getAll();
+            const res: ProductDto[] = [];
+            const products = await this.productService.getAll();
             for (const product of products) {
-                const additionalCost =
-                    await this.additionalCostsService.getAdditionalCostByProductId(product._id);
-                const developmentCosts = await this.developmentCostsService.getByProductId(
+                const additionalCost = await this.additionalCostService.getByProductId(product._id);
+                const developmentCosts = await this.developmentCostService.getByProductId(
                     product._id
                 );
-                const variants = await this.variantsService.getByProductId(product._id.toString());
-                const manufacturingCost = await this.manufacturingCostsService.getByProductId(
+                const variants = await this.variantService.getAllByProductId(product._id);
+                const manufacturingCost = await this.manufacturingCostService.getByProductId(
                     product._id
                 );
-                const resVariants: ProductVariantDto[] = [];
+                const resVariant: ProductVariantDto[] = [];
                 for (const variant of variants) {
-                    const stock = await this.stockService.getByVariantId(variant._id.toString());
-                    resVariants.push({
+                    const stock = await this.stockService.getByVariantId(variant._id);
+                    resVariant.push({
                         _id: variant._id,
                         size: variant.size,
                         color: variant.color,
@@ -49,27 +55,32 @@ export class ProductFacade {
                         },
                     });
                 }
-                res.push({
-                    _id: product._id,
-                    name: product.name,
-                    description: product.description,
-                    price: product.price,
-
-                    variants: resVariants,
-
-                    developmentCosts: developmentCosts?.map((val) => ({
-                        _id: val._id,
-                        date: val.date,
-                        description: val.description,
-                        cost: val.cost,
-                    })),
-                    additionalCost: { _id: additionalCost?._id, cost: additionalCost?.cost },
-                    manufacturingCost: {
-                        _id: manufacturingCost._id,
-                        inventory: manufacturingCost.inventory,
-                        job: manufacturingCost.job,
-                    },
-                });
+                res.push(
+                    new ProductDto({
+                        _id: product._id,
+                        name: product.name,
+                        price: product.price,
+                        variants: resVariant,
+                        developmentCosts: developmentCosts?.map(
+                            (val) =>
+                                new ProductDevelopmentCostDto({
+                                    _id: val._id,
+                                    date: val.date,
+                                    description: val.description,
+                                    cost: val.cost,
+                                })
+                        ),
+                        additionalCost: new ProductAdditionalCostDto({
+                            _id: additionalCost._id,
+                            cost: additionalCost.cost,
+                        }),
+                        manufacturingCost: new ProductManufacturingCostDto({
+                            _id: manufacturingCost._id,
+                            inventory: manufacturingCost.inventory,
+                            job: manufacturingCost.job,
+                        }),
+                    })
+                );
             }
             return res;
         } catch (error) {
@@ -80,18 +91,16 @@ export class ProductFacade {
 
     public async add(product: CreateProductDto): Promise<SuccessDto> {
         try {
-            const existingProduct = await this.productsService.getProductByNameWithoutCheck(
-                product.name
-            );
+            const existingProduct = await this.productService.getByNameWithoutCheck(product.name);
             if (existingProduct) {
                 throw new ConflictException('A product with the given name already exists');
             }
-            const newProduct = await this.productsService.add(product);
-            await this.additionalCostsService.addOne({
-                productId: newProduct._id.toString(),
+            const newProduct = await this.productService.add(product);
+            await this.additionalCostService.add({
+                productId: newProduct._id,
             });
-            await this.manufacturingCostsService.create({
-                productId: newProduct._id.toString(),
+            await this.manufacturingCostService.add({
+                productId: newProduct._id,
             });
             return { success: true };
         } catch (error) {

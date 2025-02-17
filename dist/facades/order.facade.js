@@ -2,54 +2,57 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.OrderFacade = void 0;
 const tslib_1 = require('tslib');
+const order_dto_1 = require('../dto/order.dto');
 const common_1 = require('@nestjs/common');
-const clients_service_1 = require('../services/clients.service');
+const client_service_1 = require('../services/client.service');
 const error_service_1 = require('../services/error.service');
 const inventory_service_1 = require('../services/inventory.service');
-const manufacturing_costs_service_1 = require('../services/manufacturing-costs.service');
-const orders_service_1 = require('../services/orders.service');
+const manufacturing_cost_service_1 = require('../services/manufacturing-cost.service');
+const order_service_1 = require('../services/order.service');
 const stock_service_1 = require('../services/stock.service');
-const variants_service_1 = require('../services/variants.service');
+const variant_service_1 = require('../services/variant.service');
 const variant_facade_1 = require('./variant.facade');
 let OrderFacade = class OrderFacade {
     constructor(
         errorService,
         stockService,
         inventoryService,
-        clientsService,
-        variantsService,
+        clientService,
+        variantService,
         variantFacade,
-        ordersService,
-        manufacturingCostsService
+        orderService,
+        manufacturingCostService
     ) {
         this.errorService = errorService;
         this.stockService = stockService;
         this.inventoryService = inventoryService;
-        this.clientsService = clientsService;
-        this.variantsService = variantsService;
+        this.clientService = clientService;
+        this.variantService = variantService;
         this.variantFacade = variantFacade;
-        this.ordersService = ordersService;
-        this.manufacturingCostsService = manufacturingCostsService;
+        this.orderService = orderService;
+        this.manufacturingCostService = manufacturingCostService;
     }
     async getAll() {
         try {
-            const orders = await this.ordersService.getAll();
+            const orders = await this.orderService.getAll();
             const res = [];
             for (const order of orders) {
-                const client = await this.clientsService.getByClientId(order.clientId);
+                const client = await this.clientService.getById(order.clientId);
                 const resVariant = [];
                 for (const variant of order.variants) {
                     resVariant.push(
                         `${await this.variantFacade.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`
                     );
                 }
-                res.push({
-                    _id: order._id,
-                    date: order.date,
-                    client: `${client.name} - ${client.contacts}`,
-                    variants: resVariant,
-                    orderNumber: order.orderNumber,
-                });
+                res.push(
+                    new order_dto_1.OrderDto({
+                        _id: order._id,
+                        date: order.date,
+                        client: `${client.name} - ${client.contact}`,
+                        variants: resVariant,
+                        orderNumber: order.orderNumber,
+                    })
+                );
             }
             return res;
         } catch (error) {
@@ -59,25 +62,23 @@ let OrderFacade = class OrderFacade {
     }
     async add(order) {
         try {
-            let clientId = '';
+            let clientId = null;
             if (!order.clientId) {
-                clientId = (
-                    await this.clientsService.add({
-                        name: order.clientName,
-                        contacts: order.contacts,
-                    })
-                ).toString();
+                clientId = await this.clientService.add({
+                    name: order.clientName,
+                    contact: order.contact,
+                });
             }
             for (const variant of order.variants) {
                 if (variant.price === 0) {
                     await this.stockService.decreaseRealizedParty(variant._id, variant.quantity);
                 }
-                const productId = await this.variantsService.getProductId(variant._id);
+                const productId = await this.variantService.getProductId(variant._id);
                 const manufacturingCost =
-                    await this.manufacturingCostsService.getByProductId(productId);
+                    await this.manufacturingCostService.getByProductId(productId);
                 for (const inventory of manufacturingCost?.inventory ?? []) {
                     if (!inventory.duringManufacture) {
-                        await this.inventoryService.changeInventoryAmount(
+                        await this.inventoryService.updateUsedAndPaid(
                             inventory.inventoryId,
                             variant.quantity * inventory.quantityInUse,
                             variant.quantity * inventory.quantityInCost
@@ -86,8 +87,8 @@ let OrderFacade = class OrderFacade {
                 }
                 await this.stockService.increaseSold(variant._id, variant.quantity);
             }
-            const orders = await this.ordersService.getAll();
-            await this.ordersService.add(clientId, order, orders.length);
+            const orders = await this.orderService.getAll();
+            await this.orderService.add(clientId, order, orders.length);
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
@@ -103,11 +104,11 @@ exports.OrderFacade = OrderFacade = tslib_1.__decorate(
             error_service_1.ErrorService,
             stock_service_1.StockService,
             inventory_service_1.InventoryService,
-            clients_service_1.ClientsService,
-            variants_service_1.VariantsService,
+            client_service_1.ClientService,
+            variant_service_1.VariantService,
             variant_facade_1.VariantFacade,
-            orders_service_1.OrdersService,
-            manufacturing_costs_service_1.ManufacturingCostsService,
+            order_service_1.OrderService,
+            manufacturing_cost_service_1.ManufacturingCostService,
         ]),
     ],
     OrderFacade

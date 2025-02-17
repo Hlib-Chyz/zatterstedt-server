@@ -8,8 +8,8 @@ import { SuccessDto } from '@dto/shared.dto';
 import { Injectable } from '@nestjs/common';
 import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
-import { ManufacturingCostsService } from '@services/manufacturing-costs.service';
-import { OrdersService } from '@services/orders.service';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { OrderService } from '@services/order.service';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
@@ -17,23 +17,21 @@ export class ManufacturingCostFacade {
     public constructor(
         private readonly errorService: ErrorService,
         private readonly inventoryService: InventoryService,
-        private readonly ordersService: OrdersService,
-        private readonly manufacturingCostsService: ManufacturingCostsService
+        private readonly orderService: OrderService,
+        private readonly manufacturingCostService: ManufacturingCostService
     ) {}
 
-    public async addInventory(
-        _id: ObjectId,
+    public async updateInventory(
+        id: ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto> {
         try {
-            const manufacturingCost = await this.manufacturingCostsService.getManufacturingCost({
-                _id,
-            });
+            const manufacturingCost = await this.manufacturingCostService.getById(id);
             if (manufacturingCostInventory.oldInventory.length) {
                 await this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true);
             }
             await this.changeInventoryAmount(manufacturingCostInventory.inventory, false);
-            await this.manufacturingCostsService.add(
+            await this.manufacturingCostService.updateInventory(
                 manufacturingCostInventory.inventory,
                 manufacturingCost
             );
@@ -50,7 +48,7 @@ export class ManufacturingCostFacade {
         try {
             let canSaveInventory = true;
             for (const id of variantIds) {
-                const orders = await this.ordersService.getByVariantId(id);
+                const orders = await this.orderService.getByVariantId(id);
                 if (orders.length) {
                     canSaveInventory = false;
                     break;
@@ -69,7 +67,7 @@ export class ManufacturingCostFacade {
     ): Promise<void> {
         for (const inv of inventory) {
             if (inv.duringManufacture) {
-                await this.inventoryService.changeInventoryAmount(
+                await this.inventoryService.updateUsedAndPaid(
                     inv.inventoryId,
                     negative ? -inv.quantityInUse : inv.quantityInUse,
                     negative ? -inv.quantityInCost : inv.quantityInCost

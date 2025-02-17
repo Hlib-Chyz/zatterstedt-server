@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto, LoginResponseDto, VerifyCodeDto } from 'src/dto/auth.dto';
-import { User } from 'src/entities/user.entity';
+import { UserDocument } from 'src/schemas/user.schema';
 import { ErrorService } from './error.service';
 import { UserService } from './user.service';
 
@@ -59,7 +59,7 @@ export class AuthService {
         });
     }
 
-    private async generateJwtToken(user: User): Promise<string> {
+    private async generateJwtToken(user: UserDocument): Promise<string> {
         return this.jwtService.sign({ email: user.email, sub: user._id }, { expiresIn: '7d' });
     }
 }

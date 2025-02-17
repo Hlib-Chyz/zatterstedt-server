@@ -1,7 +1,7 @@
 import { PipeTransform } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 export declare class DeleteGetDto {
-    _id: ObjectId;
+    id: ObjectId;
 }
 export declare class SuccessDto {
     success: boolean;

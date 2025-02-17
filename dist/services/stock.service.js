@@ -3,29 +3,34 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.StockService = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
-const typeorm_1 = require('@nestjs/typeorm');
-const stock_entity_1 = require('../entities/stock.entity');
-const typeorm_2 = require('typeorm');
+const mongoose_1 = require('@nestjs/mongoose');
+const mongoose_2 = require('mongoose');
+const stock_schema_1 = require('../schemas/stock.schema');
 const error_service_1 = require('./error.service');
 let StockService = class StockService {
-    constructor(stockRepository, errorService) {
-        this.stockRepository = stockRepository;
+    constructor(stockModel, errorService) {
+        this.stockModel = stockModel;
         this.errorService = errorService;
     }
     async getByVariantId(variantId) {
         try {
-            const stock = await this.getStock(variantId);
+            const stock = await this.stockModel.findOne({ variantId }).exec();
+            if (!stock) {
+                throw new common_1.NotFoundException('Stock not found');
+            }
             return stock;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get stock by variant id');
             return {};
         }
     }
-    async removeByVariantId(variantIds) {
+    async deleteManyByVariantIds(variantIds) {
         try {
             for (const variantId of variantIds) {
-                const stock = await this.getByVariantId(variantId);
-                await this.stockRepository.remove(stock);
+                const result = await this.stockModel.findOneAndDelete({ variantId }).exec();
+                if (!result) {
+                    throw new common_1.NotFoundException('Stock not found');
+                }
             }
             return { success: true };
         } catch (error) {
@@ -35,15 +40,8 @@ let StockService = class StockService {
     }
     async add(stock) {
         try {
-            const existingStock = await this.stockRepository.findOne({
-                where: { variantId: stock.variantId },
-            });
-            if (existingStock) {
-                throw new common_1.ConflictException(
-                    'A stock with the given variant already exists'
-                );
-            }
-            await this.stockRepository.save({ ...stock, sold: 0, realizedParty: stock.total });
+            const newStock = new this.stockModel({ ...stock, realizedParty: stock.total });
+            await newStock.save();
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new stock');
@@ -52,21 +50,36 @@ let StockService = class StockService {
     }
     async increaseSold(variantId, quantity = 1) {
         try {
-            const stock = await this.getStock(variantId);
-            await this.stockRepository.save({ ...stock, sold: stock.sold + quantity });
+            const result = await this.stockModel
+                .findOneAndUpdate(
+                    { variantId },
+                    {
+                        $inc: { sold: quantity },
+                    }
+                )
+                .exec();
+            if (!result) {
+                throw new common_1.NotFoundException('Stock not found');
+            }
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to increase sold');
             return { success: false };
         }
     }
-    async setRealizedParty(realizedPartyDto) {
+    async updateRealizedParty(realizedPartyDto) {
         try {
-            const stock = await this.getStock(realizedPartyDto.variantId);
-            await this.stockRepository.save({
-                ...stock,
-                realizedParty: realizedPartyDto.realizedParty,
-            });
+            const result = await this.stockModel
+                .findOneAndUpdate(
+                    { variantId: realizedPartyDto.variantId },
+                    {
+                        realizedParty: realizedPartyDto.realizedParty,
+                    }
+                )
+                .exec();
+            if (!result) {
+                throw new common_1.NotFoundException('Stock not found');
+            }
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set realized party');
@@ -75,29 +88,21 @@ let StockService = class StockService {
     }
     async decreaseRealizedParty(variantId, amount) {
         try {
-            const stock = await this.getStock(variantId);
-            await this.stockRepository.save({
-                ...stock,
-                realizedParty: stock.realizedParty - amount,
-            });
+            const result = await this.stockModel
+                .findOneAndUpdate(
+                    { variantId },
+                    {
+                        $inc: { realizedParty: -amount },
+                    }
+                )
+                .exec();
+            if (!result) {
+                throw new common_1.NotFoundException('Stock not found');
+            }
             return { success: true };
         } catch (error) {
             this.errorService.throwError(error, 'Failed to decrease realized party');
             return { success: false };
-        }
-    }
-    async getStock(variantId) {
-        try {
-            const stock = await this.stockRepository.findOne({
-                where: { variantId },
-            });
-            if (!stock) {
-                throw new common_1.NotFoundException('Stock not found');
-            }
-            return stock;
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to get stock');
-            return {};
         }
     }
 };
@@ -105,11 +110,8 @@ exports.StockService = StockService;
 exports.StockService = StockService = tslib_1.__decorate(
     [
         (0, common_1.Injectable)(),
-        tslib_1.__param(0, (0, typeorm_1.InjectRepository)(stock_entity_1.Stock)),
-        tslib_1.__metadata('design:paramtypes', [
-            typeorm_2.Repository,
-            error_service_1.ErrorService,
-        ]),
+        tslib_1.__param(0, (0, mongoose_1.InjectModel)(stock_schema_1.Stock.name)),
+        tslib_1.__metadata('design:paramtypes', [mongoose_2.Model, error_service_1.ErrorService]),
     ],
     StockService
 );

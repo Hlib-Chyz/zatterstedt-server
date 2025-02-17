@@ -9,13 +9,9 @@ import {
     UseFilters,
     UseGuards,
 } from '@nestjs/common';
+import { Inventory } from '@schemas/inventory.schema';
 import { ObjectId } from 'mongodb';
-import {
-    CreateInventoryDto,
-    InventoryDto,
-    SetUsedFieldDto,
-    UpdateInventoryDto,
-} from 'src/dto/inventory.dto';
+import { CreateInventoryDto, SetUsedFieldDto, UpdateInventoryDto } from 'src/dto/inventory.dto';
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -28,16 +24,16 @@ export class InventoryController {
     public constructor(private readonly inventoryService: InventoryService) {}
 
     @Get()
-    public async getAll(): Promise<InventoryDto[]> {
+    public async getAll(): Promise<Inventory[]> {
         return this.inventoryService.getAll();
     }
 
     @Post()
-    public async create(
+    public async add(
         @Body()
         inventory: CreateInventoryDto
     ): Promise<SuccessDto> {
-        return this.inventoryService.create(inventory);
+        return this.inventoryService.add(inventory);
     }
 
     @Put()
@@ -46,8 +42,8 @@ export class InventoryController {
     }
 
     @Put('used')
-    public async setUsedField(@Body() body: SetUsedFieldDto): Promise<SuccessDto> {
-        return this.inventoryService.setUsedField(body);
+    public async updateUsed(@Body() body: SetUsedFieldDto): Promise<SuccessDto> {
+        return this.inventoryService.updateUsed(body);
     }
 
     @Delete(':id')

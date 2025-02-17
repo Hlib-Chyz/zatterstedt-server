@@ -1,23 +1,17 @@
 import { ObjectId } from 'mongodb';
-import { Inventory } from 'src/entities/inventory.entity';
-import { Repository } from 'typeorm';
-import { ErrorService } from './error.service';
+import { Model } from 'mongoose';
+import { CreateInventoryDto, SetUsedFieldDto, UpdateInventoryDto } from 'src/dto/inventory.dto';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
-import {
-    CreateInventoryDto,
-    InventoryDto,
-    SetUsedFieldDto,
-    UpdateInventoryDto,
-} from 'src/dto/inventory.dto';
+import { Inventory } from 'src/schemas/inventory.schema';
+import { ErrorService } from './error.service';
 export declare class InventoryService {
-    private inventoryRepository;
+    private inventoryModel;
     private readonly errorService;
-    constructor(inventoryRepository: Repository<Inventory>, errorService: ErrorService);
-    getAll(): Promise<InventoryDto[]>;
-    create(inventory: CreateInventoryDto): Promise<SuccessDto>;
+    constructor(inventoryModel: Model<Inventory>, errorService: ErrorService);
+    getAll(): Promise<Inventory[]>;
+    add(inventory: CreateInventoryDto): Promise<SuccessDto>;
     update(inventory: UpdateInventoryDto): Promise<SuccessDto>;
-    delete(_id: ObjectId): Promise<DeleteGetDto>;
-    changeInventoryAmount(_id: string, used: number, paid: number): Promise<SuccessDto>;
-    setUsedField(body: SetUsedFieldDto): Promise<SuccessDto>;
-    private getInventory;
+    delete(id: ObjectId): Promise<DeleteGetDto>;
+    updateUsedAndPaid(id: ObjectId, used: number, paid: number): Promise<SuccessDto>;
+    updateUsed(body: SetUsedFieldDto): Promise<SuccessDto>;
 }

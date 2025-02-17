@@ -1,8 +1,8 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class UpdateAdditionalCostDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     cost: number;
 }
 export declare class CreateAdditionalCostDto {
-    productId: string;
+    productId: Types.ObjectId;
 }

@@ -10,11 +10,15 @@ export class ClientDto {
     public name: string;
     @IsString()
     @IsNotEmpty()
-    public contacts: string;
+    public contact: string;
     @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
     public purchases: string[];
+
+    public constructor(partial: ClientDto) {
+        Object.assign(this, partial);
+    }
 }
 
 export class CreateClientContactsDto {
@@ -23,11 +27,11 @@ export class CreateClientContactsDto {
     public name: string;
     @IsString()
     @IsNotEmpty()
-    public contacts: string;
+    public contact: string;
 }
 
 export class UpdateClientContactsDto {
     @IsString()
     @IsNotEmpty()
-    public contacts: string;
+    public contact: string;
 }

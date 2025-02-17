@@ -5,25 +5,23 @@ const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const error_service_1 = require('../services/error.service');
 const inventory_service_1 = require('../services/inventory.service');
-const manufacturing_costs_service_1 = require('../services/manufacturing-costs.service');
-const orders_service_1 = require('../services/orders.service');
+const manufacturing_cost_service_1 = require('../services/manufacturing-cost.service');
+const order_service_1 = require('../services/order.service');
 let ManufacturingCostFacade = class ManufacturingCostFacade {
-    constructor(errorService, inventoryService, ordersService, manufacturingCostsService) {
+    constructor(errorService, inventoryService, orderService, manufacturingCostService) {
         this.errorService = errorService;
         this.inventoryService = inventoryService;
-        this.ordersService = ordersService;
-        this.manufacturingCostsService = manufacturingCostsService;
+        this.orderService = orderService;
+        this.manufacturingCostService = manufacturingCostService;
     }
-    async addInventory(_id, manufacturingCostInventory) {
+    async updateInventory(id, manufacturingCostInventory) {
         try {
-            const manufacturingCost = await this.manufacturingCostsService.getManufacturingCost({
-                _id,
-            });
+            const manufacturingCost = await this.manufacturingCostService.getById(id);
             if (manufacturingCostInventory.oldInventory.length) {
                 await this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true);
             }
             await this.changeInventoryAmount(manufacturingCostInventory.inventory, false);
-            await this.manufacturingCostsService.add(
+            await this.manufacturingCostService.updateInventory(
                 manufacturingCostInventory.inventory,
                 manufacturingCost
             );
@@ -37,7 +35,7 @@ let ManufacturingCostFacade = class ManufacturingCostFacade {
         try {
             let canSaveInventory = true;
             for (const id of variantIds) {
-                const orders = await this.ordersService.getByVariantId(id);
+                const orders = await this.orderService.getByVariantId(id);
                 if (orders.length) {
                     canSaveInventory = false;
                     break;
@@ -52,7 +50,7 @@ let ManufacturingCostFacade = class ManufacturingCostFacade {
     async changeInventoryAmount(inventory, negative) {
         for (const inv of inventory) {
             if (inv.duringManufacture) {
-                await this.inventoryService.changeInventoryAmount(
+                await this.inventoryService.updateUsedAndPaid(
                     inv.inventoryId,
                     negative ? -inv.quantityInUse : inv.quantityInUse,
                     negative ? -inv.quantityInCost : inv.quantityInCost
@@ -68,8 +66,8 @@ exports.ManufacturingCostFacade = ManufacturingCostFacade = tslib_1.__decorate(
         tslib_1.__metadata('design:paramtypes', [
             error_service_1.ErrorService,
             inventory_service_1.InventoryService,
-            orders_service_1.OrdersService,
-            manufacturing_costs_service_1.ManufacturingCostsService,
+            order_service_1.OrderService,
+            manufacturing_cost_service_1.ManufacturingCostService,
         ]),
     ],
     ManufacturingCostFacade

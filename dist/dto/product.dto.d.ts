@@ -1,20 +1,23 @@
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class ProductDevelopmentCostDto {
     _id: ObjectId;
-    date: string;
-    description: string;
+    date: Date;
     cost: number;
+    description: string;
+    constructor(partial: ProductDevelopmentCostDto);
 }
 export declare class ProductAdditionalCostDto {
     _id: ObjectId;
     cost: number;
+    constructor(partial: ProductAdditionalCostDto);
 }
 export declare class ProductManufacturingCostJobDto {
     name: string;
     cost: number;
 }
 export declare class ProductManufacturingCostInventoryDto {
-    inventoryId: string;
+    inventoryId: Types.ObjectId;
     quantityInUse: number;
     quantityInCost: number;
     duringManufacture: boolean;
@@ -24,6 +27,7 @@ export declare class ProductManufacturingCostDto {
     _id: ObjectId;
     job: ProductManufacturingCostJobDto[];
     inventory: ProductManufacturingCostInventoryDto[];
+    constructor(partial: ProductManufacturingCostDto);
 }
 export declare class ProductStockDto {
     total: number;
@@ -36,25 +40,13 @@ export declare class ProductVariantDto {
     color: string;
     stock: ProductStockDto;
 }
-export declare class ProductAdminDto {
-    _id: ObjectId;
-    name: string;
-    description: string;
-    price: number;
-    variants: ProductVariantDto[];
-    developmentCosts: ProductDevelopmentCostDto[];
-    additionalCost: ProductAdditionalCostDto;
-    manufacturingCost: ProductManufacturingCostDto;
-}
 export declare class CreateProductDto {
     price: number;
-    description: string;
     name: string;
 }
 export declare class UpdateProductDto {
     _id: ObjectId;
     price: number;
-    description: string;
     name: string;
 }
 export declare class ProductPriceDto {
@@ -64,5 +56,9 @@ export declare class ProductDto {
     _id: ObjectId;
     name: string;
     price: number;
-    description: string;
+    variants: ProductVariantDto[];
+    developmentCosts: ProductDevelopmentCostDto[];
+    additionalCost: ProductAdditionalCostDto;
+    manufacturingCost: ProductManufacturingCostDto;
+    constructor(partial: ProductDto);
 }

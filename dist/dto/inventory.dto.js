@@ -9,13 +9,14 @@ const tslib_1 = require('tslib');
 const class_transformer_1 = require('class-transformer');
 const class_validator_1 = require('class-validator');
 const mongodb_1 = require('mongodb');
+const mongoose_1 = require('mongoose');
 class UpdateInventoryDto {}
 exports.UpdateInventoryDto = UpdateInventoryDto;
 tslib_1.__decorate(
     [
         (0, class_validator_1.IsNotEmpty)(),
-        (0, class_transformer_1.Transform)(({ value }) => new mongodb_1.ObjectId(value)),
-        tslib_1.__metadata('design:type', mongodb_1.ObjectId),
+        (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(value)),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     UpdateInventoryDto.prototype,
     '_id',
@@ -196,8 +197,8 @@ exports.SetUsedFieldDto = SetUsedFieldDto;
 tslib_1.__decorate(
     [
         (0, class_validator_1.IsNotEmpty)(),
-        (0, class_transformer_1.Transform)(({ value }) => new mongodb_1.ObjectId(value)),
-        tslib_1.__metadata('design:type', mongodb_1.ObjectId),
+        (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(value)),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     SetUsedFieldDto.prototype,
     '_id',

@@ -18,7 +18,7 @@ export class AuthController {
 
     @Post('add')
     public async add(@Body() loginInfo: LoginDto): Promise<SuccessDto> {
-        return this.userService.createUser(loginInfo);
+        return this.userService.add(loginInfo);
     }
 
     @Post('verify-code')

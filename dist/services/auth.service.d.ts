@@ -10,13 +10,7 @@ export declare class AuthService {
     private errorService;
     private mailerService;
     private configService;
-    constructor(
-        userService: UserService,
-        jwtService: JwtService,
-        errorService: ErrorService,
-        mailerService: MailerService,
-        configService: ConfigService
-    );
+    constructor(userService: UserService, jwtService: JwtService, errorService: ErrorService, mailerService: MailerService, configService: ConfigService);
     login(loginInfo: LoginDto): Promise<LoginResponseDto>;
     verifyCode(verifyCodeInfo: VerifyCodeDto): Promise<LoginResponseDto>;
     generateVerificationCode(): string;

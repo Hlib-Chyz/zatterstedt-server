@@ -4,5 +4,5 @@ import { StockService } from '@services/stock.service';
 export declare class StockController {
     private stockService;
     constructor(stockService: StockService);
-    setRealizedParty(body: SetRealizedPartyDto): Promise<SuccessDto>;
+    updateRealizedParty(body: SetRealizedPartyDto): Promise<SuccessDto>;
 }

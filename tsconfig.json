@@ -11,7 +11,7 @@
         "paths": {
             "@controllers/*": ["src/controllers/*"],
             "@dto/*": ["src/dto/*"],
-            "@entities/*": ["src/entities/*"],
+            "@schemas/*": ["src/schemas/*"],
             "@filters/*": ["src/filters/*"],
             "@guards/*": ["src/guards/*"],
             "@modules/*": ["src/modules/*"],

@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class ManufacturingCostDto {
     _id: ObjectId;
     productId: string;
@@ -6,7 +7,7 @@ export declare class ManufacturingCostDto {
     inventory: InventoryDto[];
 }
 export declare class CreateManufacturingCostDto {
-    productId: string;
+    productId: Types.ObjectId;
 }
 export declare class ManufacturingCostJobDto {
     job: JobDto[];
@@ -20,14 +21,14 @@ export declare class JobDto {
     cost: number;
 }
 export declare class InventoryDto {
-    inventoryId: string;
+    inventoryId: Types.ObjectId;
     quantityInCost: number;
     quantityInUse: number;
     duringManufacture: boolean;
     cost: number;
 }
 export declare class CanSaveInventoryDto {
-    variantIds: string[];
+    variantIds: Types.ObjectId[];
 }
 export declare class CanSaveInventoryResponseDto {
     canSaveInventory: boolean;

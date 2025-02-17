@@ -1,13 +1,13 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
-const tslib_1 = require('tslib');
-const mailer_1 = require('@nestjs-modules/mailer');
-const common_1 = require('@nestjs/common');
-const config_1 = require('@nestjs/config');
-const jwt_1 = require('@nestjs/jwt');
-const error_service_1 = require('./error.service');
-const user_service_1 = require('./user.service');
+const tslib_1 = require("tslib");
+const mailer_1 = require("@nestjs-modules/mailer");
+const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const jwt_1 = require("@nestjs/jwt");
+const error_service_1 = require("./error.service");
+const user_service_1 = require("./user.service");
 let AuthService = class AuthService {
     constructor(userService, jwtService, errorService, mailerService, configService) {
         this.userService = userService;
@@ -24,7 +24,8 @@ let AuthService = class AuthService {
             }
             const token = await this.generateJwtToken(user);
             return { success: true, token };
-        } catch (error) {
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to login');
             return { success: false, token: '' };
         }
@@ -35,10 +36,12 @@ let AuthService = class AuthService {
             if (user?.emailVerificationCode === verifyCodeInfo.code) {
                 const token = await this.generateJwtToken(user);
                 return { success: true, token };
-            } else {
+            }
+            else {
                 throw new common_1.NotFoundException('Invalid verification code');
             }
-        } catch (error) {
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to verify code');
             return { success: false, token: '' };
         }
@@ -59,17 +62,12 @@ let AuthService = class AuthService {
     }
 };
 exports.AuthService = AuthService;
-exports.AuthService = AuthService = tslib_1.__decorate(
-    [
-        (0, common_1.Injectable)(),
-        tslib_1.__metadata('design:paramtypes', [
-            user_service_1.UserService,
-            jwt_1.JwtService,
-            error_service_1.ErrorService,
-            mailer_1.MailerService,
-            config_1.ConfigService,
-        ]),
-    ],
-    AuthService
-);
+exports.AuthService = AuthService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__metadata("design:paramtypes", [user_service_1.UserService,
+        jwt_1.JwtService,
+        error_service_1.ErrorService,
+        mailer_1.MailerService,
+        config_1.ConfigService])
+], AuthService);
 //# sourceMappingURL=auth.service.js.map

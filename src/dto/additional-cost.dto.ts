@@ -1,11 +1,11 @@
 import { Transform } from 'class-transformer';
 import { IsMongoId, IsNotEmpty, IsNumber } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class UpdateAdditionalCostDto {
     @IsNotEmpty()
-    @Transform(({ value }) => new ObjectId(value))
-    public _id: ObjectId;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public _id: Types.ObjectId;
     @IsNumber()
     @IsNotEmpty()
     public cost: number;
@@ -14,5 +14,5 @@ export class UpdateAdditionalCostDto {
 export class CreateAdditionalCostDto {
     @IsMongoId()
     @IsNotEmpty()
-    public productId: string;
+    public productId: Types.ObjectId;
 }

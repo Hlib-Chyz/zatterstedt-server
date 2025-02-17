@@ -1,10 +1,11 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
 import { IsBoolean, IsNotEmpty } from 'class-validator';
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class DeleteGetDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public id: ObjectId;
 }
 
 export class SuccessDto {
@@ -18,6 +19,6 @@ export class ParseObjectIdPipe implements PipeTransform {
         if (!ObjectId.isValid(value)) {
             throw new BadRequestException(`${value} is not a valid MongoDB ObjectId`);
         }
-        return new ObjectId(value);
+        return new Types.ObjectId(value);
     }
 }

@@ -1,8 +1,8 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.CanSaveVariantsResponseDto =
-    exports.CanSaveVariantsDto =
-    exports.CreateVariantsDto =
+exports.CanSaveVariantResponseDto =
+    exports.CanSaveVariantDto =
+    exports.UpdateVariantDto =
     exports.VariantLockupDto =
     exports.CreateVariantDto =
     exports.VariantDto =
@@ -11,6 +11,7 @@ const tslib_1 = require('tslib');
 const class_transformer_1 = require('class-transformer');
 const class_validator_1 = require('class-validator');
 const mongodb_1 = require('mongodb');
+const mongoose_1 = require('mongoose');
 class VariantDto {}
 exports.VariantDto = VariantDto;
 tslib_1.__decorate(
@@ -75,7 +76,7 @@ tslib_1.__decorate(
     [
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsMongoId)(),
-        tslib_1.__metadata('design:type', String),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     CreateVariantDto.prototype,
     'productId',
@@ -130,15 +131,16 @@ tslib_1.__decorate(
     'quantity',
     void 0
 );
-class CreateVariantsDto {}
-exports.CreateVariantsDto = CreateVariantsDto;
+class UpdateVariantDto {}
+exports.UpdateVariantDto = UpdateVariantDto;
 tslib_1.__decorate(
     [
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsMongoId)(),
-        tslib_1.__metadata('design:type', String),
+        (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(value)),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
-    CreateVariantsDto.prototype,
+    UpdateVariantDto.prototype,
     'productId',
     void 0
 );
@@ -150,7 +152,7 @@ tslib_1.__decorate(
         (0, class_transformer_1.Type)(() => VariantUpdateDto),
         tslib_1.__metadata('design:type', Array),
     ],
-    CreateVariantsDto.prototype,
+    UpdateVariantDto.prototype,
     'variants',
     void 0
 );
@@ -158,35 +160,41 @@ tslib_1.__decorate(
     [
         (0, class_validator_1.IsArray)(),
         (0, class_validator_1.IsString)({ each: true }),
+        (0, class_transformer_1.Transform)(({ value }) =>
+            value.map((id) => new mongoose_1.Types.ObjectId(id))
+        ),
         tslib_1.__metadata('design:type', Array),
     ],
-    CreateVariantsDto.prototype,
+    UpdateVariantDto.prototype,
     'oldVariantIds',
     void 0
 );
-class CanSaveVariantsDto {}
-exports.CanSaveVariantsDto = CanSaveVariantsDto;
+class CanSaveVariantDto {}
+exports.CanSaveVariantDto = CanSaveVariantDto;
 tslib_1.__decorate(
     [
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsArray)(),
         (0, class_validator_1.IsString)({ each: true }),
+        (0, class_transformer_1.Transform)(({ value }) =>
+            value.map((id) => new mongoose_1.Types.ObjectId(id))
+        ),
         tslib_1.__metadata('design:type', Array),
     ],
-    CanSaveVariantsDto.prototype,
+    CanSaveVariantDto.prototype,
     'variantIds',
     void 0
 );
-class CanSaveVariantsResponseDto {}
-exports.CanSaveVariantsResponseDto = CanSaveVariantsResponseDto;
+class CanSaveVariantResponseDto {}
+exports.CanSaveVariantResponseDto = CanSaveVariantResponseDto;
 tslib_1.__decorate(
     [
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsBoolean)(),
         tslib_1.__metadata('design:type', Boolean),
     ],
-    CanSaveVariantsResponseDto.prototype,
-    'canSaveVariants',
+    CanSaveVariantResponseDto.prototype,
+    'canSaveVariant',
     void 0
 );
 //# sourceMappingURL=variant.dto.js.map

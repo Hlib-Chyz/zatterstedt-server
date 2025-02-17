@@ -1,31 +1,31 @@
 import { CreateOrderDto, OrderDto } from '@dto/order.dto';
 import { SuccessDto } from '@dto/shared.dto';
-import { ClientsService } from '@services/clients.service';
+import { ClientService } from '@services/client.service';
 import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
-import { ManufacturingCostsService } from '@services/manufacturing-costs.service';
-import { OrdersService } from '@services/orders.service';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { OrderService } from '@services/order.service';
 import { StockService } from '@services/stock.service';
-import { VariantsService } from '@services/variants.service';
+import { VariantService } from '@services/variant.service';
 import { VariantFacade } from 'src/facades/variant.facade';
 export declare class OrderFacade {
     private readonly errorService;
     private readonly stockService;
     private readonly inventoryService;
-    private readonly clientsService;
-    private readonly variantsService;
+    private readonly clientService;
+    private readonly variantService;
     private readonly variantFacade;
-    private readonly ordersService;
-    private readonly manufacturingCostsService;
+    private readonly orderService;
+    private readonly manufacturingCostService;
     constructor(
         errorService: ErrorService,
         stockService: StockService,
         inventoryService: InventoryService,
-        clientsService: ClientsService,
-        variantsService: VariantsService,
+        clientService: ClientService,
+        variantService: VariantService,
         variantFacade: VariantFacade,
-        ordersService: OrdersService,
-        manufacturingCostsService: ManufacturingCostsService
+        orderService: OrderService,
+        manufacturingCostService: ManufacturingCostService
     );
     getAll(): Promise<OrderDto[]>;
     add(order: CreateOrderDto): Promise<SuccessDto>;

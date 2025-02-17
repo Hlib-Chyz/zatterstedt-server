@@ -1,109 +1,104 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.InventoryService = void 0;
-const tslib_1 = require('tslib');
-const common_1 = require('@nestjs/common');
-const typeorm_1 = require('@nestjs/typeorm');
-const mongodb_1 = require('mongodb');
-const inventory_entity_1 = require('../entities/inventory.entity');
-const typeorm_2 = require('typeorm');
-const error_service_1 = require('./error.service');
+const tslib_1 = require("tslib");
+const common_1 = require("@nestjs/common");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+const inventory_schema_1 = require("../schemas/inventory.schema");
+const error_service_1 = require("./error.service");
 let InventoryService = class InventoryService {
-    constructor(inventoryRepository, errorService) {
-        this.inventoryRepository = inventoryRepository;
+    constructor(inventoryModel, errorService) {
+        this.inventoryModel = inventoryModel;
         this.errorService = errorService;
     }
     async getAll() {
         try {
-            const inventory = await this.inventoryRepository.find();
+            const inventory = await this.inventoryModel.find().exec();
             return inventory.reverse();
-        } catch (error) {
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to get all inventory');
             return [];
         }
     }
-    async create(inventory) {
+    async add(inventory) {
         try {
-            await this.inventoryRepository.save({ ...inventory, paid: 0 });
+            const inventoryCost = new this.inventoryModel(inventory);
+            await inventoryCost.save();
             return { success: true };
-        } catch (error) {
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to create inventory');
             return { success: false };
         }
     }
     async update(inventory) {
         try {
-            const foundInventory = await this.getInventory(inventory._id);
-            await this.inventoryRepository.save({ ...foundInventory, ...inventory });
+            const result = await this.inventoryModel
+                .findByIdAndUpdate(inventory._id, inventory)
+                .exec();
+            if (!result) {
+                throw new common_1.NotFoundException('Inventory not found');
+            }
             return { success: true };
-        } catch (error) {
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to update inventory');
             return { success: false };
         }
     }
-    async delete(_id) {
+    async delete(id) {
         try {
-            const inventory = await this.getInventory(_id);
-            await this.inventoryRepository.remove(inventory);
-            return { _id };
-        } catch (error) {
+            const result = await this.inventoryModel.findByIdAndDelete(id).exec();
+            if (!result) {
+                throw new common_1.NotFoundException('Inventory not found');
+            }
+            return { id };
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to delete inventory');
-            return { _id };
+            return { id };
         }
     }
-    async changeInventoryAmount(_id, used, paid) {
+    async updateUsedAndPaid(id, used, paid) {
         try {
-            const foundInventory = await this.getInventory(new mongodb_1.ObjectId(_id));
-            await this.inventoryRepository.save({
-                ...foundInventory,
-                _id: new mongodb_1.ObjectId(_id),
-                used: foundInventory.used + used,
-                paid: foundInventory.paid + paid,
-            });
+            const result = await this.inventoryModel
+                .findByIdAndUpdate(id, {
+                $inc: { used, paid },
+            })
+                .exec();
+            if (!result) {
+                throw new common_1.NotFoundException('Inventory not found');
+            }
             return { success: true };
-        } catch (error) {
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to change inventory amount');
             return { success: false };
         }
     }
-    async setUsedField(body) {
+    async updateUsed(body) {
         try {
-            const inventory = await this.getInventory(body._id);
-            await this.inventoryRepository.save({
-                ...inventory,
-                used: body.used,
-            });
+            const result = await this.inventoryModel
+                .findByIdAndUpdate(body._id, { used: body.used })
+                .exec();
+            if (!result) {
+                throw new common_1.NotFoundException('Inventory not found');
+            }
             return { success: true };
-        } catch (error) {
+        }
+        catch (error) {
             this.errorService.throwError(error, 'Failed to set used field');
             return { success: false };
         }
     }
-    async getInventory(_id) {
-        try {
-            const foundInventory = await this.inventoryRepository.findOne({
-                where: { _id },
-            });
-            if (!foundInventory) {
-                throw new common_1.NotFoundException('Inventory not found');
-            }
-            return foundInventory;
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to get inventory');
-            return {};
-        }
-    }
 };
 exports.InventoryService = InventoryService;
-exports.InventoryService = InventoryService = tslib_1.__decorate(
-    [
-        (0, common_1.Injectable)(),
-        tslib_1.__param(0, (0, typeorm_1.InjectRepository)(inventory_entity_1.Inventory)),
-        tslib_1.__metadata('design:paramtypes', [
-            typeorm_2.Repository,
-            error_service_1.ErrorService,
-        ]),
-    ],
-    InventoryService
-);
+exports.InventoryService = InventoryService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__param(0, (0, mongoose_1.InjectModel)(inventory_schema_1.Inventory.name)),
+    tslib_1.__metadata("design:paramtypes", [mongoose_2.Model,
+        error_service_1.ErrorService])
+], InventoryService);
 //# sourceMappingURL=inventory.service.js.map

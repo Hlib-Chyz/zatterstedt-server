@@ -246,7 +246,7 @@ module.exports = tseslint.config(
             'no-invalid-regexp': 'error',
             curly: ['error', 'all'],
             '@typescript-eslint/restrict-template-expressions': 'error',
-            '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+            '@typescript-eslint/consistent-type-definitions': ['off'],
             '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/adjacent-overload-signatures': 'error',
             '@typescript-eslint/explicit-function-return-type': 'error',
@@ -265,17 +265,6 @@ module.exports = tseslint.config(
             'prefer-const': 1,
             'prefer-spread': 1,
             'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
-            '@typescript-eslint/naming-convention': [
-                'error',
-                {
-                    selector: 'interface',
-                    format: ['PascalCase'],
-                    custom: {
-                        regex: '^I[A-Z]',
-                        match: true,
-                    },
-                },
-            ],
             'import/no-unresolved': 'off',
             'import/no-extraneous-dependencies': 'off',
             'import/prefer-default-export': 'off',

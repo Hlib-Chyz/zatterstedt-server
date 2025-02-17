@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class UpdateInventoryDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     name: string;
     totalCost: number;
     amount: number;
@@ -24,6 +25,6 @@ export declare class InventoryDto {
     date: string;
 }
 export declare class SetUsedFieldDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     used: number;
 }

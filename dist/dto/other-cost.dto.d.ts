@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class UpdateOtherCostDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     date: string;
     name: string;
     cost: number;
