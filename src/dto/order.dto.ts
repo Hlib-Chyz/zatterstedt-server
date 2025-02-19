@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
     ArrayNotEmpty,
     IsArray,
@@ -23,7 +23,8 @@ export class CreateOrderDto {
     public clientName: string;
     @IsMongoId()
     @ValidateIf((_, value) => Boolean(value))
-    public clientId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public clientId: Types.ObjectId;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -61,8 +62,9 @@ export class OrderVariantDto {
     @IsDateString()
     public date: string;
     @IsNotEmpty()
-    @IsString()
-    public clientId: string;
+    @IsMongoId()
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public clientId: Types.ObjectId;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })

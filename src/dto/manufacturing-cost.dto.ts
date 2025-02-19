@@ -15,7 +15,8 @@ export class ManufacturingCostDto {
     public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsMongoId()
-    public productId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public productId: Types.ObjectId;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })

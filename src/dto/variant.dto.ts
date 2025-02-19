@@ -21,7 +21,8 @@ export class VariantDto {
     public size: string;
     @IsNotEmpty()
     @IsMongoId()
-    public productId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public productId: Types.ObjectId;
 }
 
 export class CreateVariantDto {

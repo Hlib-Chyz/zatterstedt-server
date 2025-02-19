@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsMongoId, IsNotEmpty, IsNumber } from 'class-validator';
 import { Types } from 'mongoose';
 
@@ -6,7 +7,8 @@ export class StockDto {
     public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsMongoId()
-    public variantId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public variantId: Types.ObjectId;
     @IsNotEmpty()
     @IsNumber()
     public sold: number;
@@ -21,7 +23,8 @@ export class StockDto {
 export class CreateStockDto {
     @IsNotEmpty()
     @IsMongoId()
-    public variantId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public variantId: Types.ObjectId;
     @IsNotEmpty()
     @IsNumber()
     public total: number;
@@ -30,7 +33,8 @@ export class CreateStockDto {
 export class SetRealizedPartyDto {
     @IsNotEmpty()
     @IsMongoId()
-    public variantId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public variantId: Types.ObjectId;
     @IsNotEmpty()
     @IsNumber()
     public realizedParty: number;

@@ -14,11 +14,13 @@ export class CreateDevelopmentCostDto {
     public cost: number;
     @IsNotEmpty()
     @IsMongoId()
-    public productId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public productId: Types.ObjectId;
 }
 
 export class UpdateDevelopmentCostDto {
     @IsNotEmpty()
+    @IsMongoId()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public _id: Types.ObjectId;
     @IsNotEmpty()
@@ -47,5 +49,6 @@ export class DevelopmentCostDto {
     public cost: number;
     @IsNotEmpty()
     @IsMongoId()
-    public productId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public productId: Types.ObjectId;
 }
