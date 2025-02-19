@@ -1,6 +1,5 @@
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 export class CreateFixedCostDto {
@@ -15,7 +14,7 @@ export class CreateFixedCostDto {
 export class UpdateFixedCostDto {
     @IsNotEmpty()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsString()
     public name: string;
@@ -27,7 +26,7 @@ export class UpdateFixedCostDto {
 export class FixedCostDto {
     @IsString()
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsString()
     public name: string;

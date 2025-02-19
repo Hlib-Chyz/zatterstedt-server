@@ -8,12 +8,11 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 export class ManufacturingCostDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsMongoId()
     public productId: string;

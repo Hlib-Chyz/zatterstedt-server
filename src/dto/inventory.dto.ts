@@ -1,6 +1,5 @@
 import { Transform } from 'class-transformer';
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 export class UpdateInventoryDto {
@@ -44,7 +43,7 @@ export class CreateInventoryDto {
 
 export class InventoryDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsString()
     public name: string;

@@ -1,6 +1,5 @@
 import { Transform } from 'class-transformer';
 import { IsDateString, IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 export class CreateDevelopmentCostDto {
@@ -36,7 +35,7 @@ export class UpdateDevelopmentCostDto {
 export class DevelopmentCostDto {
     @IsString()
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsDateString()
     public date: string;

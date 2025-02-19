@@ -1,10 +1,10 @@
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class ClientDto {
     @IsString()
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsString()
     @IsNotEmpty()
     public name: string;

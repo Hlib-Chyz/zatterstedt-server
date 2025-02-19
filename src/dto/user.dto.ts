@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class UserDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsString()
     public email: string;

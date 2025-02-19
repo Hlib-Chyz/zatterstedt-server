@@ -1,9 +1,9 @@
 import { IsMongoId, IsNotEmpty, IsNumber } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class StockDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsMongoId()
     public variantId: string;

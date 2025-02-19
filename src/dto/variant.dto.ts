@@ -8,12 +8,11 @@ import {
     ValidateNested,
     IsBoolean,
 } from 'class-validator';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 export class VariantDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsString()
     public color: string;
@@ -39,7 +38,7 @@ export class CreateVariantDto {
 
 export class VariantLockupDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsString()
     public name: string;

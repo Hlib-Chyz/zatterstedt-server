@@ -9,12 +9,11 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 export class ProductDevelopmentCostDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsDate()
     public date: Date;
@@ -32,7 +31,7 @@ export class ProductDevelopmentCostDto {
 
 export class ProductAdditionalCostDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
@@ -71,7 +70,7 @@ export class ProductManufacturingCostInventoryDto {
 
 export class ProductManufacturingCostDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -102,7 +101,7 @@ export class ProductStockDto {
 
 export class ProductVariantDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsString()
     @IsNotEmpty()
     public size: string;
@@ -126,7 +125,7 @@ export class CreateProductDto {
 export class UpdateProductDto {
     @IsNotEmpty()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNumber()
     @IsNotEmpty()
     public price: number;
@@ -143,7 +142,7 @@ export class ProductPriceDto {
 
 export class ProductDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsString()
     @IsNotEmpty()
     public name: string;

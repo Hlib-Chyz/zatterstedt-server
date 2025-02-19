@@ -11,7 +11,6 @@ import {
     ValidateIf,
     ValidateNested,
 } from 'class-validator';
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 
 export class CreateOrderDto {
@@ -34,7 +33,7 @@ export class CreateOrderDto {
 
 export class OrderDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsDate()
     public date: Date;
@@ -57,7 +56,7 @@ export class OrderDto {
 
 export class OrderVariantDto {
     @IsNotEmpty()
-    public _id: ObjectId;
+    public _id: Types.ObjectId;
     @IsNotEmpty()
     @IsDateString()
     public date: string;
