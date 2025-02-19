@@ -19,6 +19,6 @@ export class OrderController {
         @Body()
         order: CreateOrderDto
     ): Promise<SuccessDto> {
-        return this.orderFacade.add(order);
+        return new SuccessDto(this.orderFacade.add(order));
     }
 }

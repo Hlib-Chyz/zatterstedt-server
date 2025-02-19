@@ -35,10 +35,10 @@ export class ManufacturingCostFacade {
                 manufacturingCostInventory.inventory,
                 manufacturingCost
             );
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add inventory');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 

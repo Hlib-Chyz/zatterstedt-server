@@ -36,10 +36,10 @@ export class StockService {
                     throw new NotFoundException('Stock not found');
                 }
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to remove by variant id');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -47,10 +47,10 @@ export class StockService {
         try {
             const newStock = new this.stockModel({ ...stock, realizedParty: stock.total });
             await newStock.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new stock');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -67,10 +67,10 @@ export class StockService {
             if (!result) {
                 throw new NotFoundException('Stock not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to increase sold');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -87,10 +87,10 @@ export class StockService {
             if (!result) {
                 throw new NotFoundException('Stock not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set realized party');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -107,10 +107,10 @@ export class StockService {
             if (!result) {
                 throw new NotFoundException('Stock not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to decrease realized party');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 }

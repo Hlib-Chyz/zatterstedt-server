@@ -27,10 +27,10 @@ export class DevelopmentCostService {
         try {
             const createdDevelopmentCost = new this.developmentCostModel(developmentCost);
             await createdDevelopmentCost.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add development cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -42,10 +42,10 @@ export class DevelopmentCostService {
             if (!updatedDevelopmentCost) {
                 throw new NotFoundException('Development cost not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update development cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -55,10 +55,10 @@ export class DevelopmentCostService {
             if (!result) {
                 throw new NotFoundException('Development cost not found');
             }
-            return { id };
+            return new DeleteGetDto({ id });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete development cost');
-            return { id };
+            return new DeleteGetDto({ id });
         }
     }
 }

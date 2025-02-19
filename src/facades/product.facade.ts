@@ -102,10 +102,10 @@ export class ProductFacade {
             await this.manufacturingCostService.add({
                 productId: newProduct._id,
             });
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new product');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 }

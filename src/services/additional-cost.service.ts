@@ -23,10 +23,10 @@ export class AdditionalCostService {
             if (!updatedCost) {
                 throw new NotFoundException('Additional cost not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update additional cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -34,10 +34,10 @@ export class AdditionalCostService {
         try {
             const newCost = new this.additionalCostModel(additionalCost);
             await newCost.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add additional cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 

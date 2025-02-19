@@ -5,12 +5,20 @@ import { Types } from 'mongoose';
 export class DeleteGetDto {
     @IsNotEmpty()
     public id: Types.ObjectId;
+
+    public constructor(partial: DeleteGetDto) {
+        Object.assign(this, partial);
+    }
 }
 
 export class SuccessDto {
     @IsNotEmpty()
     @IsBoolean()
     public success: boolean;
+
+    public constructor(partial: SuccessDto) {
+        Object.assign(this, partial);
+    }
 }
 
 export class ParseObjectIdPipe implements PipeTransform {

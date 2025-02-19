@@ -48,10 +48,10 @@ export class VariantService {
     public async deleteManyByProductId(productId: ObjectId): Promise<SuccessDto> {
         try {
             await this.variantModel.deleteMany({ productId }).exec();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to remove variants');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 

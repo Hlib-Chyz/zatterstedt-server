@@ -44,10 +44,10 @@ export class ClientService {
             if (!updatedClient) {
                 throw new NotFoundException('Client not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update contact');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 

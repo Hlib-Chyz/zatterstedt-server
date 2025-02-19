@@ -71,13 +71,13 @@ export class VariantFacade {
                 });
                 await this.stockService.add({
                     total: variant.quantity,
-                    variantId: newVariantId.toString(),
+                    variantId: newVariantId,
                 });
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set variants');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 

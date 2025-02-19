@@ -83,10 +83,10 @@ export class OrderFacade {
             }
             const orders = await this.orderService.getAll();
             await this.orderService.add(clientId, order, orders.length);
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 }

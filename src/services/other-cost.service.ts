@@ -27,10 +27,10 @@ export class OtherCostService {
         try {
             const newOtherCost = new this.otherCostModel(otherCost);
             await newOtherCost.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create other costs');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -42,10 +42,10 @@ export class OtherCostService {
             if (!result) {
                 throw new NotFoundException('Other cost not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update other cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -55,10 +55,10 @@ export class OtherCostService {
             if (!result) {
                 throw new NotFoundException('Other cost not found');
             }
-            return { id };
+            return new DeleteGetDto({ id });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete other cost');
-            return { id };
+            return new DeleteGetDto({ id });
         }
     }
 }

@@ -28,10 +28,10 @@ export class InventoryService {
         try {
             const inventoryCost = new this.inventoryModel(inventory);
             await inventoryCost.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create inventory');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -43,10 +43,10 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update inventory');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -56,10 +56,10 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return { id };
+            return new DeleteGetDto({ id });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete inventory');
-            return { id };
+            return new DeleteGetDto({ id });
         }
     }
 
@@ -73,10 +73,10 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change inventory amount');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -88,10 +88,10 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set used field');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 }

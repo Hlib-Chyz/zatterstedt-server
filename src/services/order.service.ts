@@ -55,10 +55,10 @@ export class OrderService {
                 orderNumber,
             });
             await newOrder.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 }

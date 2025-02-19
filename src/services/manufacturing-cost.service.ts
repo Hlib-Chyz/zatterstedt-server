@@ -56,10 +56,10 @@ export class ManufacturingCostService {
         try {
             const createdManufacturingCost = new this.manufacturingCostModel(manufacturingCost);
             await createdManufacturingCost.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create manufacturing cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -87,10 +87,10 @@ export class ManufacturingCostService {
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update manufacturing cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 }

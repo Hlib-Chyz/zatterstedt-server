@@ -27,10 +27,10 @@ export class FixedCostService {
         try {
             const createdFixedCost = new this.fixedCostModel(fixedCost);
             await createdFixedCost.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add fixed cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -42,10 +42,10 @@ export class FixedCostService {
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update fixed cost');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -55,10 +55,10 @@ export class FixedCostService {
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return { id };
+            return new DeleteGetDto({ id });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete fixed cost');
-            return { id };
+            return new DeleteGetDto({ id });
         }
     }
 }

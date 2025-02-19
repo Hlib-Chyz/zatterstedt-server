@@ -29,10 +29,10 @@ export class ProductService {
             if (!result) {
                 throw new NotFoundException('Product not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update a product');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 
@@ -44,10 +44,10 @@ export class ProductService {
             if (!updatedProduct) {
                 throw new NotFoundException('Product not found');
             }
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change price of product');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 

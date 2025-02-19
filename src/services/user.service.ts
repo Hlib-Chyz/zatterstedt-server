@@ -39,10 +39,10 @@ export class UserService {
         try {
             const newUser = new this.userModel(loginInfo);
             await newUser.save();
-            return { success: true };
+            return new SuccessDto({ success: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create user');
-            return { success: false };
+            return new SuccessDto({ success: false });
         }
     }
 }
