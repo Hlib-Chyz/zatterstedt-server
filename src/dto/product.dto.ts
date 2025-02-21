@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
@@ -11,162 +11,182 @@ import {
 } from 'class-validator';
 import { Types } from 'mongoose';
 
-export class ProductDevelopmentCostDto {
+class ProductDevelopmentCostDto {
+    @Expose()
     @IsNotEmpty()
     public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsDate()
     public date: Date;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public description: string;
-
-    public constructor(partial: ProductDevelopmentCostDto) {
-        Object.assign(this, partial);
-    }
 }
 
-export class ProductAdditionalCostDto {
+class ProductAdditionalCostDto {
+    @Expose()
     @IsNotEmpty()
     public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
-
-    public constructor(partial: ProductAdditionalCostDto) {
-        Object.assign(this, partial);
-    }
 }
 
-export class ProductManufacturingCostJobDto {
+class ProductManufacturingCostJobDto {
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public name: string;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
 }
 
-export class ProductManufacturingCostInventoryDto {
+class ProductManufacturingCostInventoryDto {
+    @Expose()
     @IsNotEmpty()
     @IsMongoId()
     public inventoryId: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public quantityInUse: number;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public quantityInCost: number;
+    @Expose()
     @IsNotEmpty()
     @IsBoolean()
     public duringManufacture: boolean;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
 }
 
-export class ProductManufacturingCostDto {
+class ProductManufacturingCostDto {
+    @Expose()
     @IsNotEmpty()
     public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductManufacturingCostJobDto)
     public job: ProductManufacturingCostJobDto[];
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductManufacturingCostInventoryDto)
     public inventory: ProductManufacturingCostInventoryDto[];
-
-    public constructor(partial: ProductManufacturingCostDto) {
-        Object.assign(this, partial);
-    }
 }
 
-export class ProductStockDto {
+class ProductStockDto {
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public total: number;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public sold: number;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public realizedParty: number;
 }
 
 export class ProductVariantDto {
+    @Expose()
     @IsNotEmpty()
     public _id: Types.ObjectId;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public size: string;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public color: string;
+    @Expose()
     @IsNotEmpty()
     @Type(() => ProductStockDto)
     public stock: ProductStockDto;
 }
 
 export class CreateProductDto {
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public name: string;
 }
 
 export class UpdateProductDto {
+    @Expose()
     @IsNotEmpty()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public _id: Types.ObjectId;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public name: string;
 }
 
 export class ProductPriceDto {
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
 }
 
 export class ProductDto {
+    @Expose()
     @IsNotEmpty()
     public _id: Types.ObjectId;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public name: string;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductVariantDto)
     public variants: ProductVariantDto[];
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductDevelopmentCostDto)
     public developmentCosts: ProductDevelopmentCostDto[];
+    @Expose()
     @IsNotEmpty()
     @Type(() => ProductAdditionalCostDto)
     public additionalCost: ProductAdditionalCostDto;
+    @Expose()
     @IsNotEmpty()
     @Type(() => ProductManufacturingCostDto)
     public manufacturingCost: ProductManufacturingCostDto;
-
-    public constructor(partial: ProductDto) {
-        Object.assign(this, partial);
-    }
 }

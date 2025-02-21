@@ -9,10 +9,9 @@ import {
     UseFilters,
     UseGuards,
 } from '@nestjs/common';
-import { OtherCost } from '@schemas/other-cost.schema';
 import { OtherCostService } from '@services/other-cost.service';
 import { ObjectId } from 'mongodb';
-import { CreateOtherCostDto, UpdateOtherCostDto } from 'src/dto/other-cost.dto';
+import { CreateOtherCostDto, OtherCostDto, UpdateOtherCostDto } from 'src/dto/other-cost.dto';
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -24,7 +23,7 @@ export class OtherCostController {
     public constructor(private readonly otherCostService: OtherCostService) {}
 
     @Get()
-    public async getAll(): Promise<OtherCost[]> {
+    public async getAll(): Promise<OtherCostDto[]> {
         return this.otherCostService.getAll();
     }
 
@@ -37,8 +36,8 @@ export class OtherCostController {
     }
 
     @Put()
-    public async update(@Body() fixedCost: UpdateOtherCostDto): Promise<SuccessDto> {
-        return this.otherCostService.update(fixedCost);
+    public async update(@Body() otherCost: UpdateOtherCostDto): Promise<SuccessDto> {
+        return this.otherCostService.update(otherCost);
     }
 
     @Delete(':id')

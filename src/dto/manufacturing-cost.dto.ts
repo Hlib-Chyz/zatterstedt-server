@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
@@ -10,45 +10,34 @@ import {
 } from 'class-validator';
 import { Types } from 'mongoose';
 
-export class ManufacturingCostDto {
-    @IsNotEmpty()
-    public _id: Types.ObjectId;
-    @IsNotEmpty()
-    @IsMongoId()
-    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
-    public productId: Types.ObjectId;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => JobDto)
-    public job: JobDto[];
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => InventoryDto)
-    public inventory: InventoryDto[];
-}
-
-export class CreateManufacturingCostDto {
-    @IsNotEmpty()
-    @IsMongoId()
-    public productId: Types.ObjectId;
-}
-
 export class ManufacturingCostJobDto {
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => JobDto)
     public job: JobDto[];
+}
+
+export class JobDto {
+    @Expose()
+    @IsString()
+    @IsNotEmpty()
+    public name: string;
+    @Expose()
+    @IsNumber()
+    @IsNotEmpty()
+    public cost: number;
 }
 
 export class ManufacturingCostInventoryDto {
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => InventoryDto)
     public inventory: InventoryDto[];
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -56,35 +45,32 @@ export class ManufacturingCostInventoryDto {
     public oldInventory: InventoryDto[];
 }
 
-export class JobDto {
-    @IsString()
-    @IsNotEmpty()
-    public name: string;
-    @IsNumber()
-    @IsNotEmpty()
-    public cost: number;
-}
-
 export class InventoryDto {
+    @Expose()
     @IsNotEmpty()
     @IsMongoId()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public inventoryId: Types.ObjectId;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public quantityInCost: number;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public quantityInUse: number;
+    @Expose()
     @IsNotEmpty()
     @IsBoolean()
     public duringManufacture: boolean;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public cost: number;
 }
 
 export class CanSaveInventoryDto {
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
@@ -95,6 +81,7 @@ export class CanSaveInventoryDto {
 }
 
 export class CanSaveInventoryResponseDto {
+    @Expose()
     @IsNotEmpty()
     @IsBoolean()
     public canSaveInventory: boolean;

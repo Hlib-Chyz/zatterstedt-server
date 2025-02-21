@@ -6,6 +6,7 @@ import { LoginDto, LoginResponseDto, VerifyCodeDto } from 'src/dto/auth.dto';
 import { UserDocument } from 'src/schemas/user.schema';
 import { ErrorService } from './error.service';
 import { UserService } from './user.service';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -24,25 +25,40 @@ export class AuthService {
                 throw new NotFoundException('Invalid credentials');
             }
             const token = await this.generateJwtToken(user);
-            return { success: true, token };
+            return plainToInstance(
+                LoginResponseDto,
+                { success: true, token },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to login');
-            return { success: false, token: '' };
+            return plainToInstance(
+                LoginResponseDto,
+                { success: false, token: '' },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
     public async verifyCode(verifyCodeInfo: VerifyCodeDto): Promise<LoginResponseDto> {
         try {
             const user = await this.userService.findByEmail(verifyCodeInfo.email);
-            if (user?.emailVerificationCode === verifyCodeInfo.code) {
-                const token = await this.generateJwtToken(user);
-                return { success: true, token };
-            } else {
+            if (user?.emailVerificationCode !== verifyCodeInfo.code) {
                 throw new NotFoundException('Invalid verification code');
             }
+            const token = await this.generateJwtToken(user);
+            return plainToInstance(
+                LoginResponseDto,
+                { success: true, token },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to verify code');
-            return { success: false, token: '' };
+            return plainToInstance(
+                LoginResponseDto,
+                { success: false, token: '' },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 

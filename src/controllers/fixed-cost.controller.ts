@@ -9,10 +9,9 @@ import {
     UseFilters,
     UseGuards,
 } from '@nestjs/common';
-import { FixedCost } from '@schemas/fixed-cost.schema';
 import { FixedCostService } from '@services/fixed-cost.service';
 import { ObjectId } from 'mongodb';
-import { CreateFixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
+import { CreateFixedCostDto, FixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -24,7 +23,7 @@ export class FixedCostController {
     public constructor(private readonly fixedCostService: FixedCostService) {}
 
     @Get()
-    public async getAll(): Promise<FixedCost[]> {
+    public async getAll(): Promise<FixedCostDto[]> {
         return this.fixedCostService.getAll();
     }
 

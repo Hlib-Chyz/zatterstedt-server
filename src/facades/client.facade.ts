@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ClientService } from '@services/client.service';
 import { ErrorService } from '@services/error.service';
 import { OrderService } from '@services/order.service';
+import { plainToInstance } from 'class-transformer';
 import { VariantFacade } from 'src/facades/variant.facade';
 
 @Injectable()
@@ -27,9 +28,9 @@ export class ClientFacade {
                         purchases.push(newPurchase);
                     }
                 }
-                res.push(new ClientDto({ ...client, purchases }));
+                res.push({ ...client, purchases });
             }
-            return res;
+            return plainToInstance(ClientDto, res, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all clients');
             return [];

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { CreateDevelopmentCostDto, UpdateDevelopmentCostDto } from 'src/dto/development-cost.dto';
@@ -10,7 +11,8 @@ import { ErrorService } from './error.service';
 @Injectable()
 export class DevelopmentCostService {
     public constructor(
-        @InjectModel(DevelopmentCost.name) private developmentCostModel: Model<DevelopmentCost>,
+        @InjectModel(DevelopmentCost.name)
+        private developmentCostModel: Model<DevelopmentCostDocument>,
         private readonly errorService: ErrorService
     ) {}
 
@@ -27,10 +29,18 @@ export class DevelopmentCostService {
         try {
             const createdDevelopmentCost = new this.developmentCostModel(developmentCost);
             await createdDevelopmentCost.save();
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add development cost');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -42,10 +52,18 @@ export class DevelopmentCostService {
             if (!updatedDevelopmentCost) {
                 throw new NotFoundException('Development cost not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update development cost');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -55,10 +73,10 @@ export class DevelopmentCostService {
             if (!result) {
                 throw new NotFoundException('Development cost not found');
             }
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete development cost');
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         }
     }
 }

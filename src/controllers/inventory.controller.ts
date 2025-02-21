@@ -9,9 +9,13 @@ import {
     UseFilters,
     UseGuards,
 } from '@nestjs/common';
-import { Inventory } from '@schemas/inventory.schema';
 import { ObjectId } from 'mongodb';
-import { CreateInventoryDto, SetUsedFieldDto, UpdateInventoryDto } from 'src/dto/inventory.dto';
+import {
+    CreateInventoryDto,
+    InventoryDto,
+    SetUsedFieldDto,
+    UpdateInventoryDto,
+} from 'src/dto/inventory.dto';
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -24,7 +28,7 @@ export class InventoryController {
     public constructor(private readonly inventoryService: InventoryService) {}
 
     @Get()
-    public async getAll(): Promise<Inventory[]> {
+    public async getAll(): Promise<InventoryDto[]> {
         return this.inventoryService.getAll();
     }
 

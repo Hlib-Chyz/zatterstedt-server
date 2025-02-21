@@ -1,22 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
-import { CreateOtherCostDto, UpdateOtherCostDto } from 'src/dto/other-cost.dto';
+import { CreateOtherCostDto, OtherCostDto, UpdateOtherCostDto } from 'src/dto/other-cost.dto';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
-import { OtherCost } from 'src/schemas/other-cost.schema';
+import { OtherCost, OtherCostDocument } from 'src/schemas/other-cost.schema';
 import { ErrorService } from './error.service';
 
 @Injectable()
 export class OtherCostService {
     public constructor(
-        @InjectModel(OtherCost.name) private otherCostModel: Model<OtherCost>,
+        @InjectModel(OtherCost.name) private otherCostModel: Model<OtherCostDocument>,
         private readonly errorService: ErrorService
     ) {}
 
-    public async getAll(): Promise<OtherCost[]> {
+    public async getAll(): Promise<OtherCostDto[]> {
         try {
-            return await this.otherCostModel.find().exec();
+            const res = await this.otherCostModel.find().exec();
+            return plainToInstance(OtherCostDto, res, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all other costs');
             return [];
@@ -27,10 +29,18 @@ export class OtherCostService {
         try {
             const newOtherCost = new this.otherCostModel(otherCost);
             await newOtherCost.save();
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create other costs');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -42,10 +52,18 @@ export class OtherCostService {
             if (!result) {
                 throw new NotFoundException('Other cost not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update other cost');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -55,10 +73,10 @@ export class OtherCostService {
             if (!result) {
                 throw new NotFoundException('Other cost not found');
             }
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete other cost');
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         }
     }
 }

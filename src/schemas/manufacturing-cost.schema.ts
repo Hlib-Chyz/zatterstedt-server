@@ -3,18 +3,16 @@ import { HydratedDocument, Types } from 'mongoose';
 import { Inventory } from './inventory.schema';
 import { Product } from './product.schema';
 
-export type ManufacturingCostDocument = HydratedDocument<ManufacturingCost>;
-
 @Schema()
-export class Job {
+class Job {
     @Prop({ type: String, required: true, unique: true }) public name: string;
     @Prop({ type: Number, required: true }) public cost: number;
 }
 
-export const JobSchema = SchemaFactory.createForClass(Job);
+const JobSchema = SchemaFactory.createForClass(Job);
 
 @Schema()
-export class InventoryItem {
+class InventoryItem {
     @Prop({ type: Types.ObjectId, required: true, unique: true, ref: Inventory.name })
     public inventoryId: Types.ObjectId;
     @Prop({ type: Number, required: true }) public quantityInCost: number;
@@ -23,7 +21,9 @@ export class InventoryItem {
     @Prop({ type: Number, required: true }) public cost: number;
 }
 
-export const InventorySchema = SchemaFactory.createForClass(InventoryItem);
+const InventorySchema = SchemaFactory.createForClass(InventoryItem);
+
+export type ManufacturingCostDocument = HydratedDocument<ManufacturingCost>;
 
 @Schema()
 export class ManufacturingCost {

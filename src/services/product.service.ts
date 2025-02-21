@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { CreateProductDto, UpdateProductDto } from 'src/dto/product.dto';
@@ -10,7 +11,7 @@ import { ErrorService } from './error.service';
 @Injectable()
 export class ProductService {
     public constructor(
-        @InjectModel(Product.name) private productModel: Model<Product>,
+        @InjectModel(Product.name) private productModel: Model<ProductDocument>,
         private readonly errorService: ErrorService
     ) {}
 
@@ -29,10 +30,18 @@ export class ProductService {
             if (!result) {
                 throw new NotFoundException('Product not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update a product');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -44,14 +53,22 @@ export class ProductService {
             if (!updatedProduct) {
                 throw new NotFoundException('Product not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change price of product');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
-    public async getByName(name: string): Promise<Product> {
+    public async getByName(name: string): Promise<ProductDocument> {
         try {
             const product = await this.productModel.findOne({ name }).exec();
             if (!product) {
@@ -60,11 +77,11 @@ export class ProductService {
             return product;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get product');
-            return {} as Product;
+            return {} as ProductDocument;
         }
     }
 
-    public async getByNameWithoutCheck(name: string): Promise<Product | null> {
+    public async getByNameWithoutCheck(name: string): Promise<ProductDocument | null> {
         try {
             return await this.productModel.findOne({ name }).exec();
         } catch (error) {
@@ -84,7 +101,7 @@ export class ProductService {
         }
     }
 
-    public async getById(id: ObjectId): Promise<Product> {
+    public async getById(id: ObjectId): Promise<ProductDocument> {
         try {
             const product = await this.productModel.findById(id).exec();
             if (!product) {
@@ -93,7 +110,7 @@ export class ProductService {
             return product;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get product');
-            return {} as Product;
+            return {} as ProductDocument;
         }
     }
 }

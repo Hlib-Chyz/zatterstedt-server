@@ -1,6 +1,7 @@
 import { SuccessDto } from '@dto/shared.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { CreateOrderDto } from 'src/dto/order.dto';
@@ -10,11 +11,11 @@ import { ErrorService } from './error.service';
 @Injectable()
 export class OrderService {
     public constructor(
-        @InjectModel(Order.name) private orderModel: Model<Order>,
+        @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByVariantId(variantId: ObjectId): Promise<Order[]> {
+    public async getByVariantId(variantId: ObjectId): Promise<OrderDocument[]> {
         try {
             return await this.orderModel.find({ 'variants._id': variantId }).exec();
         } catch (error) {
@@ -55,10 +56,18 @@ export class OrderService {
                 orderNumber,
             });
             await newOrder.save();
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 }

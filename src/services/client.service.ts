@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 import { Model, Types } from 'mongoose';
-import { CreateClientContactsDto } from 'src/dto/client.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { Client, ClientDocument } from 'src/schemas/client.schema';
 import { ErrorService } from './error.service';
@@ -10,13 +10,13 @@ import { ErrorService } from './error.service';
 @Injectable()
 export class ClientService {
     public constructor(
-        @InjectModel(Client.name) private clientModel: Model<Client>,
+        @InjectModel(Client.name) private clientModel: Model<ClientDocument>,
         private readonly errorService: ErrorService
     ) {}
 
-    public async add(client: CreateClientContactsDto): Promise<Types.ObjectId> {
+    public async add(name: string, contact: string): Promise<Types.ObjectId> {
         try {
-            const newClient = new this.clientModel(client);
+            const newClient = new this.clientModel({ name, contact });
             await newClient.save();
             return newClient._id;
         } catch (error) {
@@ -44,10 +44,18 @@ export class ClientService {
             if (!updatedClient) {
                 throw new NotFoundException('Client not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update contact');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 

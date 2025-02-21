@@ -7,14 +7,8 @@ import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
-import {
-    CreateProductDto,
-    ProductAdditionalCostDto,
-    ProductDevelopmentCostDto,
-    ProductDto,
-    ProductManufacturingCostDto,
-    ProductVariantDto,
-} from 'src/dto/product.dto';
+import { plainToInstance } from 'class-transformer';
+import { CreateProductDto, ProductDto, ProductVariantDto } from 'src/dto/product.dto';
 
 @Injectable()
 export class ProductFacade {
@@ -55,34 +49,24 @@ export class ProductFacade {
                         },
                     });
                 }
-                res.push(
-                    new ProductDto({
-                        _id: product._id,
-                        name: product.name,
-                        price: product.price,
-                        variants: resVariant,
-                        developmentCosts: developmentCosts?.map(
-                            (val) =>
-                                new ProductDevelopmentCostDto({
-                                    _id: val._id,
-                                    date: val.date,
-                                    description: val.description,
-                                    cost: val.cost,
-                                })
-                        ),
-                        additionalCost: new ProductAdditionalCostDto({
-                            _id: additionalCost._id,
-                            cost: additionalCost.cost,
-                        }),
-                        manufacturingCost: new ProductManufacturingCostDto({
-                            _id: manufacturingCost._id,
-                            inventory: manufacturingCost.inventory,
-                            job: manufacturingCost.job,
-                        }),
-                    })
-                );
+                res.push({
+                    _id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    variants: resVariant,
+                    developmentCosts,
+                    additionalCost: {
+                        _id: additionalCost._id,
+                        cost: additionalCost.cost,
+                    },
+                    manufacturingCost: {
+                        _id: manufacturingCost._id,
+                        inventory: manufacturingCost.inventory,
+                        job: manufacturingCost.job,
+                    },
+                });
             }
-            return res;
+            return plainToInstance(ProductDto, res, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all products');
             return [];
@@ -102,10 +86,18 @@ export class ProductFacade {
             await this.manufacturingCostService.add({
                 productId: newProduct._id,
             });
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new product');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 }

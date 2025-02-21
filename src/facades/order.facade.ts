@@ -8,6 +8,7 @@ import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { OrderService } from '@services/order.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
+import { plainToInstance } from 'class-transformer';
 import { Types } from 'mongoose';
 import { VariantFacade } from 'src/facades/variant.facade';
 
@@ -36,18 +37,15 @@ export class OrderFacade {
                         `${await this.variantFacade.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`
                     );
                 }
-
-                res.push(
-                    new OrderDto({
-                        _id: order._id,
-                        date: order.date,
-                        client: `${client.name} - ${client.contact}`,
-                        variants: resVariant,
-                        orderNumber: order.orderNumber,
-                    })
-                );
+                res.push({
+                    _id: order._id,
+                    date: order.date,
+                    client: `${client.name} - ${client.contact}`,
+                    variants: resVariant,
+                    orderNumber: order.orderNumber,
+                });
             }
-            return res;
+            return plainToInstance(OrderDto, res, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get orders');
             return [];
@@ -83,10 +81,18 @@ export class OrderFacade {
             }
             const orders = await this.orderService.getAll();
             await this.orderService.add(clientId, order, orders.length);
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 }

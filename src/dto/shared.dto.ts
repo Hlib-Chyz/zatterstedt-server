@@ -1,24 +1,19 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
+import { Expose } from 'class-transformer';
 import { IsBoolean, IsNotEmpty } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class DeleteGetDto {
+    @Expose()
     @IsNotEmpty()
     public id: Types.ObjectId;
-
-    public constructor(partial: DeleteGetDto) {
-        Object.assign(this, partial);
-    }
 }
 
 export class SuccessDto {
+    @Expose()
     @IsNotEmpty()
     @IsBoolean()
     public success: boolean;
-
-    public constructor(partial: SuccessDto) {
-        Object.assign(this, partial);
-    }
 }
 
 export class ParseObjectIdPipe implements PipeTransform {

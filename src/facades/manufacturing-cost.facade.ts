@@ -10,6 +10,7 @@ import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { OrderService } from '@services/order.service';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
@@ -35,10 +36,18 @@ export class ManufacturingCostFacade {
                 manufacturingCostInventory.inventory,
                 manufacturingCost
             );
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add inventory');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -54,10 +63,18 @@ export class ManufacturingCostFacade {
                     break;
                 }
             }
-            return { canSaveInventory };
+            return plainToInstance(
+                CanSaveInventoryResponseDto,
+                { canSaveInventory },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get can save inventory property');
-            return { canSaveInventory: false };
+            return plainToInstance(
+                CanSaveInventoryResponseDto,
+                { canSaveInventory: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 

@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
     ArrayNotEmpty,
     IsArray,
@@ -32,54 +32,41 @@ export class CreateOrderDto {
     public variants: VariantOrderDto[];
 }
 
+export class VariantOrderDto {
+    @Expose()
+    @IsNotEmpty()
+    @IsMongoId()
+    public _id: Types.ObjectId;
+    @Expose()
+    @IsNumber()
+    @IsNotEmpty()
+    public quantity: number;
+    @Expose()
+    @IsNumber()
+    @IsNotEmpty()
+    public price: number;
+}
+
 export class OrderDto {
+    @Expose()
     @IsNotEmpty()
     public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsDate()
     public date: Date;
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public orderNumber: string;
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public client: string;
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ArrayNotEmpty()
     @IsString({ each: true })
     public variants: string[];
-
-    public constructor(partial: OrderDto) {
-        Object.assign(this, partial);
-    }
-}
-
-export class OrderVariantDto {
-    @IsNotEmpty()
-    public _id: Types.ObjectId;
-    @IsNotEmpty()
-    @IsDateString()
-    public date: string;
-    @IsNotEmpty()
-    @IsMongoId()
-    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
-    public clientId: Types.ObjectId;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => VariantOrderDto)
-    public variants: VariantOrderDto[];
-}
-
-export class VariantOrderDto {
-    @IsNotEmpty()
-    @IsMongoId()
-    public _id: Types.ObjectId;
-    @IsNumber()
-    @IsNotEmpty()
-    public quantity: number;
-    @IsNumber()
-    @IsNotEmpty()
-    public price: number;
 }

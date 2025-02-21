@@ -2,21 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
-import { CreateFixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
+import { CreateFixedCostDto, FixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
-import { FixedCost } from 'src/schemas/fixed-cost.schema';
+import { FixedCost, FixedCostDocument } from 'src/schemas/fixed-cost.schema';
 import { ErrorService } from './error.service';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class FixedCostService {
     public constructor(
-        @InjectModel(FixedCost.name) private fixedCostModel: Model<FixedCost>,
+        @InjectModel(FixedCost.name) private fixedCostModel: Model<FixedCostDocument>,
         private readonly errorService: ErrorService
     ) {}
 
-    public async getAll(): Promise<FixedCost[]> {
+    public async getAll(): Promise<FixedCostDto[]> {
         try {
-            return await this.fixedCostModel.find().exec();
+            const fixedCosts = await this.fixedCostModel.find().exec();
+            return plainToInstance(FixedCostDto, fixedCosts, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all fixed costs');
             return [];
@@ -27,10 +29,18 @@ export class FixedCostService {
         try {
             const createdFixedCost = new this.fixedCostModel(fixedCost);
             await createdFixedCost.save();
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add fixed cost');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -42,10 +52,18 @@ export class FixedCostService {
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update fixed cost');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -55,10 +73,10 @@ export class FixedCostService {
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete fixed cost');
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         }
     }
 }

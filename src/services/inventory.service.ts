@@ -1,23 +1,31 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
-import { CreateInventoryDto, SetUsedFieldDto, UpdateInventoryDto } from 'src/dto/inventory.dto';
+import {
+    CreateInventoryDto,
+    InventoryDto,
+    SetUsedFieldDto,
+    UpdateInventoryDto,
+} from 'src/dto/inventory.dto';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
-import { Inventory } from 'src/schemas/inventory.schema';
+import { Inventory, InventoryDocument } from 'src/schemas/inventory.schema';
 import { ErrorService } from './error.service';
 
 @Injectable()
 export class InventoryService {
     public constructor(
-        @InjectModel(Inventory.name) private inventoryModel: Model<Inventory>,
+        @InjectModel(Inventory.name) private inventoryModel: Model<InventoryDocument>,
         private readonly errorService: ErrorService
     ) {}
 
-    public async getAll(): Promise<Inventory[]> {
+    public async getAll(): Promise<InventoryDto[]> {
         try {
             const inventory = await this.inventoryModel.find().exec();
-            return inventory.reverse();
+            return plainToInstance(InventoryDto, inventory.reverse(), {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all inventory');
             return [];
@@ -28,10 +36,18 @@ export class InventoryService {
         try {
             const inventoryCost = new this.inventoryModel(inventory);
             await inventoryCost.save();
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create inventory');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -43,10 +59,18 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update inventory');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -56,10 +80,10 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete inventory');
-            return new DeleteGetDto({ id });
+            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         }
     }
 
@@ -73,10 +97,18 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change inventory amount');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -88,10 +120,18 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set used field');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 }

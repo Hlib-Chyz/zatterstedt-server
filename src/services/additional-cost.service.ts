@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { CreateAdditionalCostDto, UpdateAdditionalCostDto } from 'src/dto/additional-cost.dto';
+import { plainToInstance } from 'class-transformer';
+import { ObjectId } from 'mongodb';
+import { Model, Types } from 'mongoose';
+import { UpdateAdditionalCostDto } from 'src/dto/additional-cost.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { AdditionalCost, AdditionalCostDocument } from 'src/schemas/additional-cost.schema';
 import { ErrorService } from './error.service';
-import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class AdditionalCostService {
@@ -23,21 +24,37 @@ export class AdditionalCostService {
             if (!updatedCost) {
                 throw new NotFoundException('Additional cost not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update additional cost');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
-    public async add(additionalCost: CreateAdditionalCostDto): Promise<SuccessDto> {
+    public async add(productId: Types.ObjectId): Promise<SuccessDto> {
         try {
-            const newCost = new this.additionalCostModel(additionalCost);
+            const newCost = new this.additionalCostModel({ productId });
             await newCost.save();
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add additional cost');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 

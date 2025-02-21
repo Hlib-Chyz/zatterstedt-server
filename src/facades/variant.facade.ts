@@ -11,6 +11,7 @@ import { OrderService } from '@services/order.service';
 import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
@@ -35,7 +36,7 @@ export class VariantFacade {
                     };
                 })
             );
-            return data;
+            return plainToInstance(VariantLockupDto, data, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get variants');
             return [];
@@ -74,10 +75,18 @@ export class VariantFacade {
                     variantId: newVariantId,
                 });
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set variants');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -93,10 +102,18 @@ export class VariantFacade {
                     break;
                 }
             }
-            return { canSaveVariant };
+            return plainToInstance(
+                CanSaveVariantResponseDto,
+                { canSaveVariant },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get canSaveVariant property');
-            return { canSaveVariant: false };
+            return plainToInstance(
+                CanSaveVariantResponseDto,
+                { canSaveVariant: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 }

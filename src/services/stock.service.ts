@@ -1,20 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { SuccessDto } from 'src/dto/shared.dto';
-import { CreateStockDto, SetRealizedPartyDto } from 'src/dto/stock.dto';
-import { Stock } from 'src/schemas/stock.schema';
+import { SetRealizedPartyDto } from 'src/dto/stock.dto';
+import { Stock, StockDocument } from 'src/schemas/stock.schema';
 import { ErrorService } from './error.service';
+import { CreateStockType } from 'src/types/stock.types';
 
 @Injectable()
 export class StockService {
     public constructor(
-        @InjectModel(Stock.name) private stockModel: Model<Stock>,
+        @InjectModel(Stock.name) private stockModel: Model<StockDocument>,
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByVariantId(variantId: ObjectId): Promise<Stock> {
+    public async getByVariantId(variantId: ObjectId): Promise<StockDocument> {
         try {
             const stock = await this.stockModel.findOne({ variantId }).exec();
             if (!stock) {
@@ -23,7 +25,7 @@ export class StockService {
             return stock;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get stock by variant id');
-            return {} as Stock;
+            return {} as StockDocument;
         }
     }
 
@@ -36,21 +38,37 @@ export class StockService {
                     throw new NotFoundException('Stock not found');
                 }
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to remove by variant id');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
-    public async add(stock: CreateStockDto): Promise<SuccessDto> {
+    public async add(stock: CreateStockType): Promise<SuccessDto> {
         try {
             const newStock = new this.stockModel({ ...stock, realizedParty: stock.total });
             await newStock.save();
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new stock');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -67,10 +85,18 @@ export class StockService {
             if (!result) {
                 throw new NotFoundException('Stock not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to increase sold');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -87,10 +113,18 @@ export class StockService {
             if (!result) {
                 throw new NotFoundException('Stock not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set realized party');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 
@@ -107,10 +141,18 @@ export class StockService {
             if (!result) {
                 throw new NotFoundException('Stock not found');
             }
-            return new SuccessDto({ success: true });
+            return plainToInstance(
+                SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to decrease realized party');
-            return new SuccessDto({ success: false });
+            return plainToInstance(
+                SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 }
