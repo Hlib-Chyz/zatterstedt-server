@@ -4,7 +4,7 @@ import { Product } from './product.schema';
 
 export type DevelopmentCostDocument = HydratedDocument<DevelopmentCost>;
 
-@Schema()
+@Schema({ collection: 'development_costs' })
 export class DevelopmentCost {
     @Prop({ type: Date, required: true }) public date: Date;
     @Prop({ type: String, required: true }) public description: string;

@@ -115,7 +115,7 @@ tslib_1.__decorate(
     void 0
 );
 exports.ManufacturingCost = ManufacturingCost = tslib_1.__decorate(
-    [(0, mongoose_1.Schema)()],
+    [(0, mongoose_1.Schema)({ collection: 'manufacturing_costs' })],
     ManufacturingCost
 );
 exports.ManufacturingCostSchema = mongoose_1.SchemaFactory.createForClass(ManufacturingCost);

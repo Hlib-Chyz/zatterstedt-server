@@ -4,7 +4,7 @@ import { Product } from 'src/schemas/product.schema';
 
 export type AdditionalCostDocument = HydratedDocument<AdditionalCost>;
 
-@Schema()
+@Schema({ collection: 'additional_costs' })
 export class AdditionalCost {
     @Prop({ type: Types.ObjectId, ref: Product.name, required: true, unique: true })
     public productId: Types.ObjectId;

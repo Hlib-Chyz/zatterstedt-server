@@ -11,7 +11,7 @@ import { ProductController } from '@controllers/product.controller';
 import { StockController } from '@controllers/stock.controller';
 import { VariantController } from '@controllers/variant.controller';
 import { schemas, ZatterstedtMongooseModule } from '@modules/mongoose.module';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -35,7 +35,6 @@ import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
 import { OrderFacade } from 'src/facades/order.facade';
 import { ProductFacade } from 'src/facades/product.facade';
 import { VariantFacade } from 'src/facades/variant.facade';
-import { LogMiddleware } from 'src/middleware/log.middleware';
 import { ZatterstedtMailerModule } from './modules/mailer.module';
 import { StockService } from './services/stock.service';
 
@@ -94,8 +93,4 @@ import { StockService } from './services/stock.service';
         LogService,
     ],
 })
-export class AppModule implements NestModule {
-    public configure(consumer: MiddlewareConsumer): void {
-        consumer.apply(LogMiddleware).forRoutes('*');
-    }
-}
+export class AppModule {}

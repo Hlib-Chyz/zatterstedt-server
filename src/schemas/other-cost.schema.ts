@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type OtherCostDocument = HydratedDocument<OtherCost>;
 
-@Schema()
+@Schema({ collection: 'other_costs' })
 export class OtherCost {
     @Prop({ type: Date, required: true }) public date: Date;
     @Prop({ type: String, required: true }) public name: string;

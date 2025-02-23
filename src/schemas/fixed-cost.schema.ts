@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type FixedCostDocument = HydratedDocument<FixedCost>;
 
-@Schema()
+@Schema({ collection: 'fixed_costs' })
 export class FixedCost {
     @Prop({ type: String, required: true, unique: true }) public name: string;
     @Prop({ type: Number, required: true }) public cost: number;

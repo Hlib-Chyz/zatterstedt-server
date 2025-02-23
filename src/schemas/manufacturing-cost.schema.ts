@@ -25,7 +25,7 @@ const InventorySchema = SchemaFactory.createForClass(InventoryItem);
 
 export type ManufacturingCostDocument = HydratedDocument<ManufacturingCost>;
 
-@Schema()
+@Schema({ collection: 'manufacturing_costs' })
 export class ManufacturingCost {
     @Prop({ type: Types.ObjectId, required: true, unique: true, ref: Product.name })
     public productId: Types.ObjectId;
