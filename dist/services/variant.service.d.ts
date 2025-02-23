@@ -1,17 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { CreateVariantType } from '@strategies/variant.types';
+import { Model, Types } from 'mongoose';
 import { SuccessDto } from 'src/dto/shared.dto';
-import { CreateVariantDto } from 'src/dto/variant.dto';
-import { Variant, VariantDocument } from 'src/schemas/variant.schema';
+import { VariantDocument } from 'src/schemas/variant.schema';
 import { ErrorService } from './error.service';
 export declare class VariantService {
     private variantModel;
     private readonly errorService;
-    constructor(variantModel: Model<Variant>, errorService: ErrorService);
-    getAllByProductId(productId: ObjectId): Promise<VariantDocument[]>;
-    getById(id: ObjectId): Promise<Variant>;
+    constructor(variantModel: Model<VariantDocument>, errorService: ErrorService);
+    getAllByProductId(productId: Types.ObjectId): Promise<VariantDocument[]>;
+    getById(id: Types.ObjectId): Promise<VariantDocument>;
     getAll(): Promise<VariantDocument[]>;
-    deleteManyByProductId(productId: ObjectId): Promise<SuccessDto>;
-    getProductId(variantId: ObjectId): Promise<ObjectId>;
-    add(variant: CreateVariantDto): Promise<ObjectId>;
+    deleteManyByProductId(productId: Types.ObjectId): Promise<SuccessDto>;
+    getProductId(variantId: Types.ObjectId): Promise<Types.ObjectId>;
+    add(variant: CreateVariantType): Promise<Types.ObjectId>;
 }

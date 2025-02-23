@@ -2,8 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateVariantType } from '@strategies/variant.types';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { Variant, VariantDocument } from 'src/schemas/variant.schema';
 import { ErrorService } from './error.service';
@@ -15,7 +14,7 @@ export class VariantService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async getAllByProductId(productId: ObjectId): Promise<VariantDocument[]> {
+    public async getAllByProductId(productId: Types.ObjectId): Promise<VariantDocument[]> {
         try {
             return await this.variantModel.find({ productId }).exec();
         } catch (error) {
@@ -24,7 +23,7 @@ export class VariantService {
         }
     }
 
-    public async getById(id: ObjectId): Promise<VariantDocument> {
+    public async getById(id: Types.ObjectId): Promise<VariantDocument> {
         try {
             const variant = await this.variantModel.findById(id).exec();
             if (!variant) {
@@ -46,7 +45,7 @@ export class VariantService {
         }
     }
 
-    public async deleteManyByProductId(productId: ObjectId): Promise<SuccessDto> {
+    public async deleteManyByProductId(productId: Types.ObjectId): Promise<SuccessDto> {
         try {
             await this.variantModel.deleteMany({ productId }).exec();
             return plainToInstance(
@@ -64,7 +63,7 @@ export class VariantService {
         }
     }
 
-    public async getProductId(variantId: ObjectId): Promise<ObjectId> {
+    public async getProductId(variantId: Types.ObjectId): Promise<Types.ObjectId> {
         try {
             const variant = await this.variantModel.findById(variantId).exec();
             if (!variant) {
@@ -73,18 +72,18 @@ export class VariantService {
             return variant.productId;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get product id');
-            return {} as ObjectId;
+            return {} as Types.ObjectId;
         }
     }
 
-    public async add(variant: CreateVariantType): Promise<ObjectId> {
+    public async add(variant: CreateVariantType): Promise<Types.ObjectId> {
         try {
             const newVariant = new this.variantModel(variant);
             const savedVariant = await newVariant.save();
             return savedVariant._id;
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new variant');
-            return '' as unknown as ObjectId;
+            return '' as unknown as Types.ObjectId;
         }
     }
 }

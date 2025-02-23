@@ -11,7 +11,7 @@ import { InventoryService } from '@services/inventory.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { OrderService } from '@services/order.service';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class ManufacturingCostFacade {
@@ -23,7 +23,7 @@ export class ManufacturingCostFacade {
     ) {}
 
     public async updateInventory(
-        id: ObjectId,
+        id: Types.ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto> {
         try {

@@ -80,12 +80,8 @@ export class ProductFacade {
                 throw new ConflictException('A product with the given name already exists');
             }
             const newProduct = await this.productService.add(product);
-            await this.additionalCostService.add({
-                productId: newProduct._id,
-            });
-            await this.manufacturingCostService.add({
-                productId: newProduct._id,
-            });
+            await this.additionalCostService.add(newProduct._id);
+            await this.manufacturingCostService.add(newProduct._id);
             return plainToInstance(
                 SuccessDto,
                 { success: true },

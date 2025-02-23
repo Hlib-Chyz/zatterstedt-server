@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
     CreateInventoryDto,
     InventoryDto,
@@ -74,7 +73,7 @@ export class InventoryService {
         }
     }
 
-    public async delete(id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(id: Types.ObjectId): Promise<DeleteGetDto> {
         try {
             const result = await this.inventoryModel.findByIdAndDelete(id).exec();
             if (!result) {
@@ -87,7 +86,11 @@ export class InventoryService {
         }
     }
 
-    public async updateUsedAndPaid(id: ObjectId, used: number, paid: number): Promise<SuccessDto> {
+    public async updateUsedAndPaid(
+        id: Types.ObjectId,
+        used: number,
+        paid: number
+    ): Promise<SuccessDto> {
         try {
             const result = await this.inventoryModel
                 .findByIdAndUpdate(id, {

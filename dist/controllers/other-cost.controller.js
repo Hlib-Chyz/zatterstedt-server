@@ -4,7 +4,7 @@ exports.OtherCostController = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const other_cost_service_1 = require('../services/other-cost.service');
-const mongodb_1 = require('mongodb');
+const mongoose_1 = require('mongoose');
 const other_cost_dto_1 = require('../dto/other-cost.dto');
 const shared_dto_1 = require('../dto/shared.dto');
 const error_filter_1 = require('../filters/error.filter');
@@ -19,8 +19,8 @@ let OtherCostController = class OtherCostController {
     async add(otherCost) {
         return this.otherCostService.add(otherCost);
     }
-    async update(fixedCost) {
-        return this.otherCostService.update(fixedCost);
+    async update(otherCost) {
+        return this.otherCostService.update(otherCost);
     }
     async delete(id) {
         return this.otherCostService.delete(id);
@@ -67,7 +67,7 @@ tslib_1.__decorate(
         (0, common_1.Delete)(':id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [mongodb_1.ObjectId]),
+        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     OtherCostController.prototype,

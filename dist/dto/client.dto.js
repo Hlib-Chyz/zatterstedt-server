@@ -1,20 +1,18 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.UpdateClientContactsDto = exports.CreateClientContactsDto = exports.ClientDto = void 0;
+exports.UpdateClientContactDto = exports.ClientDto = void 0;
 const tslib_1 = require('tslib');
+const class_transformer_1 = require('class-transformer');
 const class_validator_1 = require('class-validator');
-const mongodb_1 = require('mongodb');
-class ClientDto {
-    constructor(partial) {
-        Object.assign(this, partial);
-    }
-}
+const mongoose_1 = require('mongoose');
+class ClientDto {}
 exports.ClientDto = ClientDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
-        tslib_1.__metadata('design:type', mongodb_1.ObjectId),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     ClientDto.prototype,
     '_id',
@@ -22,6 +20,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
@@ -32,6 +31,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
@@ -42,6 +42,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsArray)(),
         (0, class_validator_1.IsString)({ each: true }),
@@ -51,37 +52,16 @@ tslib_1.__decorate(
     'purchases',
     void 0
 );
-class CreateClientContactsDto {}
-exports.CreateClientContactsDto = CreateClientContactsDto;
+class UpdateClientContactDto {}
+exports.UpdateClientContactDto = UpdateClientContactDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
     ],
-    CreateClientContactsDto.prototype,
-    'name',
-    void 0
-);
-tslib_1.__decorate(
-    [
-        (0, class_validator_1.IsString)(),
-        (0, class_validator_1.IsNotEmpty)(),
-        tslib_1.__metadata('design:type', String),
-    ],
-    CreateClientContactsDto.prototype,
-    'contact',
-    void 0
-);
-class UpdateClientContactsDto {}
-exports.UpdateClientContactsDto = UpdateClientContactsDto;
-tslib_1.__decorate(
-    [
-        (0, class_validator_1.IsString)(),
-        (0, class_validator_1.IsNotEmpty)(),
-        tslib_1.__metadata('design:type', String),
-    ],
-    UpdateClientContactsDto.prototype,
+    UpdateClientContactDto.prototype,
     'contact',
     void 0
 );

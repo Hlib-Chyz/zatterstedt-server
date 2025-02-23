@@ -3,6 +3,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.OrderFacade = void 0;
 const tslib_1 = require('tslib');
 const order_dto_1 = require('../dto/order.dto');
+const shared_dto_1 = require('../dto/shared.dto');
 const common_1 = require('@nestjs/common');
 const client_service_1 = require('../services/client.service');
 const error_service_1 = require('../services/error.service');
@@ -11,6 +12,7 @@ const manufacturing_cost_service_1 = require('../services/manufacturing-cost.ser
 const order_service_1 = require('../services/order.service');
 const stock_service_1 = require('../services/stock.service');
 const variant_service_1 = require('../services/variant.service');
+const class_transformer_1 = require('class-transformer');
 const variant_facade_1 = require('./variant.facade');
 let OrderFacade = class OrderFacade {
     constructor(
@@ -44,17 +46,17 @@ let OrderFacade = class OrderFacade {
                         `${await this.variantFacade.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`
                     );
                 }
-                res.push(
-                    new order_dto_1.OrderDto({
-                        _id: order._id,
-                        date: order.date,
-                        client: `${client.name} - ${client.contact}`,
-                        variants: resVariant,
-                        orderNumber: order.orderNumber,
-                    })
-                );
+                res.push({
+                    _id: order._id,
+                    date: order.date,
+                    client: `${client.name} - ${client.contact}`,
+                    variants: resVariant,
+                    orderNumber: order.orderNumber,
+                });
             }
-            return res;
+            return (0, class_transformer_1.plainToInstance)(order_dto_1.OrderDto, res, {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get orders');
             return [];
@@ -64,10 +66,7 @@ let OrderFacade = class OrderFacade {
         try {
             let clientId = null;
             if (!order.clientId) {
-                clientId = await this.clientService.add({
-                    name: order.clientName,
-                    contact: order.contact,
-                });
+                clientId = await this.clientService.add(order.clientName, order.contact);
             }
             for (const variant of order.variants) {
                 if (variant.price === 0) {
@@ -89,10 +88,18 @@ let OrderFacade = class OrderFacade {
             }
             const orders = await this.orderService.getAll();
             await this.orderService.add(clientId, order, orders.length);
-            return { success: true };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 };

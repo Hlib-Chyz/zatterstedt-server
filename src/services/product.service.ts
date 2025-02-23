@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateProductDto, UpdateProductDto } from 'src/dto/product.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
@@ -45,7 +44,7 @@ export class ProductService {
         }
     }
 
-    public async updatePrice(productId: ObjectId, price: number): Promise<SuccessDto> {
+    public async updatePrice(productId: Types.ObjectId, price: number): Promise<SuccessDto> {
         try {
             const updatedProduct = await this.productModel
                 .findByIdAndUpdate(productId, { price })
@@ -101,7 +100,7 @@ export class ProductService {
         }
     }
 
-    public async getById(id: ObjectId): Promise<ProductDocument> {
+    public async getById(id: Types.ObjectId): Promise<ProductDocument> {
         try {
             const product = await this.productModel.findById(id).exec();
             if (!product) {

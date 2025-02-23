@@ -1,6 +1,7 @@
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { Body, Controller, Get, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+import { ProductService } from '@services/product.service';
+import { Types } from 'mongoose';
 import {
     CreateProductDto,
     ProductDto,
@@ -10,7 +11,6 @@ import {
 import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { ProductFacade } from 'src/facades/product.facade';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
-import { ProductService } from '@services/product.service';
 
 @Controller('product')
 @UseFilters(new HttpExceptionFilter())
@@ -38,7 +38,7 @@ export class ProductController {
 
     @Put('price/:id')
     public async updatePrice(
-        @Param('id', ParseObjectIdPipe) id: ObjectId,
+        @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
         @Body() { price }: ProductPriceDto
     ): Promise<SuccessDto> {
         return this.productService.updatePrice(id, price);

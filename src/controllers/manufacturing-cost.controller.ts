@@ -1,5 +1,6 @@
 import { Body, Controller, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { Types } from 'mongoose';
 import {
     CanSaveInventoryDto,
     CanSaveInventoryResponseDto,
@@ -10,7 +11,6 @@ import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 
 @Controller('manufacturing-cost')
 @UseFilters(new HttpExceptionFilter())
@@ -23,7 +23,7 @@ export class ManufacturingCostController {
 
     @Put('job/:id')
     public async updateJob(
-        @Param('id', ParseObjectIdPipe) id: ObjectId,
+        @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
         @Body() { job }: ManufacturingCostJobDto
     ): Promise<SuccessDto> {
         return this.manufacturingCostService.updateJob(id, job);
@@ -31,7 +31,7 @@ export class ManufacturingCostController {
 
     @Put('inventory/:id')
     public async updateInventory(
-        @Param('id', ParseObjectIdPipe) id: ObjectId,
+        @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
         @Body() manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto> {
         return this.manufacturingCostFacade.updateInventory(id, manufacturingCostInventory);

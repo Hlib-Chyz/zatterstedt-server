@@ -3,6 +3,8 @@ import { Variant } from '@schemas/variant.schema';
 import { HydratedDocument, Types } from 'mongoose';
 import { Client } from './client.schema';
 
+type VariantItemDocument = HydratedDocument<VariantItem>;
+
 @Schema()
 class VariantItem {
     @Prop({ type: Types.ObjectId, required: true, unique: true, ref: Variant.name })
@@ -11,7 +13,7 @@ class VariantItem {
     @Prop({ type: Number, required: true }) public price: number;
 }
 
-const VariantSchema = SchemaFactory.createForClass(VariantItem);
+const VariantItemSchema = SchemaFactory.createForClass(VariantItem);
 
 export type OrderDocument = HydratedDocument<Order>;
 
@@ -21,7 +23,7 @@ export class Order {
     @Prop({ type: String, required: true, unique: true }) public orderNumber: string;
     @Prop({ type: Types.ObjectId, required: true, ref: Client.name })
     public clientId: Types.ObjectId;
-    @Prop({ type: [VariantSchema], required: true }) public variants: VariantItem[];
+    @Prop({ type: [VariantItemSchema], required: true }) public variants: VariantItemDocument[];
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

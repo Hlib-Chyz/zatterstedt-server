@@ -1,15 +1,15 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class CreateFixedCostDto {
     name: string;
     cost: number;
 }
 export declare class UpdateFixedCostDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     name: string;
     cost: number;
 }
 export declare class FixedCostDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     name: string;
     cost: number;
 }

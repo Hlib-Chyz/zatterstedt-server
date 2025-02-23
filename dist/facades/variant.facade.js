@@ -2,12 +2,15 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.VariantFacade = void 0;
 const tslib_1 = require('tslib');
+const shared_dto_1 = require('../dto/shared.dto');
+const variant_dto_1 = require('../dto/variant.dto');
 const common_1 = require('@nestjs/common');
 const error_service_1 = require('../services/error.service');
 const order_service_1 = require('../services/order.service');
 const product_service_1 = require('../services/product.service');
 const stock_service_1 = require('../services/stock.service');
 const variant_service_1 = require('../services/variant.service');
+const class_transformer_1 = require('class-transformer');
 let VariantFacade = class VariantFacade {
     constructor(stockService, variantService, productService, orderService, errorService) {
         this.stockService = stockService;
@@ -28,7 +31,9 @@ let VariantFacade = class VariantFacade {
                     };
                 })
             );
-            return data;
+            return (0, class_transformer_1.plainToInstance)(variant_dto_1.VariantLockupDto, data, {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get variants');
             return [];
@@ -62,13 +67,21 @@ let VariantFacade = class VariantFacade {
                 });
                 await this.stockService.add({
                     total: variant.quantity,
-                    variantId: newVariantId.toString(),
+                    variantId: newVariantId,
                 });
             }
-            return { success: true };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set variants');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
     async canSaveVariants({ variantIds }) {
@@ -81,10 +94,18 @@ let VariantFacade = class VariantFacade {
                     break;
                 }
             }
-            return { canSaveVariant };
+            return (0, class_transformer_1.plainToInstance)(
+                variant_dto_1.CanSaveVariantResponseDto,
+                { canSaveVariant },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get canSaveVariant property');
-            return { canSaveVariant: false };
+            return (0, class_transformer_1.plainToInstance)(
+                variant_dto_1.CanSaveVariantResponseDto,
+                { canSaveVariant: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 };

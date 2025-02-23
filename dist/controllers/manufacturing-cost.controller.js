@@ -3,13 +3,13 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.ManufacturingCostController = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
-const mongodb_1 = require('mongodb');
+const manufacturing_cost_service_1 = require('../services/manufacturing-cost.service');
+const mongoose_1 = require('mongoose');
 const manufacturing_cost_dto_1 = require('../dto/manufacturing-cost.dto');
 const shared_dto_1 = require('../dto/shared.dto');
 const manufacturing_cost_facade_1 = require('../facades/manufacturing-cost.facade');
 const error_filter_1 = require('../filters/error.filter');
 const jwt_auth_guard_1 = require('../guards/jwt-auth.guard');
-const manufacturing_cost_service_1 = require('../services/manufacturing-cost.service');
 let ManufacturingCostController = class ManufacturingCostController {
     constructor(manufacturingCostService, manufacturingCostFacade) {
         this.manufacturingCostService = manufacturingCostService;
@@ -33,7 +33,7 @@ tslib_1.__decorate(
         tslib_1.__param(1, (0, common_1.Body)()),
         tslib_1.__metadata('design:type', Function),
         tslib_1.__metadata('design:paramtypes', [
-            mongodb_1.ObjectId,
+            mongoose_1.Types.ObjectId,
             manufacturing_cost_dto_1.ManufacturingCostJobDto,
         ]),
         tslib_1.__metadata('design:returntype', Promise),
@@ -49,7 +49,7 @@ tslib_1.__decorate(
         tslib_1.__param(1, (0, common_1.Body)()),
         tslib_1.__metadata('design:type', Function),
         tslib_1.__metadata('design:paramtypes', [
-            mongodb_1.ObjectId,
+            mongoose_1.Types.ObjectId,
             manufacturing_cost_dto_1.ManufacturingCostInventoryDto,
         ]),
         tslib_1.__metadata('design:returntype', Promise),

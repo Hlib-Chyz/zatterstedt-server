@@ -2,6 +2,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.ProductFacade = void 0;
 const tslib_1 = require('tslib');
+const shared_dto_1 = require('../dto/shared.dto');
 const common_1 = require('@nestjs/common');
 const additional_cost_service_1 = require('../services/additional-cost.service');
 const development_cost_service_1 = require('../services/development-cost.service');
@@ -10,6 +11,7 @@ const manufacturing_cost_service_1 = require('../services/manufacturing-cost.ser
 const product_service_1 = require('../services/product.service');
 const stock_service_1 = require('../services/stock.service');
 const variant_service_1 = require('../services/variant.service');
+const class_transformer_1 = require('class-transformer');
 const product_dto_1 = require('../dto/product.dto');
 let ProductFacade = class ProductFacade {
     constructor(
@@ -56,34 +58,26 @@ let ProductFacade = class ProductFacade {
                         },
                     });
                 }
-                res.push(
-                    new product_dto_1.ProductDto({
-                        _id: product._id,
-                        name: product.name,
-                        price: product.price,
-                        variants: resVariant,
-                        developmentCosts: developmentCosts?.map(
-                            (val) =>
-                                new product_dto_1.ProductDevelopmentCostDto({
-                                    _id: val._id,
-                                    date: val.date,
-                                    description: val.description,
-                                    cost: val.cost,
-                                })
-                        ),
-                        additionalCost: new product_dto_1.ProductAdditionalCostDto({
-                            _id: additionalCost._id,
-                            cost: additionalCost.cost,
-                        }),
-                        manufacturingCost: new product_dto_1.ProductManufacturingCostDto({
-                            _id: manufacturingCost._id,
-                            inventory: manufacturingCost.inventory,
-                            job: manufacturingCost.job,
-                        }),
-                    })
-                );
+                res.push({
+                    _id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    variants: resVariant,
+                    developmentCosts,
+                    additionalCost: {
+                        _id: additionalCost._id,
+                        cost: additionalCost.cost,
+                    },
+                    manufacturingCost: {
+                        _id: manufacturingCost._id,
+                        inventory: manufacturingCost.inventory,
+                        job: manufacturingCost.job,
+                    },
+                });
             }
-            return res;
+            return (0, class_transformer_1.plainToInstance)(product_dto_1.ProductDto, res, {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all products');
             return [];
@@ -98,16 +92,20 @@ let ProductFacade = class ProductFacade {
                 );
             }
             const newProduct = await this.productService.add(product);
-            await this.additionalCostService.add({
-                productId: newProduct._id,
-            });
-            await this.manufacturingCostService.add({
-                productId: newProduct._id,
-            });
-            return { success: true };
+            await this.additionalCostService.add(newProduct._id);
+            await this.manufacturingCostService.add(newProduct._id);
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new product');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 };

@@ -1,6 +1,6 @@
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { Body, Controller, Get, Param, Put, UseFilters, UseGuards } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import { ClientDto, UpdateClientContactDto } from 'src/dto/client.dto';
 import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { ClientFacade } from 'src/facades/client.facade';
@@ -23,7 +23,7 @@ export class ClientController {
 
     @Put('contact/:id')
     public async updateContact(
-        @Param('id', ParseObjectIdPipe) id: ObjectId,
+        @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
         @Body() { contact }: UpdateClientContactDto
     ): Promise<SuccessDto> {
         return this.clientService.updateContact(id, contact);

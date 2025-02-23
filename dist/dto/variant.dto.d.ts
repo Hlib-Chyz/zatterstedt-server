@@ -1,18 +1,6 @@
-import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
-export declare class VariantDto {
-    _id: ObjectId;
-    color: string;
-    size: string;
-    productId: string;
-}
-export declare class CreateVariantDto {
-    color: string;
-    size: string;
-    productId: Types.ObjectId;
-}
 export declare class VariantLockupDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     name: string;
 }
 declare class VariantUpdateDto {

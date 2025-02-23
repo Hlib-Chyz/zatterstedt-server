@@ -8,7 +8,7 @@ import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { OrderService } from '@services/order.service';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class ManufacturingCostFacade {
     private readonly errorService;
     private readonly inventoryService;
@@ -21,7 +21,7 @@ export declare class ManufacturingCostFacade {
         manufacturingCostService: ManufacturingCostService
     );
     updateInventory(
-        id: ObjectId,
+        id: Types.ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto>;
     canSaveInventory({ variantIds }: CanSaveInventoryDto): Promise<CanSaveInventoryResponseDto>;

@@ -10,7 +10,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { OtherCostService } from '@services/other-cost.service';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import { CreateOtherCostDto, OtherCostDto, UpdateOtherCostDto } from 'src/dto/other-cost.dto';
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
@@ -41,7 +41,7 @@ export class OtherCostController {
     }
 
     @Delete(':id')
-    public async delete(@Param('id', ParseObjectIdPipe) id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(@Param('id', ParseObjectIdPipe) id: Types.ObjectId): Promise<DeleteGetDto> {
         return this.otherCostService.delete(id);
     }
 }

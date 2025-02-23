@@ -4,7 +4,9 @@ exports.ManufacturingCostService = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const mongoose_1 = require('@nestjs/mongoose');
+const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
+const shared_dto_1 = require('../dto/shared.dto');
 const manufacturing_cost_schema_1 = require('../schemas/manufacturing-cost.schema');
 const error_service_1 = require('./error.service');
 let ManufacturingCostService = class ManufacturingCostService {
@@ -40,14 +42,22 @@ let ManufacturingCostService = class ManufacturingCostService {
             return {};
         }
     }
-    async add(manufacturingCost) {
+    async add(productId) {
         try {
-            const createdManufacturingCost = new this.manufacturingCostModel(manufacturingCost);
+            const createdManufacturingCost = new this.manufacturingCostModel({ productId });
             await createdManufacturingCost.save();
-            return { success: true };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create manufacturing cost');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
     async updateInventory(inventory, manufacturingCost) {
@@ -70,10 +80,18 @@ let ManufacturingCostService = class ManufacturingCostService {
             if (!result) {
                 throw new common_1.NotFoundException('Fixed cost not found');
             }
-            return { success: true };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update manufacturing cost');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 };

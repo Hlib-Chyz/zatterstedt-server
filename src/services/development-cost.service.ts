@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateDevelopmentCostDto, UpdateDevelopmentCostDto } from 'src/dto/development-cost.dto';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
 import { DevelopmentCost, DevelopmentCostDocument } from 'src/schemas/development-cost.schema';
@@ -16,7 +15,7 @@ export class DevelopmentCostService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByProductId(productId: ObjectId): Promise<DevelopmentCostDocument[]> {
+    public async getByProductId(productId: Types.ObjectId): Promise<DevelopmentCostDocument[]> {
         try {
             return await this.developmentCostModel.find({ productId }).exec();
         } catch (error) {
@@ -67,7 +66,7 @@ export class DevelopmentCostService {
         }
     }
 
-    public async delete(id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(id: Types.ObjectId): Promise<DeleteGetDto> {
         try {
             const result = await this.developmentCostModel.findByIdAndDelete(id).exec();
             if (!result) {

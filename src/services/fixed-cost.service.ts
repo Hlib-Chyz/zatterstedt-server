@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { plainToInstance } from 'class-transformer';
+import { Model, Types } from 'mongoose';
 import { CreateFixedCostDto, FixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
 import { FixedCost, FixedCostDocument } from 'src/schemas/fixed-cost.schema';
 import { ErrorService } from './error.service';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class FixedCostService {
@@ -67,7 +66,7 @@ export class FixedCostService {
         }
     }
 
-    public async delete(id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(id: Types.ObjectId): Promise<DeleteGetDto> {
         try {
             const result = await this.fixedCostModel.findByIdAndDelete(id).exec();
             if (!result) {

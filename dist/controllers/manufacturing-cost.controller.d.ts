@@ -1,4 +1,5 @@
-import { ObjectId } from 'mongodb';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { Types } from 'mongoose';
 import {
     CanSaveInventoryDto,
     CanSaveInventoryResponseDto,
@@ -7,7 +8,6 @@ import {
 } from 'src/dto/manufacturing-cost.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
-import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 export declare class ManufacturingCostController {
     private readonly manufacturingCostService;
     private readonly manufacturingCostFacade;
@@ -15,9 +15,9 @@ export declare class ManufacturingCostController {
         manufacturingCostService: ManufacturingCostService,
         manufacturingCostFacade: ManufacturingCostFacade
     );
-    updateJob(id: ObjectId, { job }: ManufacturingCostJobDto): Promise<SuccessDto>;
+    updateJob(id: Types.ObjectId, { job }: ManufacturingCostJobDto): Promise<SuccessDto>;
     updateInventory(
-        id: ObjectId,
+        id: Types.ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<SuccessDto>;
     canSaveInventory(body: CanSaveInventoryDto): Promise<CanSaveInventoryResponseDto>;

@@ -2,8 +2,7 @@ import { SuccessDto } from '@dto/shared.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateOrderDto } from 'src/dto/order.dto';
 import { Order, OrderDocument } from 'src/schemas/order.schema';
 import { ErrorService } from './error.service';
@@ -15,7 +14,7 @@ export class OrderService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByVariantId(variantId: ObjectId): Promise<OrderDocument[]> {
+    public async getByVariantId(variantId: Types.ObjectId): Promise<OrderDocument[]> {
         try {
             return await this.orderModel.find({ 'variants._id': variantId }).exec();
         } catch (error) {
@@ -24,7 +23,7 @@ export class OrderService {
         }
     }
 
-    public async getByClientId(clientId: ObjectId): Promise<OrderDocument[]> {
+    public async getByClientId(clientId: Types.ObjectId): Promise<OrderDocument[]> {
         try {
             return await this.orderModel.find({ clientId }).exec();
         } catch (error) {
@@ -43,7 +42,7 @@ export class OrderService {
     }
 
     public async add(
-        clientId: ObjectId | null,
+        clientId: Types.ObjectId | null,
         order: CreateOrderDto,
         ordersLength: number
     ): Promise<SuccessDto> {

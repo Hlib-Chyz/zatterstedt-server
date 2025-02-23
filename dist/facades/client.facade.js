@@ -7,6 +7,7 @@ const common_1 = require('@nestjs/common');
 const client_service_1 = require('../services/client.service');
 const error_service_1 = require('../services/error.service');
 const order_service_1 = require('../services/order.service');
+const class_transformer_1 = require('class-transformer');
 const variant_facade_1 = require('./variant.facade');
 let ClientFacade = class ClientFacade {
     constructor(variantFacade, errorService, clientService, orderService) {
@@ -28,9 +29,11 @@ let ClientFacade = class ClientFacade {
                         purchases.push(newPurchase);
                     }
                 }
-                res.push(new client_dto_1.ClientDto({ ...client, purchases }));
+                res.push({ ...client, purchases });
             }
-            return res;
+            return (0, class_transformer_1.plainToInstance)(client_dto_1.ClientDto, res, {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all clients');
             return [];

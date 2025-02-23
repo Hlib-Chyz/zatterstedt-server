@@ -10,7 +10,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { FixedCostService } from '@services/fixed-cost.service';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import { CreateFixedCostDto, FixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
@@ -41,7 +41,7 @@ export class FixedCostController {
     }
 
     @Delete(':id')
-    public async delete(@Param('id', ParseObjectIdPipe) id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(@Param('id', ParseObjectIdPipe) id: Types.ObjectId): Promise<DeleteGetDto> {
         return this.fixedCostService.delete(id);
     }
 }

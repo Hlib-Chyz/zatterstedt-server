@@ -1,10 +1,10 @@
 import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from '@dto/shared.dto';
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { Body, Controller, Delete, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+import { DevelopmentCostService } from '@services/development-cost.service';
+import { Types } from 'mongoose';
 import { CreateDevelopmentCostDto, UpdateDevelopmentCostDto } from 'src/dto/development-cost.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
-import { DevelopmentCostService } from '@services/development-cost.service';
 
 @Controller('development-cost')
 @UseFilters(new HttpExceptionFilter())
@@ -29,7 +29,7 @@ export class DevelopmentCostController {
     }
 
     @Delete(':id')
-    public async delete(@Param('id', ParseObjectIdPipe) id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(@Param('id', ParseObjectIdPipe) id: Types.ObjectId): Promise<DeleteGetDto> {
         return this.developmentCostService.delete(id);
     }
 }

@@ -4,12 +4,12 @@ exports.ProductController = void 0;
 const tslib_1 = require('tslib');
 const jwt_auth_guard_1 = require('../guards/jwt-auth.guard');
 const common_1 = require('@nestjs/common');
-const mongodb_1 = require('mongodb');
+const product_service_1 = require('../services/product.service');
+const mongoose_1 = require('mongoose');
 const product_dto_1 = require('../dto/product.dto');
 const shared_dto_1 = require('../dto/shared.dto');
 const product_facade_1 = require('../facades/product.facade');
 const error_filter_1 = require('../filters/error.filter');
-const product_service_1 = require('../services/product.service');
 let ProductController = class ProductController {
     constructor(productService, productFacade) {
         this.productService = productService;
@@ -71,7 +71,7 @@ tslib_1.__decorate(
         tslib_1.__param(1, (0, common_1.Body)()),
         tslib_1.__metadata('design:type', Function),
         tslib_1.__metadata('design:paramtypes', [
-            mongodb_1.ObjectId,
+            mongoose_1.Types.ObjectId,
             product_dto_1.ProductPriceDto,
         ]),
         tslib_1.__metadata('design:returntype', Promise),

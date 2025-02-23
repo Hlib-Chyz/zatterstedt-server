@@ -1,12 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.FixedCostService = void 0;
-const tslib_1 = require("tslib");
-const common_1 = require("@nestjs/common");
-const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
-const fixed_cost_schema_1 = require("../schemas/fixed-cost.schema");
-const error_service_1 = require("./error.service");
+const tslib_1 = require('tslib');
+const common_1 = require('@nestjs/common');
+const mongoose_1 = require('@nestjs/mongoose');
+const class_transformer_1 = require('class-transformer');
+const mongoose_2 = require('mongoose');
+const fixed_cost_dto_1 = require('../dto/fixed-cost.dto');
+const shared_dto_1 = require('../dto/shared.dto');
+const fixed_cost_schema_1 = require('../schemas/fixed-cost.schema');
+const error_service_1 = require('./error.service');
 let FixedCostService = class FixedCostService {
     constructor(fixedCostModel, errorService) {
         this.fixedCostModel = fixedCostModel;
@@ -14,9 +17,13 @@ let FixedCostService = class FixedCostService {
     }
     async getAll() {
         try {
-            return await this.fixedCostModel.find().exec();
-        }
-        catch (error) {
+            const fixedCosts = await this.fixedCostModel.find().exec();
+            return (0, class_transformer_1.plainToInstance)(
+                fixed_cost_dto_1.FixedCostDto,
+                fixedCosts,
+                { excludeExtraneousValues: true }
+            );
+        } catch (error) {
             this.errorService.throwError(error, 'Failed to get all fixed costs');
             return [];
         }
@@ -25,11 +32,18 @@ let FixedCostService = class FixedCostService {
         try {
             const createdFixedCost = new this.fixedCostModel(fixedCost);
             await createdFixedCost.save();
-            return { success: true };
-        }
-        catch (error) {
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
+        } catch (error) {
             this.errorService.throwError(error, 'Failed to add fixed cost');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
     async update(fixedCost) {
@@ -40,11 +54,18 @@ let FixedCostService = class FixedCostService {
             if (!result) {
                 throw new common_1.NotFoundException('Fixed cost not found');
             }
-            return { success: true };
-        }
-        catch (error) {
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
+        } catch (error) {
             this.errorService.throwError(error, 'Failed to update fixed cost');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
     async delete(id) {
@@ -53,19 +74,28 @@ let FixedCostService = class FixedCostService {
             if (!result) {
                 throw new common_1.NotFoundException('Fixed cost not found');
             }
-            return { id };
-        }
-        catch (error) {
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.DeleteGetDto,
+                { id },
+                { excludeExtraneousValues: true }
+            );
+        } catch (error) {
             this.errorService.throwError(error, 'Failed to delete fixed cost');
-            return { id };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.DeleteGetDto,
+                { id },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 };
 exports.FixedCostService = FixedCostService;
-exports.FixedCostService = FixedCostService = tslib_1.__decorate([
-    (0, common_1.Injectable)(),
-    tslib_1.__param(0, (0, mongoose_1.InjectModel)(fixed_cost_schema_1.FixedCost.name)),
-    tslib_1.__metadata("design:paramtypes", [mongoose_2.Model,
-        error_service_1.ErrorService])
-], FixedCostService);
+exports.FixedCostService = FixedCostService = tslib_1.__decorate(
+    [
+        (0, common_1.Injectable)(),
+        tslib_1.__param(0, (0, mongoose_1.InjectModel)(fixed_cost_schema_1.FixedCost.name)),
+        tslib_1.__metadata('design:paramtypes', [mongoose_2.Model, error_service_1.ErrorService]),
+    ],
+    FixedCostService
+);
 //# sourceMappingURL=fixed-cost.service.js.map

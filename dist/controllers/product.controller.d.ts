@@ -1,4 +1,5 @@
-import { ObjectId } from 'mongodb';
+import { ProductService } from '@services/product.service';
+import { Types } from 'mongoose';
 import {
     CreateProductDto,
     ProductDto,
@@ -7,7 +8,6 @@ import {
 } from 'src/dto/product.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { ProductFacade } from 'src/facades/product.facade';
-import { ProductService } from '@services/product.service';
 export declare class ProductController {
     private readonly productService;
     private readonly productFacade;
@@ -15,5 +15,5 @@ export declare class ProductController {
     getAll(): Promise<ProductDto[]>;
     add(product: CreateProductDto): Promise<SuccessDto>;
     update(product: UpdateProductDto): Promise<SuccessDto>;
-    updatePrice(id: ObjectId, { price }: ProductPriceDto): Promise<SuccessDto>;
+    updatePrice(id: Types.ObjectId, { price }: ProductPriceDto): Promise<SuccessDto>;
 }

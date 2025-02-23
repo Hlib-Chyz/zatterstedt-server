@@ -56,10 +56,7 @@ export class OrderFacade {
         try {
             let clientId: Types.ObjectId | null = null;
             if (!order.clientId) {
-                clientId = await this.clientService.add({
-                    name: order.clientName,
-                    contact: order.contact,
-                });
+                clientId = await this.clientService.add(order.clientName, order.contact);
             }
             for (const variant of order.variants) {
                 if (variant.price === 0) {

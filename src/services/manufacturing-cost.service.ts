@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
 import { Model, Types } from 'mongoose';
 import { InventoryDto, ManufacturingCostJobDto } from 'src/dto/manufacturing-cost.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
@@ -19,7 +18,7 @@ export class ManufacturingCostService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByProductId(productId: ObjectId): Promise<ManufacturingCostDocument> {
+    public async getByProductId(productId: Types.ObjectId): Promise<ManufacturingCostDocument> {
         try {
             const manufacturingCost = await this.manufacturingCostModel
                 .findOne({
@@ -36,7 +35,7 @@ export class ManufacturingCostService {
         }
     }
 
-    public async getById(id: ObjectId): Promise<ManufacturingCostDocument> {
+    public async getById(id: Types.ObjectId): Promise<ManufacturingCostDocument> {
         try {
             const manufacturingCost = await this.manufacturingCostModel.findById(id).exec();
             if (!manufacturingCost) {
@@ -86,7 +85,10 @@ export class ManufacturingCostService {
         }
     }
 
-    public async updateJob(id: ObjectId, job: ManufacturingCostJobDto['job']): Promise<SuccessDto> {
+    public async updateJob(
+        id: Types.ObjectId,
+        job: ManufacturingCostJobDto['job']
+    ): Promise<SuccessDto> {
         try {
             const result = await this.manufacturingCostModel.findByIdAndUpdate(id, { job }).exec();
             if (!result) {

@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateOtherCostDto, OtherCostDto, UpdateOtherCostDto } from 'src/dto/other-cost.dto';
 import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
 import { OtherCost, OtherCostDocument } from 'src/schemas/other-cost.schema';
@@ -67,7 +66,7 @@ export class OtherCostService {
         }
     }
 
-    public async delete(id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(id: Types.ObjectId): Promise<DeleteGetDto> {
         try {
             const result = await this.otherCostModel.findByIdAndDelete(id).exec();
             if (!result) {

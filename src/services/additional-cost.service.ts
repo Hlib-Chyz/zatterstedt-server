@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
 import { Model, Types } from 'mongoose';
 import { UpdateAdditionalCostDto } from 'src/dto/additional-cost.dto';
 import { SuccessDto } from 'src/dto/shared.dto';
@@ -58,7 +57,7 @@ export class AdditionalCostService {
         }
     }
 
-    public async getByProductId(productId: ObjectId): Promise<AdditionalCostDocument> {
+    public async getByProductId(productId: Types.ObjectId): Promise<AdditionalCostDocument> {
         try {
             const additionalCost = await this.additionalCostModel.findOne({ productId }).exec();
             if (!additionalCost) {

@@ -12,7 +12,7 @@ import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class VariantFacade {
@@ -43,7 +43,10 @@ export class VariantFacade {
         }
     }
 
-    public async getVariantInfo(variantId: ObjectId, additionalInfo: string): Promise<string> {
+    public async getVariantInfo(
+        variantId: Types.ObjectId,
+        additionalInfo: string
+    ): Promise<string> {
         try {
             const variant = await this.variantService.getById(variantId);
             if (!variant) {

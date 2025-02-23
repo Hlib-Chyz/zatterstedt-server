@@ -1,13 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { SuccessDto } from 'src/dto/shared.dto';
 import { SetRealizedPartyDto } from 'src/dto/stock.dto';
 import { Stock, StockDocument } from 'src/schemas/stock.schema';
-import { ErrorService } from './error.service';
 import { CreateStockType } from 'src/types/stock.types';
+import { ErrorService } from './error.service';
 
 @Injectable()
 export class StockService {
@@ -16,7 +15,7 @@ export class StockService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByVariantId(variantId: ObjectId): Promise<StockDocument> {
+    public async getByVariantId(variantId: Types.ObjectId): Promise<StockDocument> {
         try {
             const stock = await this.stockModel.findOne({ variantId }).exec();
             if (!stock) {
@@ -29,7 +28,7 @@ export class StockService {
         }
     }
 
-    public async deleteManyByVariantIds(variantIds: ObjectId[]): Promise<SuccessDto> {
+    public async deleteManyByVariantIds(variantIds: Types.ObjectId[]): Promise<SuccessDto> {
         // TODO - transactions
         try {
             for (const variantId of variantIds) {
@@ -72,7 +71,7 @@ export class StockService {
         }
     }
 
-    public async increaseSold(variantId: ObjectId, quantity = 1): Promise<SuccessDto> {
+    public async increaseSold(variantId: Types.ObjectId, quantity = 1): Promise<SuccessDto> {
         try {
             const result = await this.stockModel
                 .findOneAndUpdate(
@@ -128,7 +127,10 @@ export class StockService {
         }
     }
 
-    public async decreaseRealizedParty(variantId: ObjectId, amount: number): Promise<SuccessDto> {
+    public async decreaseRealizedParty(
+        variantId: Types.ObjectId,
+        amount: number
+    ): Promise<SuccessDto> {
         try {
             const result = await this.stockModel
                 .findOneAndUpdate(

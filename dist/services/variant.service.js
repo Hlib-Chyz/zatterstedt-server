@@ -4,7 +4,9 @@ exports.VariantService = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const mongoose_1 = require('@nestjs/mongoose');
+const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
+const shared_dto_1 = require('../dto/shared.dto');
 const variant_schema_1 = require('../schemas/variant.schema');
 const error_service_1 = require('./error.service');
 let VariantService = class VariantService {
@@ -43,10 +45,18 @@ let VariantService = class VariantService {
     async deleteManyByProductId(productId) {
         try {
             await this.variantModel.deleteMany({ productId }).exec();
-            return { success: true };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: true },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to remove variants');
-            return { success: false };
+            return (0, class_transformer_1.plainToInstance)(
+                shared_dto_1.SuccessDto,
+                { success: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
     async getProductId(variantId) {

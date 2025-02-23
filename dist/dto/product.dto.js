@@ -5,32 +5,25 @@ exports.ProductDto =
     exports.UpdateProductDto =
     exports.CreateProductDto =
     exports.ProductVariantDto =
-    exports.ProductStockDto =
-    exports.ProductManufacturingCostDto =
-    exports.ProductManufacturingCostInventoryDto =
-    exports.ProductManufacturingCostJobDto =
-    exports.ProductAdditionalCostDto =
-    exports.ProductDevelopmentCostDto =
         void 0;
 const tslib_1 = require('tslib');
 const class_transformer_1 = require('class-transformer');
 const class_validator_1 = require('class-validator');
-const mongodb_1 = require('mongodb');
 const mongoose_1 = require('mongoose');
-class ProductDevelopmentCostDto {
-    constructor(partial) {
-        Object.assign(this, partial);
-    }
-}
-exports.ProductDevelopmentCostDto = ProductDevelopmentCostDto;
+class ProductDevelopmentCostDto {}
 tslib_1.__decorate(
-    [(0, class_validator_1.IsNotEmpty)(), tslib_1.__metadata('design:type', mongodb_1.ObjectId)],
+    [
+        (0, class_transformer_1.Expose)(),
+        (0, class_validator_1.IsNotEmpty)(),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
+    ],
     ProductDevelopmentCostDto.prototype,
     '_id',
     void 0
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsDate)(),
         tslib_1.__metadata('design:type', Date),
@@ -41,6 +34,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsNumber)(),
         tslib_1.__metadata('design:type', Number),
@@ -51,6 +45,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsString)(),
         tslib_1.__metadata('design:type', String),
@@ -59,20 +54,20 @@ tslib_1.__decorate(
     'description',
     void 0
 );
-class ProductAdditionalCostDto {
-    constructor(partial) {
-        Object.assign(this, partial);
-    }
-}
-exports.ProductAdditionalCostDto = ProductAdditionalCostDto;
+class ProductAdditionalCostDto {}
 tslib_1.__decorate(
-    [(0, class_validator_1.IsNotEmpty)(), tslib_1.__metadata('design:type', mongodb_1.ObjectId)],
+    [
+        (0, class_transformer_1.Expose)(),
+        (0, class_validator_1.IsNotEmpty)(),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
+    ],
     ProductAdditionalCostDto.prototype,
     '_id',
     void 0
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsNumber)(),
         tslib_1.__metadata('design:type', Number),
@@ -82,9 +77,9 @@ tslib_1.__decorate(
     void 0
 );
 class ProductManufacturingCostJobDto {}
-exports.ProductManufacturingCostJobDto = ProductManufacturingCostJobDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsString)(),
         tslib_1.__metadata('design:type', String),
@@ -95,6 +90,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsNumber)(),
         tslib_1.__metadata('design:type', Number),
@@ -104,9 +100,9 @@ tslib_1.__decorate(
     void 0
 );
 class ProductManufacturingCostInventoryDto {}
-exports.ProductManufacturingCostInventoryDto = ProductManufacturingCostInventoryDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsMongoId)(),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
@@ -117,6 +113,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsNumber)(),
         tslib_1.__metadata('design:type', Number),
@@ -127,6 +124,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsNumber)(),
         tslib_1.__metadata('design:type', Number),
@@ -137,6 +135,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsBoolean)(),
         tslib_1.__metadata('design:type', Boolean),
@@ -147,6 +146,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsNumber)(),
         tslib_1.__metadata('design:type', Number),
@@ -155,20 +155,20 @@ tslib_1.__decorate(
     'cost',
     void 0
 );
-class ProductManufacturingCostDto {
-    constructor(partial) {
-        Object.assign(this, partial);
-    }
-}
-exports.ProductManufacturingCostDto = ProductManufacturingCostDto;
+class ProductManufacturingCostDto {}
 tslib_1.__decorate(
-    [(0, class_validator_1.IsNotEmpty)(), tslib_1.__metadata('design:type', mongodb_1.ObjectId)],
+    [
+        (0, class_transformer_1.Expose)(),
+        (0, class_validator_1.IsNotEmpty)(),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
+    ],
     ProductManufacturingCostDto.prototype,
     '_id',
     void 0
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsArray)(),
         (0, class_validator_1.ValidateNested)({ each: true }),
@@ -181,6 +181,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsArray)(),
         (0, class_validator_1.ValidateNested)({ each: true }),
@@ -192,9 +193,9 @@ tslib_1.__decorate(
     void 0
 );
 class ProductStockDto {}
-exports.ProductStockDto = ProductStockDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNumber)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', Number),
@@ -205,6 +206,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNumber)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', Number),
@@ -215,6 +217,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNumber)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', Number),
@@ -226,13 +229,18 @@ tslib_1.__decorate(
 class ProductVariantDto {}
 exports.ProductVariantDto = ProductVariantDto;
 tslib_1.__decorate(
-    [(0, class_validator_1.IsNotEmpty)(), tslib_1.__metadata('design:type', mongodb_1.ObjectId)],
+    [
+        (0, class_transformer_1.Expose)(),
+        (0, class_validator_1.IsNotEmpty)(),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
+    ],
     ProductVariantDto.prototype,
     '_id',
     void 0
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
@@ -243,6 +251,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
@@ -253,6 +262,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_transformer_1.Type)(() => ProductStockDto),
         tslib_1.__metadata('design:type', ProductStockDto),
@@ -265,6 +275,7 @@ class CreateProductDto {}
 exports.CreateProductDto = CreateProductDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNumber)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', Number),
@@ -275,6 +286,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
@@ -287,9 +299,10 @@ class UpdateProductDto {}
 exports.UpdateProductDto = UpdateProductDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(value)),
-        tslib_1.__metadata('design:type', mongodb_1.ObjectId),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     UpdateProductDto.prototype,
     '_id',
@@ -297,6 +310,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNumber)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', Number),
@@ -307,6 +321,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
@@ -319,6 +334,7 @@ class ProductPriceDto {}
 exports.ProductPriceDto = ProductPriceDto;
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNumber)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', Number),
@@ -327,20 +343,21 @@ tslib_1.__decorate(
     'price',
     void 0
 );
-class ProductDto {
-    constructor(partial) {
-        Object.assign(this, partial);
-    }
-}
+class ProductDto {}
 exports.ProductDto = ProductDto;
 tslib_1.__decorate(
-    [(0, class_validator_1.IsNotEmpty)(), tslib_1.__metadata('design:type', mongodb_1.ObjectId)],
+    [
+        (0, class_transformer_1.Expose)(),
+        (0, class_validator_1.IsNotEmpty)(),
+        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
+    ],
     ProductDto.prototype,
     '_id',
     void 0
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsString)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', String),
@@ -351,6 +368,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNumber)(),
         (0, class_validator_1.IsNotEmpty)(),
         tslib_1.__metadata('design:type', Number),
@@ -361,6 +379,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsArray)(),
         (0, class_validator_1.ValidateNested)({ each: true }),
@@ -373,6 +392,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsArray)(),
         (0, class_validator_1.ValidateNested)({ each: true }),
@@ -385,6 +405,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_transformer_1.Type)(() => ProductAdditionalCostDto),
         tslib_1.__metadata('design:type', ProductAdditionalCostDto),
@@ -395,6 +416,7 @@ tslib_1.__decorate(
 );
 tslib_1.__decorate(
     [
+        (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_transformer_1.Type)(() => ProductManufacturingCostDto),
         tslib_1.__metadata('design:type', ProductManufacturingCostDto),

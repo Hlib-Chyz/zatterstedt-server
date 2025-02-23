@@ -9,7 +9,7 @@ import {
     UseFilters,
     UseGuards,
 } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import {
     CreateInventoryDto,
     InventoryDto,
@@ -51,7 +51,7 @@ export class InventoryController {
     }
 
     @Delete(':id')
-    public async delete(@Param('id', ParseObjectIdPipe) id: ObjectId): Promise<DeleteGetDto> {
+    public async delete(@Param('id', ParseObjectIdPipe) id: Types.ObjectId): Promise<DeleteGetDto> {
         return this.inventoryService.delete(id);
     }
 }
