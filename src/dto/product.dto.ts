@@ -14,6 +14,7 @@ import { Types } from 'mongoose';
 class ProductDevelopmentCostDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsNotEmpty()
@@ -32,6 +33,7 @@ class ProductDevelopmentCostDto {
 class ProductAdditionalCostDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsNotEmpty()
@@ -76,6 +78,7 @@ class ProductManufacturingCostInventoryDto {
 class ProductManufacturingCostDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsNotEmpty()
@@ -109,6 +112,7 @@ class ProductStockDto {
 export class ProductVariantDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsString()
@@ -160,6 +164,7 @@ export class ProductPriceDto {
 export class ProductDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsString()

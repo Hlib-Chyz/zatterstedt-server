@@ -35,6 +35,7 @@ import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
 import { OrderFacade } from 'src/facades/order.facade';
 import { ProductFacade } from 'src/facades/product.facade';
 import { VariantFacade } from 'src/facades/variant.facade';
+import { LoggingHooks } from 'src/hooks/logging.hook';
 import { ZatterstedtMailerModule } from './modules/mailer.module';
 import { StockService } from './services/stock.service';
 
@@ -70,6 +71,7 @@ import { StockService } from './services/stock.service';
         StockController,
     ],
     providers: [
+        LoggingHooks,
         VariantService,
         StockService,
         ProductService,

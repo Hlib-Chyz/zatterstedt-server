@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
@@ -6,6 +6,7 @@ export class ClientDto {
     @Expose()
     @IsString()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsString()

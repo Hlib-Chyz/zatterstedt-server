@@ -13,6 +13,7 @@ import { Types } from 'mongoose';
 export class VariantLockupDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsNotEmpty()

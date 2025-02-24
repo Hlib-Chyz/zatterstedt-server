@@ -50,6 +50,7 @@ export class VariantOrderDto {
 export class OrderDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsNotEmpty()

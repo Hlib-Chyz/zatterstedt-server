@@ -15,6 +15,7 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
+        (0, class_transformer_1.Type)(() => String),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     ProductDevelopmentCostDto.prototype,
@@ -59,6 +60,7 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
+        (0, class_transformer_1.Type)(() => String),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     ProductAdditionalCostDto.prototype,
@@ -160,6 +162,7 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
+        (0, class_transformer_1.Type)(() => String),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     ProductManufacturingCostDto.prototype,
@@ -232,6 +235,7 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
+        (0, class_transformer_1.Type)(() => String),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     ProductVariantDto.prototype,
@@ -349,6 +353,7 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
+        (0, class_transformer_1.Type)(() => String),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     ProductDto.prototype,

@@ -1,4 +1,4 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
@@ -32,6 +32,7 @@ export class FixedCostDto {
     @Expose()
     @IsString()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsNotEmpty()

@@ -1,11 +1,12 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { IsBoolean, IsNotEmpty } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class DeleteGetDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public id: Types.ObjectId;
 }
 

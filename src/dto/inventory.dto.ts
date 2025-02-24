@@ -1,4 +1,4 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
@@ -55,6 +55,7 @@ export class CreateInventoryDto {
 export class InventoryDto {
     @Expose()
     @IsNotEmpty()
+    @Type(() => String)
     public _id: Types.ObjectId;
     @Expose()
     @IsNotEmpty()
