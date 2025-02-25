@@ -62,17 +62,21 @@ export class AuthService {
         }
     }
 
-    public generateVerificationCode(): string {
-        return Math.floor(100000 + Math.random() * 900000).toString();
+    public async sendVerificationEmail(email: string, code: string): Promise<void> {
+        try {
+            await this.mailerService.sendMail({
+                from: this.configService.get<string>('MAIL') ?? '',
+                to: email,
+                subject: 'Welcome!',
+                text: `Your verification code is: ${code}`,
+            });
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to send verification code to email');
+        }
     }
 
-    public async sendVerificationEmail(email: string, code: string): Promise<void> {
-        await this.mailerService.sendMail({
-            from: this.configService.get<string>('MAIL') ?? '',
-            to: email,
-            subject: 'Welcome!',
-            text: `Your verification code is: ${code}`,
-        });
+    public generateVerificationCode(): string {
+        return Math.floor(100000 + Math.random() * 900000).toString();
     }
 
     private async generateJwtToken(user: UserDocument): Promise<string> {

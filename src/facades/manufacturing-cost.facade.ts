@@ -42,7 +42,7 @@ export class ManufacturingCostFacade {
                 { excludeExtraneousValues: true }
             );
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to add inventory');
+            this.errorService.throwError(error, 'Failed to update inventory');
             return plainToInstance(
                 SuccessDto,
                 { success: false },
