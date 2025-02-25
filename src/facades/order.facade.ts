@@ -1,5 +1,4 @@
 import { CreateOrderDto, OrderDto } from '@dto/order.dto';
-import { SuccessDto } from '@dto/shared.dto';
 import { Injectable } from '@nestjs/common';
 import { ClientService } from '@services/client.service';
 import { ErrorService } from '@services/error.service';
@@ -52,7 +51,7 @@ export class OrderFacade {
         }
     }
 
-    public async add(order: CreateOrderDto): Promise<SuccessDto> {
+    public async add(order: CreateOrderDto): Promise<void> {
         try {
             let clientId: Types.ObjectId | null = null;
             if (!order.clientId) {
@@ -78,18 +77,8 @@ export class OrderFacade {
             }
             const orders = await this.orderService.getAll();
             await this.orderService.add(clientId, order, orders.length);
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 }

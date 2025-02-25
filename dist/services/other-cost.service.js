@@ -7,7 +7,6 @@ const mongoose_1 = require('@nestjs/mongoose');
 const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
 const other_cost_dto_1 = require('../dto/other-cost.dto');
-const shared_dto_1 = require('../dto/shared.dto');
 const other_cost_schema_1 = require('../schemas/other-cost.schema');
 const error_service_1 = require('./error.service');
 let OtherCostService = class OtherCostService {
@@ -30,18 +29,8 @@ let OtherCostService = class OtherCostService {
         try {
             const newOtherCost = new this.otherCostModel(otherCost);
             await newOtherCost.save();
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create other costs');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async update(otherCost) {
@@ -52,18 +41,8 @@ let OtherCostService = class OtherCostService {
             if (!result) {
                 throw new common_1.NotFoundException('Other cost not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update other cost');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async delete(id) {
@@ -72,18 +51,8 @@ let OtherCostService = class OtherCostService {
             if (!result) {
                 throw new common_1.NotFoundException('Other cost not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.DeleteGetDto,
-                { id },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete other cost');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.DeleteGetDto,
-                { id },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 };

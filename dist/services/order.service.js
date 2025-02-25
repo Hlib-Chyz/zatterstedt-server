@@ -2,10 +2,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.OrderService = void 0;
 const tslib_1 = require('tslib');
-const shared_dto_1 = require('../dto/shared.dto');
 const common_1 = require('@nestjs/common');
 const mongoose_1 = require('@nestjs/mongoose');
-const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
 const order_schema_1 = require('../schemas/order.schema');
 const error_service_1 = require('./error.service');
@@ -48,18 +46,8 @@ let OrderService = class OrderService {
                 orderNumber,
             });
             await newOrder.save();
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 };

@@ -4,7 +4,6 @@ import {
     InventoryDto,
     ManufacturingCostInventoryDto,
 } from '@dto/manufacturing-cost.dto';
-import { SuccessDto } from '@dto/shared.dto';
 import { Injectable } from '@nestjs/common';
 import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
@@ -25,7 +24,7 @@ export class ManufacturingCostFacade {
     public async updateInventory(
         id: Types.ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
-    ): Promise<SuccessDto> {
+    ): Promise<void> {
         try {
             const manufacturingCost = await this.manufacturingCostService.getById(id);
             if (manufacturingCostInventory.oldInventory.length) {
@@ -36,18 +35,8 @@ export class ManufacturingCostFacade {
                 manufacturingCostInventory.inventory,
                 manufacturingCost
             );
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update inventory');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 

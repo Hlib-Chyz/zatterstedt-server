@@ -2,7 +2,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.VariantFacade = void 0;
 const tslib_1 = require('tslib');
-const shared_dto_1 = require('../dto/shared.dto');
 const variant_dto_1 = require('../dto/variant.dto');
 const common_1 = require('@nestjs/common');
 const error_service_1 = require('../services/error.service');
@@ -70,18 +69,8 @@ let VariantFacade = class VariantFacade {
                     variantId: newVariantId,
                 });
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set variants');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async canSaveVariants({ variantIds }) {

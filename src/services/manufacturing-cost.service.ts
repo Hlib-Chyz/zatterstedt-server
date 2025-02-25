@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
 import { Model, Types } from 'mongoose';
 import { InventoryDto, ManufacturingCostJobDto } from 'src/dto/manufacturing-cost.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
 import {
     ManufacturingCost,
     ManufacturingCostDocument,
@@ -48,22 +46,12 @@ export class ManufacturingCostService {
         }
     }
 
-    public async add(productId: Types.ObjectId): Promise<SuccessDto> {
+    public async add(productId: Types.ObjectId): Promise<void> {
         try {
             const createdManufacturingCost = new this.manufacturingCostModel({ productId });
             await createdManufacturingCost.save();
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create manufacturing cost');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 
@@ -85,27 +73,14 @@ export class ManufacturingCostService {
         }
     }
 
-    public async updateJob(
-        id: Types.ObjectId,
-        job: ManufacturingCostJobDto['job']
-    ): Promise<SuccessDto> {
+    public async updateJob(id: Types.ObjectId, job: ManufacturingCostJobDto['job']): Promise<void> {
         try {
             const result = await this.manufacturingCostModel.findByIdAndUpdate(id, { job }).exec();
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update manufacturing cost');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 }

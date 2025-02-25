@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model, Types } from 'mongoose';
 import { CreateFixedCostDto, FixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
-import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
 import { FixedCost, FixedCostDocument } from 'src/schemas/fixed-cost.schema';
 import { ErrorService } from './error.service';
 
@@ -24,26 +23,16 @@ export class FixedCostService {
         }
     }
 
-    public async add(fixedCost: CreateFixedCostDto): Promise<SuccessDto> {
+    public async add(fixedCost: CreateFixedCostDto): Promise<void> {
         try {
             const createdFixedCost = new this.fixedCostModel(fixedCost);
             await createdFixedCost.save();
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add fixed cost');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 
-    public async update(fixedCost: UpdateFixedCostDto): Promise<SuccessDto> {
+    public async update(fixedCost: UpdateFixedCostDto): Promise<void> {
         try {
             const result = await this.fixedCostModel
                 .findByIdAndUpdate(fixedCost._id, fixedCost)
@@ -51,31 +40,19 @@ export class FixedCostService {
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update fixed cost');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 
-    public async delete(id: Types.ObjectId): Promise<DeleteGetDto> {
+    public async delete(id: Types.ObjectId): Promise<void> {
         try {
             const result = await this.fixedCostModel.findByIdAndDelete(id).exec();
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
-            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete fixed cost');
-            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         }
     }
 }

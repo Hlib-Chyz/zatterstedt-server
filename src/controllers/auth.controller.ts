@@ -1,5 +1,5 @@
-import { SuccessDto } from '@dto/shared.dto';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { LoginDto, LoginResponseDto, VerifyCodeDto } from 'src/dto/auth.dto';
 import { AuthService } from 'src/services/auth.service';
 import { UserService } from 'src/services/user.service';
@@ -17,8 +17,9 @@ export class AuthController {
     }
 
     @Post('add')
-    public async add(@Body() loginInfo: LoginDto): Promise<SuccessDto> {
-        return this.userService.add(loginInfo);
+    public async add(@Body() loginInfo: LoginDto, @Res() res: Response): Promise<void> {
+        await this.userService.add(loginInfo);
+        res.status(204).send();
     }
 
     @Post('verify-code')

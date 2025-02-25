@@ -3,7 +3,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.OrderFacade = void 0;
 const tslib_1 = require('tslib');
 const order_dto_1 = require('../dto/order.dto');
-const shared_dto_1 = require('../dto/shared.dto');
 const common_1 = require('@nestjs/common');
 const client_service_1 = require('../services/client.service');
 const error_service_1 = require('../services/error.service');
@@ -88,18 +87,8 @@ let OrderFacade = class OrderFacade {
             }
             const orders = await this.orderService.getAll();
             await this.orderService.add(clientId, order, orders.length);
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 };

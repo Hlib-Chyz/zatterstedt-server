@@ -1,4 +1,3 @@
-import { SuccessDto } from '@dto/shared.dto';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { AdditionalCostService } from '@services/additional-cost.service';
 import { DevelopmentCostService } from '@services/development-cost.service';
@@ -73,7 +72,7 @@ export class ProductFacade {
         }
     }
 
-    public async add(product: CreateProductDto): Promise<SuccessDto> {
+    public async add(product: CreateProductDto): Promise<void> {
         try {
             const existingProduct = await this.productService.getByNameWithoutCheck(product.name);
             if (existingProduct) {
@@ -82,18 +81,8 @@ export class ProductFacade {
             const newProduct = await this.productService.add(product);
             await this.additionalCostService.add(newProduct._id);
             await this.manufacturingCostService.add(newProduct._id);
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new product');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 }

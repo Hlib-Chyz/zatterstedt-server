@@ -16,17 +16,21 @@ let InventoryController = class InventoryController {
     async getAll() {
         return this.inventoryService.getAll();
     }
-    async add(inventory) {
-        return this.inventoryService.add(inventory);
+    async add(inventory, res) {
+        await this.inventoryService.add(inventory);
+        res.status(204).send();
     }
-    async update(inventory) {
-        return this.inventoryService.update(inventory);
+    async update(inventory, res) {
+        await this.inventoryService.update(inventory);
+        res.status(204).send();
     }
-    async updateUsed(body) {
-        return this.inventoryService.updateUsed(body);
+    async updateUsed(body, res) {
+        await this.inventoryService.updateUsed(body);
+        res.status(204).send();
     }
-    async delete(id) {
-        return this.inventoryService.delete(id);
+    async delete(id, res) {
+        await this.inventoryService.delete(id);
+        res.status(204).send();
     }
 };
 exports.InventoryController = InventoryController;
@@ -45,8 +49,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Post)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [inventory_dto_1.CreateInventoryDto]),
+        tslib_1.__metadata('design:paramtypes', [inventory_dto_1.CreateInventoryDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     InventoryController.prototype,
@@ -57,8 +62,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Put)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [inventory_dto_1.UpdateInventoryDto]),
+        tslib_1.__metadata('design:paramtypes', [inventory_dto_1.UpdateInventoryDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     InventoryController.prototype,
@@ -69,8 +75,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Put)('used'),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [inventory_dto_1.SetUsedFieldDto]),
+        tslib_1.__metadata('design:paramtypes', [inventory_dto_1.SetUsedFieldDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     InventoryController.prototype,
@@ -81,8 +88,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Delete)(':id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId]),
+        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     InventoryController.prototype,

@@ -4,9 +4,7 @@ exports.ProductService = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const mongoose_1 = require('@nestjs/mongoose');
-const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
-const shared_dto_1 = require('../dto/shared.dto');
 const product_schema_1 = require('../schemas/product.schema');
 const error_service_1 = require('./error.service');
 let ProductService = class ProductService {
@@ -28,18 +26,8 @@ let ProductService = class ProductService {
             if (!result) {
                 throw new common_1.NotFoundException('Product not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update a product');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async updatePrice(productId, price) {
@@ -50,18 +38,8 @@ let ProductService = class ProductService {
             if (!updatedProduct) {
                 throw new common_1.NotFoundException('Product not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change price of product');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async getByName(name) {

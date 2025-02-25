@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
 import { LoginDto } from 'src/dto/auth.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { ErrorService } from './error.service';
 
@@ -36,22 +34,12 @@ export class UserService {
         }
     }
 
-    public async add(loginInfo: LoginDto): Promise<SuccessDto> {
+    public async add(loginInfo: LoginDto): Promise<void> {
         try {
             const newUser = new this.userModel(loginInfo);
             await newUser.save();
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create user');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 }

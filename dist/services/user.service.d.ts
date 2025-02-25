@@ -1,6 +1,5 @@
 import { Model } from 'mongoose';
 import { LoginDto } from 'src/dto/auth.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
 import { UserDocument } from 'src/schemas/user.schema';
 import { ErrorService } from './error.service';
 export declare class UserService {
@@ -9,5 +8,5 @@ export declare class UserService {
     constructor(userModel: Model<UserDocument>, errorService: ErrorService);
     findByEmail(email: string): Promise<UserDocument | null>;
     updateVerificationCode(email: string, code: string): Promise<void>;
-    add(loginInfo: LoginDto): Promise<SuccessDto>;
+    add(loginInfo: LoginDto): Promise<void>;
 }

@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
 import { Model, Types } from 'mongoose';
 import { CreateProductDto, UpdateProductDto } from 'src/dto/product.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
 import { ErrorService } from './error.service';
 
@@ -23,28 +21,18 @@ export class ProductService {
         }
     }
 
-    public async update(product: UpdateProductDto): Promise<SuccessDto> {
+    public async update(product: UpdateProductDto): Promise<void> {
         try {
             const result = await this.productModel.findByIdAndUpdate(product._id, product).exec();
             if (!result) {
                 throw new NotFoundException('Product not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update a product');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 
-    public async updatePrice(productId: Types.ObjectId, price: number): Promise<SuccessDto> {
+    public async updatePrice(productId: Types.ObjectId, price: number): Promise<void> {
         try {
             const updatedProduct = await this.productModel
                 .findByIdAndUpdate(productId, { price })
@@ -52,18 +40,8 @@ export class ProductService {
             if (!updatedProduct) {
                 throw new NotFoundException('Product not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change price of product');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 

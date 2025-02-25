@@ -16,14 +16,17 @@ let OtherCostController = class OtherCostController {
     async getAll() {
         return this.otherCostService.getAll();
     }
-    async add(otherCost) {
-        return this.otherCostService.add(otherCost);
+    async add(otherCost, res) {
+        await this.otherCostService.add(otherCost);
+        res.status(204).send();
     }
-    async update(otherCost) {
-        return this.otherCostService.update(otherCost);
+    async update(otherCost, res) {
+        await this.otherCostService.update(otherCost);
+        res.status(204).send();
     }
-    async delete(id) {
-        return this.otherCostService.delete(id);
+    async delete(id, res) {
+        await this.otherCostService.delete(id);
+        res.status(204).send();
     }
 };
 exports.OtherCostController = OtherCostController;
@@ -42,8 +45,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Post)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [other_cost_dto_1.CreateOtherCostDto]),
+        tslib_1.__metadata('design:paramtypes', [other_cost_dto_1.CreateOtherCostDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     OtherCostController.prototype,
@@ -54,8 +58,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Put)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [other_cost_dto_1.UpdateOtherCostDto]),
+        tslib_1.__metadata('design:paramtypes', [other_cost_dto_1.UpdateOtherCostDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     OtherCostController.prototype,
@@ -66,8 +71,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Delete)(':id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId]),
+        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     OtherCostController.prototype,

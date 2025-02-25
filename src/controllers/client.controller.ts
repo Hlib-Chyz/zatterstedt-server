@@ -1,8 +1,9 @@
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
-import { Body, Controller, Get, Param, Put, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { Types } from 'mongoose';
 import { ClientDto, UpdateClientContactDto } from 'src/dto/client.dto';
-import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
+import { ParseObjectIdPipe } from 'src/dto/shared.dto';
 import { ClientFacade } from 'src/facades/client.facade';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { ClientService } from 'src/services/client.service';
@@ -24,8 +25,10 @@ export class ClientController {
     @Put('contact/:id')
     public async updateContact(
         @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-        @Body() { contact }: UpdateClientContactDto
-    ): Promise<SuccessDto> {
-        return this.clientService.updateContact(id, contact);
+        @Body() { contact }: UpdateClientContactDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.clientService.updateContact(id, contact);
+        res.status(204).send();
     }
 }

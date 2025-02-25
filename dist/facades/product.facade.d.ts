@@ -1,4 +1,3 @@
-import { SuccessDto } from '@dto/shared.dto';
 import { AdditionalCostService } from '@services/additional-cost.service';
 import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
@@ -25,5 +24,5 @@ export declare class ProductFacade {
         manufacturingCostService: ManufacturingCostService
     );
     getAll(): Promise<ProductDto[]>;
-    add(product: CreateProductDto): Promise<SuccessDto>;
+    add(product: CreateProductDto): Promise<void>;
 }

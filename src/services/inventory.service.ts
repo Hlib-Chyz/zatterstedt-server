@@ -8,7 +8,6 @@ import {
     SetUsedFieldDto,
     UpdateInventoryDto,
 } from 'src/dto/inventory.dto';
-import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
 import { Inventory, InventoryDocument } from 'src/schemas/inventory.schema';
 import { ErrorService } from './error.service';
 
@@ -31,26 +30,16 @@ export class InventoryService {
         }
     }
 
-    public async add(inventory: CreateInventoryDto): Promise<SuccessDto> {
+    public async add(inventory: CreateInventoryDto): Promise<void> {
         try {
             const inventoryCost = new this.inventoryModel(inventory);
             await inventoryCost.save();
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create inventory');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 
-    public async update(inventory: UpdateInventoryDto): Promise<SuccessDto> {
+    public async update(inventory: UpdateInventoryDto): Promise<void> {
         try {
             const result = await this.inventoryModel
                 .findByIdAndUpdate(inventory._id, inventory)
@@ -58,39 +47,23 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update inventory');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 
-    public async delete(id: Types.ObjectId): Promise<DeleteGetDto> {
+    public async delete(id: Types.ObjectId): Promise<void> {
         try {
             const result = await this.inventoryModel.findByIdAndDelete(id).exec();
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete inventory');
-            return plainToInstance(DeleteGetDto, { id }, { excludeExtraneousValues: true });
         }
     }
 
-    public async updateUsedAndPaid(
-        id: Types.ObjectId,
-        used: number,
-        paid: number
-    ): Promise<SuccessDto> {
+    public async updateUsedAndPaid(id: Types.ObjectId, used: number, paid: number): Promise<void> {
         try {
             const result = await this.inventoryModel
                 .findByIdAndUpdate(id, {
@@ -100,22 +73,12 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change inventory amount');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 
-    public async updateUsed(body: SetUsedFieldDto): Promise<SuccessDto> {
+    public async updateUsed(body: SetUsedFieldDto): Promise<void> {
         try {
             const result = await this.inventoryModel
                 .findByIdAndUpdate(body._id, { used: body.used })
@@ -123,18 +86,8 @@ export class InventoryService {
             if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set used field');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 }

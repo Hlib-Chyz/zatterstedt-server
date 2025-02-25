@@ -3,7 +3,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.ManufacturingCostFacade = void 0;
 const tslib_1 = require('tslib');
 const manufacturing_cost_dto_1 = require('../dto/manufacturing-cost.dto');
-const shared_dto_1 = require('../dto/shared.dto');
 const common_1 = require('@nestjs/common');
 const error_service_1 = require('../services/error.service');
 const inventory_service_1 = require('../services/inventory.service');
@@ -28,18 +27,8 @@ let ManufacturingCostFacade = class ManufacturingCostFacade {
                 manufacturingCostInventory.inventory,
                 manufacturingCost
             );
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to add inventory');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
+            this.errorService.throwError(error, 'Failed to update inventory');
         }
     }
     async canSaveInventory({ variantIds }) {

@@ -6,13 +6,15 @@ import {
     Param,
     Post,
     Put,
+    Res,
     UseFilters,
     UseGuards,
 } from '@nestjs/common';
 import { FixedCostService } from '@services/fixed-cost.service';
+import { Response } from 'express';
 import { Types } from 'mongoose';
 import { CreateFixedCostDto, FixedCostDto, UpdateFixedCostDto } from 'src/dto/fixed-cost.dto';
-import { DeleteGetDto, ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
+import { ParseObjectIdPipe } from 'src/dto/shared.dto';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
@@ -30,18 +32,28 @@ export class FixedCostController {
     @Post()
     public async add(
         @Body()
-        fixedCost: CreateFixedCostDto
-    ): Promise<SuccessDto> {
-        return this.fixedCostService.add(fixedCost);
+        fixedCost: CreateFixedCostDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.fixedCostService.add(fixedCost);
+        res.status(204).send();
     }
 
     @Put()
-    public async update(@Body() fixedCost: UpdateFixedCostDto): Promise<SuccessDto> {
-        return this.fixedCostService.update(fixedCost);
+    public async update(
+        @Body() fixedCost: UpdateFixedCostDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.fixedCostService.update(fixedCost);
+        res.status(204).send();
     }
 
     @Delete(':id')
-    public async delete(@Param('id', ParseObjectIdPipe) id: Types.ObjectId): Promise<DeleteGetDto> {
-        return this.fixedCostService.delete(id);
+    public async delete(
+        @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.fixedCostService.delete(id);
+        res.status(204).send();
     }
 }

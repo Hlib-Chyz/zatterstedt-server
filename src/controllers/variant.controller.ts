@@ -1,4 +1,3 @@
-import { SuccessDto } from '@dto/shared.dto';
 import {
     CanSaveVariantDto,
     CanSaveVariantResponseDto,
@@ -6,7 +5,8 @@ import {
     VariantLockupDto,
 } from '@dto/variant.dto';
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { VariantFacade } from 'src/facades/variant.facade';
 
 @Controller('variant')
@@ -20,8 +20,12 @@ export class VariantController {
     }
 
     @Post()
-    public async updateVariant(@Body() createVariantDto: UpdateVariantDto): Promise<SuccessDto> {
-        return this.variantFacade.updateVariant(createVariantDto);
+    public async updateVariant(
+        @Body() createVariantDto: UpdateVariantDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.variantFacade.updateVariant(createVariantDto);
+        res.status(204).send();
     }
 
     @Post('can-save-variants')

@@ -1,5 +1,4 @@
 import { CreateOrderDto, OrderDto } from '@dto/order.dto';
-import { SuccessDto } from '@dto/shared.dto';
 import { ClientService } from '@services/client.service';
 import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
@@ -28,5 +27,5 @@ export declare class OrderFacade {
         manufacturingCostService: ManufacturingCostService
     );
     getAll(): Promise<OrderDto[]>;
-    add(order: CreateOrderDto): Promise<SuccessDto>;
+    add(order: CreateOrderDto): Promise<void>;
 }

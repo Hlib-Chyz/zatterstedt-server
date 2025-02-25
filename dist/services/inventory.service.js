@@ -7,7 +7,6 @@ const mongoose_1 = require('@nestjs/mongoose');
 const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
 const inventory_dto_1 = require('../dto/inventory.dto');
-const shared_dto_1 = require('../dto/shared.dto');
 const inventory_schema_1 = require('../schemas/inventory.schema');
 const error_service_1 = require('./error.service');
 let InventoryService = class InventoryService {
@@ -34,18 +33,8 @@ let InventoryService = class InventoryService {
         try {
             const inventoryCost = new this.inventoryModel(inventory);
             await inventoryCost.save();
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create inventory');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async update(inventory) {
@@ -56,18 +45,8 @@ let InventoryService = class InventoryService {
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update inventory');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async delete(id) {
@@ -76,18 +55,8 @@ let InventoryService = class InventoryService {
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.DeleteGetDto,
-                { id },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to delete inventory');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.DeleteGetDto,
-                { id },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async updateUsedAndPaid(id, used, paid) {
@@ -100,18 +69,8 @@ let InventoryService = class InventoryService {
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to change inventory amount');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async updateUsed(body) {
@@ -122,18 +81,8 @@ let InventoryService = class InventoryService {
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set used field');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 };

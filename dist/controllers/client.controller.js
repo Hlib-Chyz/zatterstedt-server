@@ -18,8 +18,9 @@ let ClientController = class ClientController {
     async getAll() {
         return this.clientFacade.getAll();
     }
-    async updateContact(id, { contact }) {
-        return this.clientService.updateContact(id, contact);
+    async updateContact(id, { contact }, res) {
+        await this.clientService.updateContact(id, contact);
+        res.status(204).send();
     }
 };
 exports.ClientController = ClientController;
@@ -39,10 +40,12 @@ tslib_1.__decorate(
         (0, common_1.Put)('contact/:id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
         tslib_1.__param(1, (0, common_1.Body)()),
+        tslib_1.__param(2, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
         tslib_1.__metadata('design:paramtypes', [
             mongoose_1.Types.ObjectId,
             client_dto_1.UpdateClientContactDto,
+            Object,
         ]),
         tslib_1.__metadata('design:returntype', Promise),
     ],

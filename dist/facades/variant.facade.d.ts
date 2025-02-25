@@ -1,4 +1,3 @@
-import { SuccessDto } from '@dto/shared.dto';
 import {
     CanSaveVariantDto,
     CanSaveVariantResponseDto,
@@ -26,6 +25,6 @@ export declare class VariantFacade {
     );
     getAll(): Promise<VariantLockupDto[]>;
     getVariantInfo(variantId: Types.ObjectId, additionalInfo: string): Promise<string>;
-    updateVariant(createVariant: UpdateVariantDto): Promise<SuccessDto>;
+    updateVariant(createVariant: UpdateVariantDto): Promise<void>;
     canSaveVariants({ variantIds }: CanSaveVariantDto): Promise<CanSaveVariantResponseDto>;
 }

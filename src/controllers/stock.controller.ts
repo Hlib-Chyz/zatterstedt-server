@@ -1,8 +1,8 @@
-import { SuccessDto } from '@dto/shared.dto';
 import { SetRealizedPartyDto } from '@dto/stock.dto';
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
-import { Body, Controller, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Put, Res, UseGuards } from '@nestjs/common';
 import { StockService } from '@services/stock.service';
+import { Response } from 'express';
 
 @Controller('stock')
 @UseGuards(JwtAuthGuard)
@@ -10,7 +10,11 @@ export class StockController {
     public constructor(private stockService: StockService) {}
 
     @Put('realized-party')
-    public async updateRealizedParty(@Body() body: SetRealizedPartyDto): Promise<SuccessDto> {
-        return this.stockService.updateRealizedParty(body);
+    public async updateRealizedParty(
+        @Body() body: SetRealizedPartyDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.stockService.updateRealizedParty(body);
+        res.status(204).send();
     }
 }

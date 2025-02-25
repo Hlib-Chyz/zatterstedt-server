@@ -1,8 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
 import { Model, Types } from 'mongoose';
-import { SuccessDto } from 'src/dto/shared.dto';
 import { Client, ClientDocument } from 'src/schemas/client.schema';
 import { ErrorService } from './error.service';
 
@@ -37,24 +35,14 @@ export class ClientService {
         }
     }
 
-    public async updateContact(id: Types.ObjectId, contact: string): Promise<SuccessDto> {
+    public async updateContact(id: Types.ObjectId, contact: string): Promise<void> {
         try {
             const updatedClient = await this.clientModel.findByIdAndUpdate(id, { contact }).exec();
             if (!updatedClient) {
                 throw new NotFoundException('Client not found');
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update contact');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 

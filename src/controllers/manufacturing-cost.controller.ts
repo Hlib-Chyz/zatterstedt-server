@@ -1,5 +1,6 @@
-import { Body, Controller, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { Response } from 'express';
 import { Types } from 'mongoose';
 import {
     CanSaveInventoryDto,
@@ -7,7 +8,7 @@ import {
     ManufacturingCostInventoryDto,
     ManufacturingCostJobDto,
 } from 'src/dto/manufacturing-cost.dto';
-import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
+import { ParseObjectIdPipe } from 'src/dto/shared.dto';
 import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -24,17 +25,21 @@ export class ManufacturingCostController {
     @Put('job/:id')
     public async updateJob(
         @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-        @Body() { job }: ManufacturingCostJobDto
-    ): Promise<SuccessDto> {
-        return this.manufacturingCostService.updateJob(id, job);
+        @Body() { job }: ManufacturingCostJobDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.manufacturingCostService.updateJob(id, job);
+        res.status(204).send();
     }
 
     @Put('inventory/:id')
     public async updateInventory(
         @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-        @Body() manufacturingCostInventory: ManufacturingCostInventoryDto
-    ): Promise<SuccessDto> {
-        return this.manufacturingCostFacade.updateInventory(id, manufacturingCostInventory);
+        @Body() manufacturingCostInventory: ManufacturingCostInventoryDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.manufacturingCostFacade.updateInventory(id, manufacturingCostInventory);
+        res.status(204).send();
     }
 
     @Post('can-save-inventory')

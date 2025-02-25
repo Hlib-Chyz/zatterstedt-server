@@ -12,16 +12,13 @@ let LoggingHooks = (LoggingHooks_1 = class LoggingHooks {
         this.logger = new common_1.Logger(LoggingHooks_1.name);
     }
     onModuleInit() {
-        console.log(mongoose_1.default.modelNames());
         mongoose_1.default.plugin((schema) => {
-            console.log(2);
             const logger = this.logger;
             const createLog = async (operation, model, docId, oldData, newData) => {
                 const collectionName = model.collection.name;
                 await this.logService.add(operation, collectionName, docId, oldData, newData);
             };
             schema.post('save', async (doc) => {
-                console.log(3);
                 await createLog('CREATE', doc.constructor, doc._id, null, doc.toObject());
             });
             schema.post('insertMany', async function (docs) {

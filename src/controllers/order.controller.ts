@@ -1,7 +1,7 @@
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { CreateOrderDto, OrderDto } from 'src/dto/order.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
 import { OrderFacade } from 'src/facades/order.facade';
 
 @Controller('order')
@@ -17,8 +17,10 @@ export class OrderController {
     @Post()
     public async create(
         @Body()
-        order: CreateOrderDto
-    ): Promise<SuccessDto> {
-        return this.orderFacade.add(order);
+        order: CreateOrderDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.orderFacade.add(order);
+        res.status(204).send();
     }
 }

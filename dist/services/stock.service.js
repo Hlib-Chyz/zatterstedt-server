@@ -4,9 +4,7 @@ exports.StockService = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const mongoose_1 = require('@nestjs/mongoose');
-const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
-const shared_dto_1 = require('../dto/shared.dto');
 const stock_schema_1 = require('../schemas/stock.schema');
 const error_service_1 = require('./error.service');
 let StockService = class StockService {
@@ -34,36 +32,16 @@ let StockService = class StockService {
                     throw new common_1.NotFoundException('Stock not found');
                 }
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to remove by variant id');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async add(stock) {
         try {
             const newStock = new this.stockModel({ ...stock, realizedParty: stock.total });
             await newStock.save();
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new stock');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async increaseSold(variantId, quantity = 1) {
@@ -79,18 +57,8 @@ let StockService = class StockService {
             if (!result) {
                 throw new common_1.NotFoundException('Stock not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to increase sold');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async updateRealizedParty(realizedPartyDto) {
@@ -106,18 +74,8 @@ let StockService = class StockService {
             if (!result) {
                 throw new common_1.NotFoundException('Stock not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set realized party');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async decreaseRealizedParty(variantId, amount) {
@@ -133,18 +91,8 @@ let StockService = class StockService {
             if (!result) {
                 throw new common_1.NotFoundException('Stock not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to decrease realized party');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 };

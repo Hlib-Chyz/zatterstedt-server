@@ -15,11 +15,13 @@ let ManufacturingCostController = class ManufacturingCostController {
         this.manufacturingCostService = manufacturingCostService;
         this.manufacturingCostFacade = manufacturingCostFacade;
     }
-    async updateJob(id, { job }) {
-        return this.manufacturingCostService.updateJob(id, job);
+    async updateJob(id, { job }, res) {
+        await this.manufacturingCostService.updateJob(id, job);
+        res.status(204).send();
     }
-    async updateInventory(id, manufacturingCostInventory) {
-        return this.manufacturingCostFacade.updateInventory(id, manufacturingCostInventory);
+    async updateInventory(id, manufacturingCostInventory, res) {
+        await this.manufacturingCostFacade.updateInventory(id, manufacturingCostInventory);
+        res.status(204).send();
     }
     async canSaveInventory(body) {
         return this.manufacturingCostFacade.canSaveInventory(body);
@@ -31,10 +33,12 @@ tslib_1.__decorate(
         (0, common_1.Put)('job/:id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
         tslib_1.__param(1, (0, common_1.Body)()),
+        tslib_1.__param(2, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
         tslib_1.__metadata('design:paramtypes', [
             mongoose_1.Types.ObjectId,
             manufacturing_cost_dto_1.ManufacturingCostJobDto,
+            Object,
         ]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
@@ -47,10 +51,12 @@ tslib_1.__decorate(
         (0, common_1.Put)('inventory/:id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
         tslib_1.__param(1, (0, common_1.Body)()),
+        tslib_1.__param(2, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
         tslib_1.__metadata('design:paramtypes', [
             mongoose_1.Types.ObjectId,
             manufacturing_cost_dto_1.ManufacturingCostInventoryDto,
+            Object,
         ]),
         tslib_1.__metadata('design:returntype', Promise),
     ],

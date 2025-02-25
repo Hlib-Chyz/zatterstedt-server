@@ -2,7 +2,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.ProductFacade = void 0;
 const tslib_1 = require('tslib');
-const shared_dto_1 = require('../dto/shared.dto');
 const common_1 = require('@nestjs/common');
 const additional_cost_service_1 = require('../services/additional-cost.service');
 const development_cost_service_1 = require('../services/development-cost.service');
@@ -94,18 +93,8 @@ let ProductFacade = class ProductFacade {
             const newProduct = await this.productService.add(product);
             await this.additionalCostService.add(newProduct._id);
             await this.manufacturingCostService.add(newProduct._id);
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new product');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 };

@@ -4,9 +4,7 @@ exports.AdditionalCostService = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const mongoose_1 = require('@nestjs/mongoose');
-const class_transformer_1 = require('class-transformer');
 const mongoose_2 = require('mongoose');
-const shared_dto_1 = require('../dto/shared.dto');
 const additional_cost_schema_1 = require('../schemas/additional-cost.schema');
 const error_service_1 = require('./error.service');
 let AdditionalCostService = class AdditionalCostService {
@@ -22,36 +20,16 @@ let AdditionalCostService = class AdditionalCostService {
             if (!updatedCost) {
                 throw new common_1.NotFoundException('Additional cost not found');
             }
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to update additional cost');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async add(productId) {
         try {
             const newCost = new this.additionalCostModel({ productId });
             await newCost.save();
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add additional cost');
-            return (0, class_transformer_1.plainToInstance)(
-                shared_dto_1.SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
     async getByProductId(productId) {

@@ -1,11 +1,11 @@
-import { DeleteGetDto, SuccessDto } from '@dto/shared.dto';
 import { DevelopmentCostService } from '@services/development-cost.service';
+import { Response } from 'express';
 import { Types } from 'mongoose';
 import { CreateDevelopmentCostDto, UpdateDevelopmentCostDto } from 'src/dto/development-cost.dto';
 export declare class DevelopmentCostController {
     private readonly developmentCostService;
     constructor(developmentCostService: DevelopmentCostService);
-    add(developmentCost: CreateDevelopmentCostDto): Promise<SuccessDto>;
-    update(developmentCost: UpdateDevelopmentCostDto): Promise<SuccessDto>;
-    delete(id: Types.ObjectId): Promise<DeleteGetDto>;
+    add(developmentCost: CreateDevelopmentCostDto, res: Response): Promise<void>;
+    update(developmentCost: UpdateDevelopmentCostDto, res: Response): Promise<void>;
+    delete(id: Types.ObjectId, res: Response): Promise<void>;
 }

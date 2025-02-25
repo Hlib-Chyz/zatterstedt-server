@@ -1,7 +1,5 @@
-import { SuccessDto } from '@dto/shared.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
 import { Model, Types } from 'mongoose';
 import { CreateOrderDto } from 'src/dto/order.dto';
 import { Order, OrderDocument } from 'src/schemas/order.schema';
@@ -45,7 +43,7 @@ export class OrderService {
         clientId: Types.ObjectId | null,
         order: CreateOrderDto,
         ordersLength: number
-    ): Promise<SuccessDto> {
+    ): Promise<void> {
         try {
             const orderNumber = (ordersLength + 2).toString().padStart(5, '0');
             const newOrder = new this.orderModel({
@@ -55,18 +53,8 @@ export class OrderService {
                 orderNumber,
             });
             await newOrder.save();
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 }

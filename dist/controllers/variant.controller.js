@@ -13,8 +13,9 @@ let VariantController = class VariantController {
     async getAll() {
         return this.variantFacade.getAll();
     }
-    async updateVariant(createVariantDto) {
-        return this.variantFacade.updateVariant(createVariantDto);
+    async updateVariant(createVariantDto, res) {
+        await this.variantFacade.updateVariant(createVariantDto);
+        res.status(204).send();
     }
     async canSaveVariants(body) {
         return this.variantFacade.canSaveVariants(body);
@@ -36,8 +37,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Post)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [variant_dto_1.UpdateVariantDto]),
+        tslib_1.__metadata('design:paramtypes', [variant_dto_1.UpdateVariantDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     VariantController.prototype,

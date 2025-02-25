@@ -1,4 +1,3 @@
-import { SuccessDto } from '@dto/shared.dto';
 import {
     CanSaveVariantDto,
     CanSaveVariantResponseDto,
@@ -63,7 +62,7 @@ export class VariantFacade {
         }
     }
 
-    public async updateVariant(createVariant: UpdateVariantDto): Promise<SuccessDto> {
+    public async updateVariant(createVariant: UpdateVariantDto): Promise<void> {
         try {
             await this.variantService.deleteManyByProductId(createVariant.productId);
             await this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds);
@@ -78,18 +77,8 @@ export class VariantFacade {
                     variantId: newVariantId,
                 });
             }
-            return plainToInstance(
-                SuccessDto,
-                { success: true },
-                { excludeExtraneousValues: true }
-            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set variants');
-            return plainToInstance(
-                SuccessDto,
-                { success: false },
-                { excludeExtraneousValues: true }
-            );
         }
     }
 

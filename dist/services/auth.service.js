@@ -60,16 +60,20 @@ let AuthService = class AuthService {
             );
         }
     }
+    async sendVerificationEmail(email, code) {
+        try {
+            await this.mailerService.sendMail({
+                from: this.configService.get('MAIL') ?? '',
+                to: email,
+                subject: 'Welcome!',
+                text: `Your verification code is: ${code}`,
+            });
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to send verification code to email');
+        }
+    }
     generateVerificationCode() {
         return Math.floor(100000 + Math.random() * 900000).toString();
-    }
-    async sendVerificationEmail(email, code) {
-        await this.mailerService.sendMail({
-            from: this.configService.get('MAIL') ?? '',
-            to: email,
-            subject: 'Welcome!',
-            text: `Your verification code is: ${code}`,
-        });
     }
     async generateJwtToken(user) {
         return this.jwtService.sign({ email: user.email, sub: user._id }, { expiresIn: '7d' });

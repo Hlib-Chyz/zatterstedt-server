@@ -18,14 +18,17 @@ let ProductController = class ProductController {
     async getAll() {
         return this.productFacade.getAll();
     }
-    async add(product) {
-        return this.productFacade.add(product);
+    async add(product, res) {
+        await this.productFacade.add(product);
+        res.status(204).send();
     }
-    async update(product) {
-        return this.productService.update(product);
+    async update(product, res) {
+        await this.productService.update(product);
+        res.status(204).send();
     }
-    async updatePrice(id, { price }) {
-        return this.productService.updatePrice(id, price);
+    async updatePrice(id, { price }, res) {
+        await this.productService.updatePrice(id, price);
+        res.status(204).send();
     }
 };
 exports.ProductController = ProductController;
@@ -44,8 +47,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Post)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [product_dto_1.CreateProductDto]),
+        tslib_1.__metadata('design:paramtypes', [product_dto_1.CreateProductDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     ProductController.prototype,
@@ -56,8 +60,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Put)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [product_dto_1.UpdateProductDto]),
+        tslib_1.__metadata('design:paramtypes', [product_dto_1.UpdateProductDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     ProductController.prototype,
@@ -69,10 +74,12 @@ tslib_1.__decorate(
         (0, common_1.Put)('price/:id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
         tslib_1.__param(1, (0, common_1.Body)()),
+        tslib_1.__param(2, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
         tslib_1.__metadata('design:paramtypes', [
             mongoose_1.Types.ObjectId,
             product_dto_1.ProductPriceDto,
+            Object,
         ]),
         tslib_1.__metadata('design:returntype', Promise),
     ],

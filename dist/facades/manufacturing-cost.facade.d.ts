@@ -3,7 +3,6 @@ import {
     CanSaveInventoryResponseDto,
     ManufacturingCostInventoryDto,
 } from '@dto/manufacturing-cost.dto';
-import { SuccessDto } from '@dto/shared.dto';
 import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
@@ -23,7 +22,7 @@ export declare class ManufacturingCostFacade {
     updateInventory(
         id: Types.ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
-    ): Promise<SuccessDto>;
+    ): Promise<void>;
     canSaveInventory({ variantIds }: CanSaveInventoryDto): Promise<CanSaveInventoryResponseDto>;
     private changeInventoryAmount;
 }

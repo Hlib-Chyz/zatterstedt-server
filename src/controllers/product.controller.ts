@@ -1,6 +1,17 @@
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
-import { Body, Controller, Get, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Put,
+    Res,
+    UseFilters,
+    UseGuards,
+} from '@nestjs/common';
 import { ProductService } from '@services/product.service';
+import { Response } from 'express';
 import { Types } from 'mongoose';
 import {
     CreateProductDto,
@@ -8,7 +19,7 @@ import {
     ProductPriceDto,
     UpdateProductDto,
 } from 'src/dto/product.dto';
-import { ParseObjectIdPipe, SuccessDto } from 'src/dto/shared.dto';
+import { ParseObjectIdPipe } from 'src/dto/shared.dto';
 import { ProductFacade } from 'src/facades/product.facade';
 import { HttpExceptionFilter } from 'src/filters/error.filter';
 
@@ -27,20 +38,24 @@ export class ProductController {
     }
 
     @Post()
-    public async add(@Body() product: CreateProductDto): Promise<SuccessDto> {
-        return this.productFacade.add(product);
+    public async add(@Body() product: CreateProductDto, @Res() res: Response): Promise<void> {
+        await this.productFacade.add(product);
+        res.status(204).send();
     }
 
     @Put()
-    public async update(@Body() product: UpdateProductDto): Promise<SuccessDto> {
-        return this.productService.update(product);
+    public async update(@Body() product: UpdateProductDto, @Res() res: Response): Promise<void> {
+        await this.productService.update(product);
+        res.status(204).send();
     }
 
     @Put('price/:id')
     public async updatePrice(
         @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-        @Body() { price }: ProductPriceDto
-    ): Promise<SuccessDto> {
-        return this.productService.updatePrice(id, price);
+        @Body() { price }: ProductPriceDto,
+        @Res() res: Response
+    ): Promise<void> {
+        await this.productService.updatePrice(id, price);
+        res.status(204).send();
     }
 }

@@ -1,4 +1,3 @@
-import { SuccessDto } from '@dto/shared.dto';
 import { Model, Types } from 'mongoose';
 import { CreateOrderDto } from 'src/dto/order.dto';
 import { OrderDocument } from 'src/schemas/order.schema';
@@ -14,5 +13,5 @@ export declare class OrderService {
         clientId: Types.ObjectId | null,
         order: CreateOrderDto,
         ordersLength: number
-    ): Promise<SuccessDto>;
+    ): Promise<void>;
 }

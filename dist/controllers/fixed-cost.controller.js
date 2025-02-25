@@ -16,14 +16,17 @@ let FixedCostController = class FixedCostController {
     async getAll() {
         return this.fixedCostService.getAll();
     }
-    async add(fixedCost) {
-        return this.fixedCostService.add(fixedCost);
+    async add(fixedCost, res) {
+        await this.fixedCostService.add(fixedCost);
+        res.status(204).send();
     }
-    async update(fixedCost) {
-        return this.fixedCostService.update(fixedCost);
+    async update(fixedCost, res) {
+        await this.fixedCostService.update(fixedCost);
+        res.status(204).send();
     }
-    async delete(id) {
-        return this.fixedCostService.delete(id);
+    async delete(id, res) {
+        await this.fixedCostService.delete(id);
+        res.status(204).send();
     }
 };
 exports.FixedCostController = FixedCostController;
@@ -42,8 +45,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Post)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [fixed_cost_dto_1.CreateFixedCostDto]),
+        tslib_1.__metadata('design:paramtypes', [fixed_cost_dto_1.CreateFixedCostDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     FixedCostController.prototype,
@@ -54,8 +58,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Put)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [fixed_cost_dto_1.UpdateFixedCostDto]),
+        tslib_1.__metadata('design:paramtypes', [fixed_cost_dto_1.UpdateFixedCostDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     FixedCostController.prototype,
@@ -66,8 +71,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Delete)(':id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId]),
+        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     FixedCostController.prototype,

@@ -1,6 +1,5 @@
 import { Model, Types } from 'mongoose';
 import { InventoryDto, ManufacturingCostJobDto } from 'src/dto/manufacturing-cost.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
 import { ManufacturingCostDocument } from 'src/schemas/manufacturing-cost.schema';
 import { ErrorService } from './error.service';
 export declare class ManufacturingCostService {
@@ -12,10 +11,10 @@ export declare class ManufacturingCostService {
     );
     getByProductId(productId: Types.ObjectId): Promise<ManufacturingCostDocument>;
     getById(id: Types.ObjectId): Promise<ManufacturingCostDocument>;
-    add(productId: Types.ObjectId): Promise<SuccessDto>;
+    add(productId: Types.ObjectId): Promise<void>;
     updateInventory(
         inventory: InventoryDto[],
         manufacturingCost: ManufacturingCostDocument
     ): Promise<ManufacturingCostDocument>;
-    updateJob(id: Types.ObjectId, job: ManufacturingCostJobDto['job']): Promise<SuccessDto>;
+    updateJob(id: Types.ObjectId, job: ManufacturingCostJobDto['job']): Promise<void>;
 }

@@ -13,14 +13,17 @@ let DevelopmentCostController = class DevelopmentCostController {
     constructor(developmentCostService) {
         this.developmentCostService = developmentCostService;
     }
-    async add(developmentCost) {
-        return this.developmentCostService.add(developmentCost);
+    async add(developmentCost, res) {
+        await this.developmentCostService.add(developmentCost);
+        res.status(204).send();
     }
-    async update(developmentCost) {
-        return this.developmentCostService.update(developmentCost);
+    async update(developmentCost, res) {
+        await this.developmentCostService.update(developmentCost);
+        res.status(204).send();
     }
-    async delete(id) {
-        return this.developmentCostService.delete(id);
+    async delete(id, res) {
+        await this.developmentCostService.delete(id);
+        res.status(204).send();
     }
 };
 exports.DevelopmentCostController = DevelopmentCostController;
@@ -28,8 +31,12 @@ tslib_1.__decorate(
     [
         (0, common_1.Post)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [development_cost_dto_1.CreateDevelopmentCostDto]),
+        tslib_1.__metadata('design:paramtypes', [
+            development_cost_dto_1.CreateDevelopmentCostDto,
+            Object,
+        ]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     DevelopmentCostController.prototype,
@@ -40,8 +47,12 @@ tslib_1.__decorate(
     [
         (0, common_1.Put)(),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [development_cost_dto_1.UpdateDevelopmentCostDto]),
+        tslib_1.__metadata('design:paramtypes', [
+            development_cost_dto_1.UpdateDevelopmentCostDto,
+            Object,
+        ]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     DevelopmentCostController.prototype,
@@ -52,8 +63,9 @@ tslib_1.__decorate(
     [
         (0, common_1.Delete)(':id'),
         tslib_1.__param(0, (0, common_1.Param)('id', shared_dto_1.ParseObjectIdPipe)),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId]),
+        tslib_1.__metadata('design:paramtypes', [mongoose_1.Types.ObjectId, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     DevelopmentCostController.prototype,
