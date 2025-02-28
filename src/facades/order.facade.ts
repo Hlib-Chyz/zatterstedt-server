@@ -27,23 +27,31 @@ export class OrderFacade {
     public async getAll(): Promise<OrderDto[]> {
         try {
             const orders = await this.orderService.getAll();
-            const res: OrderDto[] = [];
-            for (const order of orders) {
-                const client = await this.clientService.getById(order.clientId);
-                const resVariant: string[] = [];
-                for (const variant of order.variants) {
-                    resVariant.push(
-                        `${await this.variantFacade.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`
-                    );
-                }
-                res.push({
-                    _id: order._id,
-                    date: order.date,
-                    client: `${client.name} - ${client.contact}`,
-                    variants: resVariant,
-                    orderNumber: order.orderNumber,
-                });
-            }
+
+            const res = await Promise.all(
+                orders.map(async (order) => {
+                    const [client, variantInfo] = await Promise.all([
+                        this.clientService.getById(order.clientId),
+                        Promise.all(
+                            order.variants.map((variant) =>
+                                this.variantFacade.getVariantInfo(
+                                    variant._id,
+                                    `${variant.quantity}/${variant.price}`
+                                )
+                            )
+                        ),
+                    ]);
+
+                    return {
+                        _id: order._id,
+                        date: order.date,
+                        client: `${client.name} - ${client.contact}`,
+                        variants: variantInfo,
+                        orderNumber: order.orderNumber,
+                    };
+                })
+            );
+
             return plainToInstance(OrderDto, res, { excludeExtraneousValues: true });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get orders');
@@ -51,32 +59,49 @@ export class OrderFacade {
         }
     }
 
+    // TODO TRANSACTION
     public async add(order: CreateOrderDto): Promise<void> {
         try {
-            let clientId: Types.ObjectId | null = null;
-            if (!order.clientId) {
+            let clientId: Types.ObjectId | null = order.clientId ?? null;
+
+            if (!clientId) {
                 clientId = await this.clientService.add(order.clientName, order.contact);
             }
-            for (const variant of order.variants) {
-                if (variant.price === 0) {
-                    await this.stockService.decreaseRealizedParty(variant._id, variant.quantity);
-                }
-                const productId = await this.variantService.getProductId(variant._id);
-                const manufacturingCost =
-                    await this.manufacturingCostService.getByProductId(productId);
-                for (const inventory of manufacturingCost?.inventory ?? []) {
-                    if (!inventory.duringManufacture) {
-                        await this.inventoryService.updateUsedAndPaid(
-                            inventory.inventoryId,
-                            variant.quantity * inventory.quantityInUse,
-                            variant.quantity * inventory.quantityInCost
-                        );
-                    }
-                }
-                await this.stockService.increaseSold(variant._id, variant.quantity);
-            }
-            const orders = await this.orderService.getAll();
-            await this.orderService.add(clientId, order, orders.length);
+
+            await Promise.all(
+                order.variants.map(async (variant) => {
+                    const productId = await this.variantService.getProductId(variant._id);
+
+                    const stockUpdate =
+                        variant.price === 0
+                            ? this.stockService.decreaseRealizedParty(variant._id, variant.quantity)
+                            : Promise.resolve();
+
+                    const manufacturingCost =
+                        await this.manufacturingCostService.getByProductId(productId);
+
+                    const inventoryUpdates =
+                        manufacturingCost?.inventory
+                            ?.filter((inventory) => !inventory.duringManufacture)
+                            .map((inventory) =>
+                                this.inventoryService.updateUsedAndPaid(
+                                    inventory.inventoryId,
+                                    variant.quantity * inventory.quantityInUse,
+                                    variant.quantity * inventory.quantityInCost
+                                )
+                            ) ?? [];
+
+                    const soldUpdate = this.stockService.increaseSold(
+                        variant._id,
+                        variant.quantity
+                    );
+
+                    await Promise.all([stockUpdate, ...inventoryUpdates, soldUpdate]);
+                })
+            );
+
+            const ordersCount = (await this.orderService.getAll()).length;
+            await this.orderService.add(clientId, order, ordersCount);
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add order');
         }

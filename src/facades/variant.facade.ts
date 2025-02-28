@@ -62,21 +62,27 @@ export class VariantFacade {
         }
     }
 
+    // TODO TRANSACTION
     public async updateVariant(createVariant: UpdateVariantDto): Promise<void> {
         try {
-            await this.variantService.deleteManyByProductId(createVariant.productId);
-            await this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds);
-            for (const variant of createVariant.variants) {
+            await Promise.all([
+                this.variantService.deleteManyByProductId(createVariant.productId),
+                this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds),
+            ]);
+
+            const variantPromises = createVariant.variants.map(async (variant) => {
                 const newVariantId = await this.variantService.add({
                     size: variant.size,
                     color: variant.color,
                     productId: createVariant.productId,
                 });
-                await this.stockService.add({
+                return this.stockService.add({
                     total: variant.quantity,
                     variantId: newVariantId,
                 });
-            }
+            });
+
+            await Promise.all(variantPromises);
         } catch (error) {
             this.errorService.throwError(error, 'Failed to set variants');
         }
@@ -86,17 +92,12 @@ export class VariantFacade {
         variantIds,
     }: CanSaveVariantDto): Promise<CanSaveVariantResponseDto> {
         try {
-            let canSaveVariant = true;
-            for (const id of variantIds) {
-                const orders = await this.orderService.getByVariantId(id);
-                if (orders.length) {
-                    canSaveVariant = false;
-                    break;
-                }
-            }
+            const ordersByVariant = await Promise.all(
+                variantIds.map((id) => this.orderService.getByVariantId(id))
+            );
             return plainToInstance(
                 CanSaveVariantResponseDto,
-                { canSaveVariant },
+                { canSaveVariant: !ordersByVariant.some((orders) => orders.length > 0) },
                 { excludeExtraneousValues: true }
             );
         } catch (error) {

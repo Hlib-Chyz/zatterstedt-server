@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model, Types } from 'mongoose';
 import { SetRealizedPartyDto } from 'src/dto/stock.dto';
 import { Stock, StockDocument } from 'src/schemas/stock.schema';
 import { CreateStockType } from 'src/types/stock.types';
@@ -10,6 +10,7 @@ import { ErrorService } from './error.service';
 export class StockService {
     public constructor(
         @InjectModel(Stock.name) private stockModel: Model<StockDocument>,
+        @InjectConnection() private readonly connection: Connection,
         private readonly errorService: ErrorService
     ) {}
 
@@ -26,17 +27,24 @@ export class StockService {
         }
     }
 
+    // TODO TRANSACTION
     public async deleteManyByVariantIds(variantIds: Types.ObjectId[]): Promise<void> {
-        // TODO - transactions
+        const session = await this.connection.startSession();
+        session.startTransaction();
         try {
-            for (const variantId of variantIds) {
-                const result = await this.stockModel.findOneAndDelete({ variantId }).exec();
-                if (!result) {
-                    throw new NotFoundException('Stock not found');
-                }
+            const result = await this.stockModel
+                .deleteMany({ variantId: { $in: variantIds } })
+                .session(session)
+                .exec();
+            if (result.deletedCount !== variantIds.length) {
+                throw new NotFoundException('Some stocks not found');
             }
+            await session.commitTransaction();
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to remove by variant id');
+            await session.abortTransaction();
+            this.errorService.throwError(error, 'Failed to remove by variant ids');
+        } finally {
+            session.endSession();
         }
     }
 

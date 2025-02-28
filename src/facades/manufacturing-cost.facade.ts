@@ -21,16 +21,21 @@ export class ManufacturingCostFacade {
         private readonly manufacturingCostService: ManufacturingCostService
     ) {}
 
+    // TODO TRANSACTION
     public async updateInventory(
         id: Types.ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<void> {
         try {
             const manufacturingCost = await this.manufacturingCostService.getById(id);
-            if (manufacturingCostInventory.oldInventory.length) {
-                await this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true);
-            }
-            await this.changeInventoryAmount(manufacturingCostInventory.inventory, false);
+
+            await Promise.all([
+                manufacturingCostInventory.oldInventory.length
+                    ? this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true)
+                    : Promise.resolve(),
+                this.changeInventoryAmount(manufacturingCostInventory.inventory, false),
+            ]);
+
             await this.manufacturingCostService.updateInventory(
                 manufacturingCostInventory.inventory,
                 manufacturingCost
@@ -44,17 +49,12 @@ export class ManufacturingCostFacade {
         variantIds,
     }: CanSaveInventoryDto): Promise<CanSaveInventoryResponseDto> {
         try {
-            let canSaveInventory = true;
-            for (const id of variantIds) {
-                const orders = await this.orderService.getByVariantId(id);
-                if (orders.length) {
-                    canSaveInventory = false;
-                    break;
-                }
-            }
+            const results = await Promise.all(
+                variantIds.map((id) => this.orderService.getByVariantId(id))
+            );
             return plainToInstance(
                 CanSaveInventoryResponseDto,
-                { canSaveInventory },
+                { canSaveInventory: !results.some((orders) => orders.length > 0) },
                 { excludeExtraneousValues: true }
             );
         } catch (error) {
@@ -71,14 +71,16 @@ export class ManufacturingCostFacade {
         inventory: InventoryDto[],
         negative: boolean
     ): Promise<void> {
-        for (const inv of inventory) {
-            if (inv.duringManufacture) {
-                await this.inventoryService.updateUsedAndPaid(
-                    inv.inventoryId,
-                    negative ? -inv.quantityInUse : inv.quantityInUse,
-                    negative ? -inv.quantityInCost : inv.quantityInCost
-                );
-            }
-        }
+        await Promise.all(
+            inventory
+                .filter((inv) => inv.duringManufacture)
+                .map((inv) =>
+                    this.inventoryService.updateUsedAndPaid(
+                        inv.inventoryId,
+                        negative ? -inv.quantityInUse : inv.quantityInUse,
+                        negative ? -inv.quantityInCost : inv.quantityInCost
+                    )
+                )
+        );
     }
 }

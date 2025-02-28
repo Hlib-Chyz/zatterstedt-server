@@ -36,15 +36,17 @@ export class LoggingHooks implements OnModuleInit {
 
             schema.post('insertMany', async function (docs: mongoose.Document[]) {
                 if (Array.isArray(docs)) {
-                    for (const doc of docs) {
-                        await createLog(
-                            'CREATE',
-                            doc.constructor as mongoose.Model<any>,
-                            doc._id as Types.ObjectId,
-                            null,
-                            doc.toObject()
-                        );
-                    }
+                    await Promise.all(
+                        docs.map((doc) =>
+                            createLog(
+                                'CREATE',
+                                doc.constructor as mongoose.Model<any>,
+                                doc._id as Types.ObjectId,
+                                null,
+                                doc.toObject()
+                            )
+                        )
+                    );
                 }
             });
 
