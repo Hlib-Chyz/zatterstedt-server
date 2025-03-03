@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { CreateProductDto, UpdateProductDto } from 'src/dto/product.dto';
 import { ProductDocument } from 'src/schemas/product.schema';
 import { ErrorService } from './error.service';
@@ -11,6 +11,6 @@ export declare class ProductService {
     updatePrice(productId: Types.ObjectId, price: number): Promise<void>;
     getByName(name: string): Promise<ProductDocument>;
     getByNameWithoutCheck(name: string): Promise<ProductDocument | null>;
-    add(product: CreateProductDto): Promise<ProductDocument>;
+    add(product: CreateProductDto, session: ClientSession): Promise<ProductDocument>;
     getById(id: Types.ObjectId): Promise<ProductDocument>;
 }

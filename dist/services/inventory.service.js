@@ -59,12 +59,13 @@ let InventoryService = class InventoryService {
             this.errorService.throwError(error, 'Failed to delete inventory');
         }
     }
-    async updateUsedAndPaid(id, used, paid) {
+    async updateUsedAndPaid(id, used, paid, session) {
         try {
             const result = await this.inventoryModel
                 .findByIdAndUpdate(id, {
                     $inc: { used, paid },
                 })
+                .session(session)
                 .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');

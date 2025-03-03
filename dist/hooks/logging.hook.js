@@ -23,9 +23,11 @@ let LoggingHooks = (LoggingHooks_1 = class LoggingHooks {
             });
             schema.post('insertMany', async function (docs) {
                 if (Array.isArray(docs)) {
-                    for (const doc of docs) {
-                        await createLog('CREATE', doc.constructor, doc._id, null, doc.toObject());
-                    }
+                    await Promise.all(
+                        docs.map((doc) =>
+                            createLog('CREATE', doc.constructor, doc._id, null, doc.toObject())
+                        )
+                    );
                 }
             });
             schema.pre(['updateOne', 'findOneAndUpdate'], async function (next) {

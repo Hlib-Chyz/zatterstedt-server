@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { CreateProductDto, UpdateProductDto } from 'src/dto/product.dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
 import { ErrorService } from './error.service';
@@ -67,9 +67,10 @@ export class ProductService {
         }
     }
 
-    public async add(product: CreateProductDto): Promise<ProductDocument> {
+    public async add(product: CreateProductDto, session: ClientSession): Promise<ProductDocument> {
         try {
             const newProduct = new this.productModel(product);
+            newProduct.$session(session);
             await newProduct.save();
             return newProduct;
         } catch (error) {

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// logging.hook.ts
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { LogService } from '@services/log.service';
 import mongoose, { Types } from 'mongoose';
@@ -81,7 +80,6 @@ export class LoggingHooks implements OnModuleInit {
                 }
             });
 
-            // ✅ Логирование удаления (deleteOne, findOneAndDelete)
             schema.pre(['deleteOne', 'findOneAndDelete'], async function (next) {
                 try {
                     const documentId = this.getQuery()._id;

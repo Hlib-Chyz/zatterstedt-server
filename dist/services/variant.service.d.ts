@@ -1,5 +1,5 @@
 import { CreateVariantType } from '@strategies/variant.types';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { VariantDocument } from 'src/schemas/variant.schema';
 import { ErrorService } from './error.service';
 export declare class VariantService {
@@ -9,7 +9,7 @@ export declare class VariantService {
     getAllByProductId(productId: Types.ObjectId): Promise<VariantDocument[]>;
     getById(id: Types.ObjectId): Promise<VariantDocument>;
     getAll(): Promise<VariantDocument[]>;
-    deleteManyByProductId(productId: Types.ObjectId): Promise<void>;
+    deleteManyByProductId(productId: Types.ObjectId, session: ClientSession): Promise<void>;
     getProductId(variantId: Types.ObjectId): Promise<Types.ObjectId>;
-    add(variant: CreateVariantType): Promise<Types.ObjectId>;
+    add(variant: CreateVariantType, session: ClientSession): Promise<Types.ObjectId>;
 }

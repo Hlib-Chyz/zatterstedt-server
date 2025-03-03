@@ -4,19 +4,29 @@ exports.VariantFacade = void 0;
 const tslib_1 = require('tslib');
 const variant_dto_1 = require('../dto/variant.dto');
 const common_1 = require('@nestjs/common');
+const mongoose_1 = require('@nestjs/mongoose');
 const error_service_1 = require('../services/error.service');
 const order_service_1 = require('../services/order.service');
 const product_service_1 = require('../services/product.service');
 const stock_service_1 = require('../services/stock.service');
 const variant_service_1 = require('../services/variant.service');
 const class_transformer_1 = require('class-transformer');
+const mongoose_2 = require('mongoose');
 let VariantFacade = class VariantFacade {
-    constructor(stockService, variantService, productService, orderService, errorService) {
+    constructor(
+        stockService,
+        variantService,
+        productService,
+        orderService,
+        errorService,
+        connection
+    ) {
         this.stockService = stockService;
         this.variantService = variantService;
         this.productService = productService;
         this.orderService = orderService;
         this.errorService = errorService;
+        this.connection = connection;
     }
     async getAll() {
         try {
@@ -55,37 +65,47 @@ let VariantFacade = class VariantFacade {
         }
     }
     async updateVariant(createVariant) {
+        const session = await this.connection.startSession();
+        session.startTransaction();
         try {
-            await this.variantService.deleteManyByProductId(createVariant.productId);
-            await this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds);
-            for (const variant of createVariant.variants) {
-                const newVariantId = await this.variantService.add({
-                    size: variant.size,
-                    color: variant.color,
-                    productId: createVariant.productId,
-                });
-                await this.stockService.add({
-                    total: variant.quantity,
-                    variantId: newVariantId,
-                });
-            }
+            await Promise.all([
+                this.variantService.deleteManyByProductId(createVariant.productId, session),
+                this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds, session),
+            ]);
+            const variantPromises = createVariant.variants.map(async (variant) => {
+                const newVariantId = await this.variantService.add(
+                    {
+                        size: variant.size,
+                        color: variant.color,
+                        productId: createVariant.productId,
+                    },
+                    session
+                );
+                return this.stockService.add(
+                    {
+                        total: variant.quantity,
+                        variantId: newVariantId,
+                    },
+                    session
+                );
+            });
+            await Promise.all(variantPromises);
+            await session.commitTransaction();
         } catch (error) {
+            await session.abortTransaction();
             this.errorService.throwError(error, 'Failed to set variants');
+        } finally {
+            session.endSession();
         }
     }
     async canSaveVariants({ variantIds }) {
         try {
-            let canSaveVariant = true;
-            for (const id of variantIds) {
-                const orders = await this.orderService.getByVariantId(id);
-                if (orders.length) {
-                    canSaveVariant = false;
-                    break;
-                }
-            }
+            const ordersByVariant = await Promise.all(
+                variantIds.map((id) => this.orderService.getByVariantId(id))
+            );
             return (0, class_transformer_1.plainToInstance)(
                 variant_dto_1.CanSaveVariantResponseDto,
-                { canSaveVariant },
+                { canSaveVariant: !ordersByVariant.some((orders) => orders.length > 0) },
                 { excludeExtraneousValues: true }
             );
         } catch (error) {
@@ -102,12 +122,14 @@ exports.VariantFacade = VariantFacade;
 exports.VariantFacade = VariantFacade = tslib_1.__decorate(
     [
         (0, common_1.Injectable)(),
+        tslib_1.__param(5, (0, mongoose_1.InjectConnection)()),
         tslib_1.__metadata('design:paramtypes', [
             stock_service_1.StockService,
             variant_service_1.VariantService,
             product_service_1.ProductService,
             order_service_1.OrderService,
             error_service_1.ErrorService,
+            mongoose_2.Connection,
         ]),
     ],
     VariantFacade

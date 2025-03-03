@@ -3,6 +3,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.ProductFacade = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
+const mongoose_1 = require('@nestjs/mongoose');
 const additional_cost_service_1 = require('../services/additional-cost.service');
 const development_cost_service_1 = require('../services/development-cost.service');
 const error_service_1 = require('../services/error.service');
@@ -11,6 +12,7 @@ const product_service_1 = require('../services/product.service');
 const stock_service_1 = require('../services/stock.service');
 const variant_service_1 = require('../services/variant.service');
 const class_transformer_1 = require('class-transformer');
+const mongoose_2 = require('mongoose');
 const product_dto_1 = require('../dto/product.dto');
 let ProductFacade = class ProductFacade {
     constructor(
@@ -20,7 +22,8 @@ let ProductFacade = class ProductFacade {
         developmentCostService,
         variantService,
         stockService,
-        manufacturingCostService
+        manufacturingCostService,
+        connection
     ) {
         this.errorService = errorService;
         this.productService = productService;
@@ -29,51 +32,53 @@ let ProductFacade = class ProductFacade {
         this.variantService = variantService;
         this.stockService = stockService;
         this.manufacturingCostService = manufacturingCostService;
+        this.connection = connection;
     }
     async getAll() {
         try {
-            const res = [];
             const products = await this.productService.getAll();
-            for (const product of products) {
-                const additionalCost = await this.additionalCostService.getByProductId(product._id);
-                const developmentCosts = await this.developmentCostService.getByProductId(
-                    product._id
-                );
-                const variants = await this.variantService.getAllByProductId(product._id);
-                const manufacturingCost = await this.manufacturingCostService.getByProductId(
-                    product._id
-                );
-                const resVariant = [];
-                for (const variant of variants) {
-                    const stock = await this.stockService.getByVariantId(variant._id);
-                    resVariant.push({
-                        _id: variant._id,
-                        size: variant.size,
-                        color: variant.color,
-                        stock: {
-                            total: stock.total,
-                            sold: stock.sold,
-                            realizedParty: stock.realizedParty,
+            const res = await Promise.all(
+                products.map(async (product) => {
+                    const [additionalCost, developmentCosts, variants, manufacturingCost] =
+                        await Promise.all([
+                            this.additionalCostService.getByProductId(product._id),
+                            this.developmentCostService.getByProductId(product._id),
+                            this.variantService.getAllByProductId(product._id),
+                            this.manufacturingCostService.getByProductId(product._id),
+                        ]);
+                    const resVariant = await Promise.all(
+                        variants.map(async (variant) => {
+                            const stock = await this.stockService.getByVariantId(variant._id);
+                            return {
+                                _id: variant._id,
+                                size: variant.size,
+                                color: variant.color,
+                                stock: {
+                                    total: stock.total,
+                                    sold: stock.sold,
+                                    realizedParty: stock.realizedParty,
+                                },
+                            };
+                        })
+                    );
+                    return {
+                        _id: product._id,
+                        name: product.name,
+                        price: product.price,
+                        variants: resVariant,
+                        developmentCosts,
+                        additionalCost: {
+                            _id: additionalCost._id,
+                            cost: additionalCost.cost,
                         },
-                    });
-                }
-                res.push({
-                    _id: product._id,
-                    name: product.name,
-                    price: product.price,
-                    variants: resVariant,
-                    developmentCosts,
-                    additionalCost: {
-                        _id: additionalCost._id,
-                        cost: additionalCost.cost,
-                    },
-                    manufacturingCost: {
-                        _id: manufacturingCost._id,
-                        inventory: manufacturingCost.inventory,
-                        job: manufacturingCost.job,
-                    },
-                });
-            }
+                        manufacturingCost: {
+                            _id: manufacturingCost._id,
+                            inventory: manufacturingCost.inventory,
+                            job: manufacturingCost.job,
+                        },
+                    };
+                })
+            );
             return (0, class_transformer_1.plainToInstance)(product_dto_1.ProductDto, res, {
                 excludeExtraneousValues: true,
             });
@@ -83,18 +88,20 @@ let ProductFacade = class ProductFacade {
         }
     }
     async add(product) {
+        const session = await this.connection.startSession();
+        session.startTransaction();
         try {
-            const existingProduct = await this.productService.getByNameWithoutCheck(product.name);
-            if (existingProduct) {
-                throw new common_1.ConflictException(
-                    'A product with the given name already exists'
-                );
-            }
-            const newProduct = await this.productService.add(product);
-            await this.additionalCostService.add(newProduct._id);
-            await this.manufacturingCostService.add(newProduct._id);
+            const newProduct = await this.productService.add(product, session);
+            await Promise.all([
+                this.additionalCostService.add(newProduct._id, session),
+                this.manufacturingCostService.add(newProduct._id, session),
+            ]);
+            await session.commitTransaction();
         } catch (error) {
+            await session.abortTransaction();
             this.errorService.throwError(error, 'Failed to create a new product');
+        } finally {
+            session.endSession();
         }
     }
 };
@@ -102,6 +109,7 @@ exports.ProductFacade = ProductFacade;
 exports.ProductFacade = ProductFacade = tslib_1.__decorate(
     [
         (0, common_1.Injectable)(),
+        tslib_1.__param(7, (0, mongoose_1.InjectConnection)()),
         tslib_1.__metadata('design:paramtypes', [
             error_service_1.ErrorService,
             product_service_1.ProductService,
@@ -110,6 +118,7 @@ exports.ProductFacade = ProductFacade = tslib_1.__decorate(
             variant_service_1.VariantService,
             stock_service_1.StockService,
             manufacturing_cost_service_1.ManufacturingCostService,
+            mongoose_2.Connection,
         ]),
     ],
     ProductFacade

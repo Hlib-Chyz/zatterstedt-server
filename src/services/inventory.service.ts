@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import {
     CreateInventoryDto,
     InventoryDto,
@@ -63,12 +63,18 @@ export class InventoryService {
         }
     }
 
-    public async updateUsedAndPaid(id: Types.ObjectId, used: number, paid: number): Promise<void> {
+    public async updateUsedAndPaid(
+        id: Types.ObjectId,
+        used: number,
+        paid: number,
+        session: ClientSession
+    ): Promise<void> {
         try {
             const result = await this.inventoryModel
                 .findByIdAndUpdate(id, {
                     $inc: { used, paid },
                 })
+                .session(session)
                 .exec();
             if (!result) {
                 throw new NotFoundException('Inventory not found');

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { UpdateAdditionalCostDto } from 'src/dto/additional-cost.dto';
 import { AdditionalCost, AdditionalCostDocument } from 'src/schemas/additional-cost.schema';
 import { ErrorService } from './error.service';
@@ -26,9 +26,10 @@ export class AdditionalCostService {
         }
     }
 
-    public async add(productId: Types.ObjectId): Promise<void> {
+    public async add(productId: Types.ObjectId, session: ClientSession): Promise<void> {
         try {
             const newCost = new this.additionalCostModel({ productId });
+            newCost.$session(session);
             await newCost.save();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add additional cost');

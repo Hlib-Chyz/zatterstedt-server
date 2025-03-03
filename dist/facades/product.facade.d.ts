@@ -5,6 +5,7 @@ import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
+import { Connection } from 'mongoose';
 import { CreateProductDto, ProductDto } from 'src/dto/product.dto';
 export declare class ProductFacade {
     private readonly errorService;
@@ -14,6 +15,7 @@ export declare class ProductFacade {
     private readonly variantService;
     private readonly stockService;
     private readonly manufacturingCostService;
+    private readonly connection;
     constructor(
         errorService: ErrorService,
         productService: ProductService,
@@ -21,7 +23,8 @@ export declare class ProductFacade {
         developmentCostService: DevelopmentCostService,
         variantService: VariantService,
         stockService: StockService,
-        manufacturingCostService: ManufacturingCostService
+        manufacturingCostService: ManufacturingCostService,
+        connection: Connection
     );
     getAll(): Promise<ProductDto[]>;
     add(product: CreateProductDto): Promise<void>;

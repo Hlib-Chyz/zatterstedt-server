@@ -24,27 +24,30 @@ let StockService = class StockService {
             return {};
         }
     }
-    async deleteManyByVariantIds(variantIds) {
+    async deleteManyByVariantIds(variantIds, session) {
         try {
-            for (const variantId of variantIds) {
-                const result = await this.stockModel.findOneAndDelete({ variantId }).exec();
-                if (!result) {
-                    throw new common_1.NotFoundException('Stock not found');
-                }
+            const result = await this.stockModel
+                .deleteMany({ variantId: { $in: variantIds } })
+                .session(session)
+                .exec();
+            if (result.deletedCount !== variantIds.length) {
+                await session.abortTransaction();
+                throw new common_1.NotFoundException('Some stocks not found');
             }
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to remove by variant id');
+            this.errorService.throwError(error, 'Failed to remove by variant ids');
         }
     }
-    async add(stock) {
+    async add(stock, session) {
         try {
             const newStock = new this.stockModel({ ...stock, realizedParty: stock.total });
+            newStock.$session(session);
             await newStock.save();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create a new stock');
         }
     }
-    async increaseSold(variantId, quantity = 1) {
+    async increaseSold(variantId, quantity = 1, session) {
         try {
             const result = await this.stockModel
                 .findOneAndUpdate(
@@ -53,6 +56,7 @@ let StockService = class StockService {
                         $inc: { sold: quantity },
                     }
                 )
+                .session(session)
                 .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Stock not found');
@@ -78,7 +82,7 @@ let StockService = class StockService {
             this.errorService.throwError(error, 'Failed to set realized party');
         }
     }
-    async decreaseRealizedParty(variantId, amount) {
+    async decreaseRealizedParty(variantId, amount, session) {
         try {
             const result = await this.stockModel
                 .findOneAndUpdate(
@@ -87,6 +91,7 @@ let StockService = class StockService {
                         $inc: { realizedParty: -amount },
                     }
                 )
+                .session(session)
                 .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Stock not found');

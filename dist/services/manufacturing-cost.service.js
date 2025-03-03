@@ -40,18 +40,20 @@ let ManufacturingCostService = class ManufacturingCostService {
             return {};
         }
     }
-    async add(productId) {
+    async add(productId, session) {
         try {
             const createdManufacturingCost = new this.manufacturingCostModel({ productId });
+            createdManufacturingCost.$session(session);
             await createdManufacturingCost.save();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create manufacturing cost');
         }
     }
-    async updateInventory(inventory, manufacturingCost) {
+    async updateInventory(inventory, id, session) {
         try {
             const updatedManufacturingCost = await this.manufacturingCostModel
-                .findByIdAndUpdate(manufacturingCost, { inventory })
+                .findByIdAndUpdate(id, { inventory })
+                .session(session)
                 .exec();
             if (!updatedManufacturingCost) {
                 throw new common_1.NotFoundException('Manufacturing cost not found');

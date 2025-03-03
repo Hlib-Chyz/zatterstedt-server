@@ -18,19 +18,23 @@ let ClientFacade = class ClientFacade {
     }
     async getAll() {
         try {
-            const res = [];
             const clients = await this.clientService.getAll();
-            for (const client of clients) {
-                const orders = await this.orderService.getByClientId(client._id);
-                const purchases = [];
-                for (const order of orders) {
-                    for (const variant of order.variants) {
-                        const newPurchase = `${await this.variantFacade.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`;
-                        purchases.push(newPurchase);
-                    }
-                }
-                res.push({ ...client, purchases });
-            }
+            const res = await Promise.all(
+                clients.map(async (client) => {
+                    const orders = await this.orderService.getByClientId(client._id);
+                    const purchases = await Promise.all(
+                        orders.flatMap((order) =>
+                            order.variants.map((variant) =>
+                                this.variantFacade.getVariantInfo(
+                                    variant._id,
+                                    `${variant.quantity}/${variant.price}`
+                                )
+                            )
+                        )
+                    );
+                    return { ...client, purchases };
+                })
+            );
             return (0, class_transformer_1.plainToInstance)(client_dto_1.ClientDto, res, {
                 excludeExtraneousValues: true,
             });

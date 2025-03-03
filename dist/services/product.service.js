@@ -62,9 +62,10 @@ let ProductService = class ProductService {
             return null;
         }
     }
-    async add(product) {
+    async add(product, session) {
         try {
             const newProduct = new this.productModel(product);
+            newProduct.$session(session);
             await newProduct.save();
             return newProduct;
         } catch (error) {

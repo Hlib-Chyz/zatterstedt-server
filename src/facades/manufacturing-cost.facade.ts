@@ -5,12 +5,13 @@ import {
     ManufacturingCostInventoryDto,
 } from '@dto/manufacturing-cost.dto';
 import { Injectable } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
 import { ErrorService } from '@services/error.service';
 import { InventoryService } from '@services/inventory.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { OrderService } from '@services/order.service';
 import { plainToInstance } from 'class-transformer';
-import { Types } from 'mongoose';
+import { ClientSession, Connection, Types } from 'mongoose';
 
 @Injectable()
 export class ManufacturingCostFacade {
@@ -18,7 +19,8 @@ export class ManufacturingCostFacade {
         private readonly errorService: ErrorService,
         private readonly inventoryService: InventoryService,
         private readonly orderService: OrderService,
-        private readonly manufacturingCostService: ManufacturingCostService
+        private readonly manufacturingCostService: ManufacturingCostService,
+        @InjectConnection() private readonly connection: Connection
     ) {}
 
     // TODO TRANSACTION
@@ -26,22 +28,32 @@ export class ManufacturingCostFacade {
         id: Types.ObjectId,
         manufacturingCostInventory: ManufacturingCostInventoryDto
     ): Promise<void> {
-        try {
-            const manufacturingCost = await this.manufacturingCostService.getById(id);
+        const session = await this.connection.startSession();
+        session.startTransaction();
 
+        try {
             await Promise.all([
                 manufacturingCostInventory.oldInventory.length
-                    ? this.changeInventoryAmount(manufacturingCostInventory.oldInventory, true)
+                    ? this.changeInventoryAmount(
+                          manufacturingCostInventory.oldInventory,
+                          true,
+                          session
+                      )
                     : Promise.resolve(),
-                this.changeInventoryAmount(manufacturingCostInventory.inventory, false),
+                this.changeInventoryAmount(manufacturingCostInventory.inventory, false, session),
+                this.manufacturingCostService.updateInventory(
+                    manufacturingCostInventory.inventory,
+                    id,
+                    session
+                ),
             ]);
 
-            await this.manufacturingCostService.updateInventory(
-                manufacturingCostInventory.inventory,
-                manufacturingCost
-            );
+            await session.commitTransaction();
         } catch (error) {
+            await session.abortTransaction();
             this.errorService.throwError(error, 'Failed to update inventory');
+        } finally {
+            session.endSession();
         }
     }
 
@@ -69,7 +81,8 @@ export class ManufacturingCostFacade {
 
     private async changeInventoryAmount(
         inventory: InventoryDto[],
-        negative: boolean
+        negative: boolean,
+        session: ClientSession
     ): Promise<void> {
         await Promise.all(
             inventory
@@ -78,7 +91,8 @@ export class ManufacturingCostFacade {
                     this.inventoryService.updateUsedAndPaid(
                         inv.inventoryId,
                         negative ? -inv.quantityInUse : inv.quantityInUse,
-                        negative ? -inv.quantityInCost : inv.quantityInCost
+                        negative ? -inv.quantityInCost : inv.quantityInCost,
+                        session
                     )
                 )
         );

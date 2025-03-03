@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { InventoryDto, ManufacturingCostJobDto } from 'src/dto/manufacturing-cost.dto';
 import {
     ManufacturingCost,
@@ -46,9 +46,10 @@ export class ManufacturingCostService {
         }
     }
 
-    public async add(productId: Types.ObjectId): Promise<void> {
+    public async add(productId: Types.ObjectId, session: ClientSession): Promise<void> {
         try {
             const createdManufacturingCost = new this.manufacturingCostModel({ productId });
+            createdManufacturingCost.$session(session);
             await createdManufacturingCost.save();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create manufacturing cost');
@@ -57,11 +58,13 @@ export class ManufacturingCostService {
 
     public async updateInventory(
         inventory: InventoryDto[],
-        manufacturingCost: ManufacturingCostDocument
+        id: Types.ObjectId,
+        session: ClientSession
     ): Promise<ManufacturingCostDocument> {
         try {
             const updatedManufacturingCost = await this.manufacturingCostModel
-                .findByIdAndUpdate(manufacturingCost, { inventory })
+                .findByIdAndUpdate(id, { inventory })
+                .session(session)
                 .exec();
             if (!updatedManufacturingCost) {
                 throw new NotFoundException('Manufacturing cost not found');

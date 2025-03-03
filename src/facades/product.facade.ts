@@ -1,4 +1,5 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
 import { AdditionalCostService } from '@services/additional-cost.service';
 import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
@@ -7,6 +8,7 @@ import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
 import { plainToInstance } from 'class-transformer';
+import { Connection } from 'mongoose';
 import { CreateProductDto, ProductDto } from 'src/dto/product.dto';
 
 @Injectable()
@@ -18,7 +20,8 @@ export class ProductFacade {
         private readonly developmentCostService: DevelopmentCostService,
         private readonly variantService: VariantService,
         private readonly stockService: StockService,
-        private readonly manufacturingCostService: ManufacturingCostService
+        private readonly manufacturingCostService: ManufacturingCostService,
+        @InjectConnection() private readonly connection: Connection
     ) {}
 
     public async getAll(): Promise<ProductDto[]> {
@@ -79,18 +82,20 @@ export class ProductFacade {
 
     // TODO TRANSACTION
     public async add(product: CreateProductDto): Promise<void> {
+        const session = await this.connection.startSession();
+        session.startTransaction();
         try {
-            const existingProduct = await this.productService.getByNameWithoutCheck(product.name);
-            if (existingProduct) {
-                throw new ConflictException('A product with the given name already exists');
-            }
-            const newProduct = await this.productService.add(product);
+            const newProduct = await this.productService.add(product, session);
             await Promise.all([
-                this.additionalCostService.add(newProduct._id),
-                this.manufacturingCostService.add(newProduct._id),
+                this.additionalCostService.add(newProduct._id, session),
+                this.manufacturingCostService.add(newProduct._id, session),
             ]);
+            await session.commitTransaction();
         } catch (error) {
+            await session.abortTransaction();
             this.errorService.throwError(error, 'Failed to create a new product');
+        } finally {
+            session.endSession();
         }
     }
 }

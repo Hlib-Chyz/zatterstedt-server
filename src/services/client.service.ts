@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { Client, ClientDocument } from 'src/schemas/client.schema';
 import { ErrorService } from './error.service';
 
@@ -11,9 +11,14 @@ export class ClientService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async add(name: string, contact: string): Promise<Types.ObjectId> {
+    public async add(
+        name: string,
+        contact: string,
+        session: ClientSession
+    ): Promise<Types.ObjectId> {
         try {
             const newClient = new this.clientModel({ name, contact });
+            newClient.$session(session);
             await newClient.save();
             return newClient._id;
         } catch (error) {

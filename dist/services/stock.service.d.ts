@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { SetRealizedPartyDto } from 'src/dto/stock.dto';
 import { StockDocument } from 'src/schemas/stock.schema';
 import { CreateStockType } from 'src/types/stock.types';
@@ -8,9 +8,17 @@ export declare class StockService {
     private readonly errorService;
     constructor(stockModel: Model<StockDocument>, errorService: ErrorService);
     getByVariantId(variantId: Types.ObjectId): Promise<StockDocument>;
-    deleteManyByVariantIds(variantIds: Types.ObjectId[]): Promise<void>;
-    add(stock: CreateStockType): Promise<void>;
-    increaseSold(variantId: Types.ObjectId, quantity?: number): Promise<void>;
+    deleteManyByVariantIds(variantIds: Types.ObjectId[], session: ClientSession): Promise<void>;
+    add(stock: CreateStockType, session: ClientSession): Promise<void>;
+    increaseSold(
+        variantId: Types.ObjectId,
+        quantity: number | undefined,
+        session: ClientSession
+    ): Promise<void>;
     updateRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<void>;
-    decreaseRealizedParty(variantId: Types.ObjectId, amount: number): Promise<void>;
+    decreaseRealizedParty(
+        variantId: Types.ObjectId,
+        amount: number,
+        session: ClientSession
+    ): Promise<void>;
 }

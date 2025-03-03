@@ -40,9 +40,9 @@ let VariantService = class VariantService {
             return [];
         }
     }
-    async deleteManyByProductId(productId) {
+    async deleteManyByProductId(productId, session) {
         try {
-            await this.variantModel.deleteMany({ productId }).exec();
+            await this.variantModel.deleteMany({ productId }).session(session).exec();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to remove variants');
         }
@@ -59,9 +59,10 @@ let VariantService = class VariantService {
             return {};
         }
     }
-    async add(variant) {
+    async add(variant, session) {
         try {
             const newVariant = new this.variantModel(variant);
+            newVariant.$session(session);
             const savedVariant = await newVariant.save();
             return savedVariant._id;
         } catch (error) {

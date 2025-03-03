@@ -5,13 +5,14 @@ import {
     VariantLockupDto,
 } from '@dto/variant.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
 import { ErrorService } from '@services/error.service';
 import { OrderService } from '@services/order.service';
 import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
 import { plainToInstance } from 'class-transformer';
-import { Types } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 
 @Injectable()
 export class VariantFacade {
@@ -20,7 +21,8 @@ export class VariantFacade {
         private readonly variantService: VariantService,
         private readonly productService: ProductService,
         private readonly orderService: OrderService,
-        private readonly errorService: ErrorService
+        private readonly errorService: ErrorService,
+        @InjectConnection() private readonly connection: Connection
     ) {}
 
     public async getAll(): Promise<VariantLockupDto[]> {
@@ -64,27 +66,40 @@ export class VariantFacade {
 
     // TODO TRANSACTION
     public async updateVariant(createVariant: UpdateVariantDto): Promise<void> {
+        const session = await this.connection.startSession();
+        session.startTransaction();
         try {
             await Promise.all([
-                this.variantService.deleteManyByProductId(createVariant.productId),
-                this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds),
+                this.variantService.deleteManyByProductId(createVariant.productId, session),
+                this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds, session),
             ]);
 
             const variantPromises = createVariant.variants.map(async (variant) => {
-                const newVariantId = await this.variantService.add({
-                    size: variant.size,
-                    color: variant.color,
-                    productId: createVariant.productId,
-                });
-                return this.stockService.add({
-                    total: variant.quantity,
-                    variantId: newVariantId,
-                });
+                const newVariantId = await this.variantService.add(
+                    {
+                        size: variant.size,
+                        color: variant.color,
+                        productId: createVariant.productId,
+                    },
+                    session
+                );
+                return this.stockService.add(
+                    {
+                        total: variant.quantity,
+                        variantId: newVariantId,
+                    },
+                    session
+                );
             });
 
             await Promise.all(variantPromises);
+
+            await session.commitTransaction();
         } catch (error) {
+            await session.abortTransaction();
             this.errorService.throwError(error, 'Failed to set variants');
+        } finally {
+            session.endSession();
         }
     }
 

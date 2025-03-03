@@ -24,9 +24,10 @@ let AdditionalCostService = class AdditionalCostService {
             this.errorService.throwError(error, 'Failed to update additional cost');
         }
     }
-    async add(productId) {
+    async add(productId, session) {
         try {
             const newCost = new this.additionalCostModel({ productId });
+            newCost.$session(session);
             await newCost.save();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to add additional cost');

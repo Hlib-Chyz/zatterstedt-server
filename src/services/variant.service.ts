@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateVariantType } from '@strategies/variant.types';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { Variant, VariantDocument } from 'src/schemas/variant.schema';
 import { ErrorService } from './error.service';
 
@@ -43,9 +43,12 @@ export class VariantService {
         }
     }
 
-    public async deleteManyByProductId(productId: Types.ObjectId): Promise<void> {
+    public async deleteManyByProductId(
+        productId: Types.ObjectId,
+        session: ClientSession
+    ): Promise<void> {
         try {
-            await this.variantModel.deleteMany({ productId }).exec();
+            await this.variantModel.deleteMany({ productId }).session(session).exec();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to remove variants');
         }
@@ -64,9 +67,10 @@ export class VariantService {
         }
     }
 
-    public async add(variant: CreateVariantType): Promise<Types.ObjectId> {
+    public async add(variant: CreateVariantType, session: ClientSession): Promise<Types.ObjectId> {
         try {
             const newVariant = new this.variantModel(variant);
+            newVariant.$session(session);
             const savedVariant = await newVariant.save();
             return savedVariant._id;
         } catch (error) {

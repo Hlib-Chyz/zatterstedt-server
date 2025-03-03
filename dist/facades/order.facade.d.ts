@@ -6,6 +6,7 @@ import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { OrderService } from '@services/order.service';
 import { StockService } from '@services/stock.service';
 import { VariantService } from '@services/variant.service';
+import { Connection } from 'mongoose';
 import { VariantFacade } from 'src/facades/variant.facade';
 export declare class OrderFacade {
     private readonly errorService;
@@ -16,6 +17,7 @@ export declare class OrderFacade {
     private readonly variantFacade;
     private readonly orderService;
     private readonly manufacturingCostService;
+    private readonly connection;
     constructor(
         errorService: ErrorService,
         stockService: StockService,
@@ -24,7 +26,8 @@ export declare class OrderFacade {
         variantService: VariantService,
         variantFacade: VariantFacade,
         orderService: OrderService,
-        manufacturingCostService: ManufacturingCostService
+        manufacturingCostService: ManufacturingCostService,
+        connection: Connection
     );
     getAll(): Promise<OrderDto[]>;
     add(order: CreateOrderDto): Promise<void>;

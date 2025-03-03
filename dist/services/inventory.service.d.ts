@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import {
     CreateInventoryDto,
     InventoryDto,
@@ -15,6 +15,11 @@ export declare class InventoryService {
     add(inventory: CreateInventoryDto): Promise<void>;
     update(inventory: UpdateInventoryDto): Promise<void>;
     delete(id: Types.ObjectId): Promise<void>;
-    updateUsedAndPaid(id: Types.ObjectId, used: number, paid: number): Promise<void>;
+    updateUsedAndPaid(
+        id: Types.ObjectId,
+        used: number,
+        paid: number,
+        session: ClientSession
+    ): Promise<void>;
     updateUsed(body: SetUsedFieldDto): Promise<void>;
 }

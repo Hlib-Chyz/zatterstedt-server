@@ -12,9 +12,10 @@ let ClientService = class ClientService {
         this.clientModel = clientModel;
         this.errorService = errorService;
     }
-    async add(name, contact) {
+    async add(name, contact, session) {
         try {
             const newClient = new this.clientModel({ name, contact });
+            newClient.$session(session);
             await newClient.save();
             return newClient._id;
         } catch (error) {
