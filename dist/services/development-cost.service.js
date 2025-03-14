@@ -31,7 +31,7 @@ let DevelopmentCostService = class DevelopmentCostService {
     async update(developmentCost) {
         try {
             const updatedDevelopmentCost = await this.developmentCostModel
-                .findByIdAndUpdate(developmentCost._id, developmentCost)
+                .findOneAndUpdate({ _id: developmentCost._id }, developmentCost)
                 .exec();
             if (!updatedDevelopmentCost) {
                 throw new common_1.NotFoundException('Development cost not found');
@@ -42,7 +42,7 @@ let DevelopmentCostService = class DevelopmentCostService {
     }
     async delete(id) {
         try {
-            const result = await this.developmentCostModel.findByIdAndDelete(id).exec();
+            const result = await this.developmentCostModel.findOneAndDelete({ _id: id }).exec();
             if (!result) {
                 throw new common_1.NotFoundException('Development cost not found');
             }

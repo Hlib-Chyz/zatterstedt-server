@@ -35,7 +35,7 @@ export class FixedCostService {
     public async update(fixedCost: UpdateFixedCostDto): Promise<void> {
         try {
             const result = await this.fixedCostModel
-                .findByIdAndUpdate(fixedCost._id, fixedCost)
+                .findOneAndUpdate({ _id: fixedCost._id }, fixedCost)
                 .exec();
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
@@ -47,7 +47,7 @@ export class FixedCostService {
 
     public async delete(id: Types.ObjectId): Promise<void> {
         try {
-            const result = await this.fixedCostModel.findByIdAndDelete(id).exec();
+            const result = await this.fixedCostModel.findOneAndDelete({ _id: id }).exec();
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }

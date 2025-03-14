@@ -15,7 +15,7 @@ let AdditionalCostService = class AdditionalCostService {
     async update(additionalCost) {
         try {
             const updatedCost = await this.additionalCostModel
-                .findByIdAndUpdate(additionalCost._id, additionalCost)
+                .findOneAndUpdate({ _id: additionalCost._id }, additionalCost)
                 .exec();
             if (!updatedCost) {
                 throw new common_1.NotFoundException('Additional cost not found');

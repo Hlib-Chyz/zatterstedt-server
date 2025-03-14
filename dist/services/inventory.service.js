@@ -40,7 +40,7 @@ let InventoryService = class InventoryService {
     async update(inventory) {
         try {
             const result = await this.inventoryModel
-                .findByIdAndUpdate(inventory._id, inventory)
+                .findOneAndUpdate({ _id: inventory._id }, inventory)
                 .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');
@@ -51,7 +51,7 @@ let InventoryService = class InventoryService {
     }
     async delete(id) {
         try {
-            const result = await this.inventoryModel.findByIdAndDelete(id).exec();
+            const result = await this.inventoryModel.findOneAndDelete({ _id: id }).exec();
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');
             }
@@ -62,9 +62,12 @@ let InventoryService = class InventoryService {
     async updateUsedAndPaid(id, used, paid, session) {
         try {
             const result = await this.inventoryModel
-                .findByIdAndUpdate(id, {
-                    $inc: { used, paid },
-                })
+                .findOneAndUpdate(
+                    { _id: id },
+                    {
+                        $inc: { used, paid },
+                    }
+                )
                 .session(session)
                 .exec();
             if (!result) {
@@ -77,7 +80,7 @@ let InventoryService = class InventoryService {
     async updateUsed(body) {
         try {
             const result = await this.inventoryModel
-                .findByIdAndUpdate(body._id, { used: body.used })
+                .findOneAndUpdate({ _id: body._id }, { used: body.used })
                 .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Inventory not found');

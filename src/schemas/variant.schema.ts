@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { log } from 'src/helpers/log.helper';
 import { Product } from './product.schema';
 
 export type VariantDocument = HydratedDocument<Variant>;
@@ -14,3 +15,5 @@ export class Variant {
 
 export const VariantSchema = SchemaFactory.createForClass(Variant);
 VariantSchema.index({ color: 1, size: 1, productId: 1 }, { unique: true });
+
+log(VariantSchema, Variant.name);

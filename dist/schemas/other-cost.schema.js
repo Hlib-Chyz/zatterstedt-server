@@ -3,6 +3,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.OtherCostSchema = exports.OtherCost = void 0;
 const tslib_1 = require('tslib');
 const mongoose_1 = require('@nestjs/mongoose');
+const log_helper_1 = require('../helpers/log.helper');
 let OtherCost = class OtherCost {};
 exports.OtherCost = OtherCost;
 tslib_1.__decorate(
@@ -34,4 +35,5 @@ exports.OtherCost = OtherCost = tslib_1.__decorate(
     OtherCost
 );
 exports.OtherCostSchema = mongoose_1.SchemaFactory.createForClass(OtherCost);
+(0, log_helper_1.log)(exports.OtherCostSchema, OtherCost.name);
 //# sourceMappingURL=other-cost.schema.js.map

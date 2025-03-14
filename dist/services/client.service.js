@@ -37,7 +37,9 @@ let ClientService = class ClientService {
     }
     async updateContact(id, contact) {
         try {
-            const updatedClient = await this.clientModel.findByIdAndUpdate(id, { contact }).exec();
+            const updatedClient = await this.clientModel
+                .findOneAndUpdate({ _id: id }, { contact })
+                .exec();
             if (!updatedClient) {
                 throw new common_1.NotFoundException('Client not found');
             }

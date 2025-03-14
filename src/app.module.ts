@@ -22,7 +22,6 @@ import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
 import { FixedCostService } from '@services/fixed-cost.service';
 import { InventoryService } from '@services/inventory.service';
-import { LogService } from '@services/log.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
 import { OrderService } from '@services/order.service';
 import { OtherCostService } from '@services/other-cost.service';
@@ -35,7 +34,6 @@ import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
 import { OrderFacade } from 'src/facades/order.facade';
 import { ProductFacade } from 'src/facades/product.facade';
 import { VariantFacade } from 'src/facades/variant.facade';
-import { LoggingHooks } from 'src/hooks/logging.hook';
 import { ZatterstedtMailerModule } from './modules/mailer.module';
 import { StockService } from './services/stock.service';
 
@@ -71,7 +69,6 @@ import { StockService } from './services/stock.service';
         StockController,
     ],
     providers: [
-        LoggingHooks,
         VariantService,
         StockService,
         ProductService,
@@ -92,7 +89,6 @@ import { StockService } from './services/stock.service';
         OrderFacade,
         ClientFacade,
         VariantFacade,
-        LogService,
     ],
 })
 export class AppModule {}

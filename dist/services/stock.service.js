@@ -31,7 +31,6 @@ let StockService = class StockService {
                 .session(session)
                 .exec();
             if (result.deletedCount !== variantIds.length) {
-                await session.abortTransaction();
                 throw new common_1.NotFoundException('Some stocks not found');
             }
         } catch (error) {

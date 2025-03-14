@@ -42,7 +42,9 @@ export class ClientService {
 
     public async updateContact(id: Types.ObjectId, contact: string): Promise<void> {
         try {
-            const updatedClient = await this.clientModel.findByIdAndUpdate(id, { contact }).exec();
+            const updatedClient = await this.clientModel
+                .findOneAndUpdate({ _id: id }, { contact })
+                .exec();
             if (!updatedClient) {
                 throw new NotFoundException('Client not found');
             }

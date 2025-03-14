@@ -22,7 +22,9 @@ let ProductService = class ProductService {
     }
     async update(product) {
         try {
-            const result = await this.productModel.findByIdAndUpdate(product._id, product).exec();
+            const result = await this.productModel
+                .findOneAndUpdate({ _id: product._id }, product)
+                .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Product not found');
             }
@@ -33,7 +35,7 @@ let ProductService = class ProductService {
     async updatePrice(productId, price) {
         try {
             const updatedProduct = await this.productModel
-                .findByIdAndUpdate(productId, { price })
+                .findOneAndUpdate({ _id: productId }, { price })
                 .exec();
             if (!updatedProduct) {
                 throw new common_1.NotFoundException('Product not found');

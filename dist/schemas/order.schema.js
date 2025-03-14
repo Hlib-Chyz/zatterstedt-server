@@ -5,6 +5,7 @@ const tslib_1 = require('tslib');
 const mongoose_1 = require('@nestjs/mongoose');
 const variant_schema_1 = require('./variant.schema');
 const mongoose_2 = require('mongoose');
+const log_helper_1 = require('../helpers/log.helper');
 const client_schema_1 = require('./client.schema');
 let VariantItem = class VariantItem {};
 tslib_1.__decorate(
@@ -82,4 +83,5 @@ tslib_1.__decorate(
 );
 exports.Order = Order = tslib_1.__decorate([(0, mongoose_1.Schema)()], Order);
 exports.OrderSchema = mongoose_1.SchemaFactory.createForClass(Order);
+(0, log_helper_1.log)(exports.OrderSchema, Order.name);
 //# sourceMappingURL=order.schema.js.map

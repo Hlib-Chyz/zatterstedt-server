@@ -26,7 +26,6 @@ const development_cost_service_1 = require('./services/development-cost.service'
 const error_service_1 = require('./services/error.service');
 const fixed_cost_service_1 = require('./services/fixed-cost.service');
 const inventory_service_1 = require('./services/inventory.service');
-const log_service_1 = require('./services/log.service');
 const manufacturing_cost_service_1 = require('./services/manufacturing-cost.service');
 const order_service_1 = require('./services/order.service');
 const other_cost_service_1 = require('./services/other-cost.service');
@@ -39,7 +38,6 @@ const manufacturing_cost_facade_1 = require('./facades/manufacturing-cost.facade
 const order_facade_1 = require('./facades/order.facade');
 const product_facade_1 = require('./facades/product.facade');
 const variant_facade_1 = require('./facades/variant.facade');
-const logging_hook_1 = require('./hooks/logging.hook');
 const mailer_module_1 = require('./modules/mailer.module');
 const stock_service_1 = require('./services/stock.service');
 let AppModule = class AppModule {};
@@ -78,7 +76,6 @@ exports.AppModule = AppModule = tslib_1.__decorate(
                 stock_controller_1.StockController,
             ],
             providers: [
-                logging_hook_1.LoggingHooks,
                 variant_service_1.VariantService,
                 stock_service_1.StockService,
                 product_service_1.ProductService,
@@ -99,7 +96,6 @@ exports.AppModule = AppModule = tslib_1.__decorate(
                 order_facade_1.OrderFacade,
                 client_facade_1.ClientFacade,
                 variant_facade_1.VariantFacade,
-                log_service_1.LogService,
             ],
         }),
     ],

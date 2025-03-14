@@ -4,6 +4,7 @@ exports.ManufacturingCostSchema = exports.ManufacturingCost = void 0;
 const tslib_1 = require('tslib');
 const mongoose_1 = require('@nestjs/mongoose');
 const mongoose_2 = require('mongoose');
+const log_helper_1 = require('../helpers/log.helper');
 const inventory_schema_1 = require('./inventory.schema');
 const product_schema_1 = require('./product.schema');
 let Job = class Job {};
@@ -119,4 +120,5 @@ exports.ManufacturingCost = ManufacturingCost = tslib_1.__decorate(
     ManufacturingCost
 );
 exports.ManufacturingCostSchema = mongoose_1.SchemaFactory.createForClass(ManufacturingCost);
+(0, log_helper_1.log)(exports.ManufacturingCostSchema, ManufacturingCost.name);
 //# sourceMappingURL=manufacturing-cost.schema.js.map

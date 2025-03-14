@@ -36,7 +36,7 @@ let OtherCostService = class OtherCostService {
     async update(otherCost) {
         try {
             const result = await this.otherCostModel
-                .findByIdAndUpdate(otherCost._id, otherCost)
+                .findOneAndUpdate({ _id: otherCost._id }, otherCost)
                 .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Other cost not found');
@@ -47,7 +47,7 @@ let OtherCostService = class OtherCostService {
     }
     async delete(id) {
         try {
-            const result = await this.otherCostModel.findByIdAndDelete(id).exec();
+            const result = await this.otherCostModel.findOneAndDelete({ _id: id }).exec();
             if (!result) {
                 throw new common_1.NotFoundException('Other cost not found');
             }

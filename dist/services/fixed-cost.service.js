@@ -38,7 +38,7 @@ let FixedCostService = class FixedCostService {
     async update(fixedCost) {
         try {
             const result = await this.fixedCostModel
-                .findByIdAndUpdate(fixedCost._id, fixedCost)
+                .findOneAndUpdate({ _id: fixedCost._id }, fixedCost)
                 .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Fixed cost not found');
@@ -49,7 +49,7 @@ let FixedCostService = class FixedCostService {
     }
     async delete(id) {
         try {
-            const result = await this.fixedCostModel.findByIdAndDelete(id).exec();
+            const result = await this.fixedCostModel.findOneAndDelete({ _id: id }).exec();
             if (!result) {
                 throw new common_1.NotFoundException('Fixed cost not found');
             }

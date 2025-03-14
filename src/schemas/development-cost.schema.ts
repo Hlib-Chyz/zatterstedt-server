@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Product } from './product.schema';
+import { log } from 'src/helpers/log.helper';
 
 export type DevelopmentCostDocument = HydratedDocument<DevelopmentCost>;
 
@@ -15,3 +16,5 @@ export class DevelopmentCost {
 
 export const DevelopmentCostSchema = SchemaFactory.createForClass(DevelopmentCost);
 DevelopmentCostSchema.index({ date: 1, description: 1, cost: 1 }, { unique: true });
+
+log(DevelopmentCostSchema, DevelopmentCost.name);

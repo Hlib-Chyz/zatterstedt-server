@@ -35,7 +35,7 @@ export class OtherCostService {
     public async update(otherCost: UpdateOtherCostDto): Promise<void> {
         try {
             const result = await this.otherCostModel
-                .findByIdAndUpdate(otherCost._id, otherCost)
+                .findOneAndUpdate({ _id: otherCost._id }, otherCost)
                 .exec();
             if (!result) {
                 throw new NotFoundException('Other cost not found');
@@ -47,7 +47,7 @@ export class OtherCostService {
 
     public async delete(id: Types.ObjectId): Promise<void> {
         try {
-            const result = await this.otherCostModel.findByIdAndDelete(id).exec();
+            const result = await this.otherCostModel.findOneAndDelete({ _id: id }).exec();
             if (!result) {
                 throw new NotFoundException('Other cost not found');
             }

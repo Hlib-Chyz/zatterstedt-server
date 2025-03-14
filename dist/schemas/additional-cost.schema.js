@@ -4,6 +4,7 @@ exports.AdditionalCostSchema = exports.AdditionalCost = void 0;
 const tslib_1 = require('tslib');
 const mongoose_1 = require('@nestjs/mongoose');
 const mongoose_2 = require('mongoose');
+const log_helper_1 = require('../helpers/log.helper');
 const product_schema_1 = require('./product.schema');
 let AdditionalCost = class AdditionalCost {};
 exports.AdditionalCost = AdditionalCost;
@@ -32,4 +33,5 @@ exports.AdditionalCost = AdditionalCost = tslib_1.__decorate(
     AdditionalCost
 );
 exports.AdditionalCostSchema = mongoose_1.SchemaFactory.createForClass(AdditionalCost);
+(0, log_helper_1.log)(exports.AdditionalCostSchema, AdditionalCost.name);
 //# sourceMappingURL=additional-cost.schema.js.map

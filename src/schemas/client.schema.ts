@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { log } from 'src/helpers/log.helper';
 
 export type ClientDocument = HydratedDocument<Client>;
 
@@ -11,3 +12,5 @@ export class Client {
 
 export const ClientSchema = SchemaFactory.createForClass(Client);
 ClientSchema.index({ name: 1, contact: 1 }, { unique: true });
+
+log(ClientSchema, Client.name);

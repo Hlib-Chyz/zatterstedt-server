@@ -16,7 +16,7 @@ export class AdditionalCostService {
     public async update(additionalCost: UpdateAdditionalCostDto): Promise<void> {
         try {
             const updatedCost = await this.additionalCostModel
-                .findByIdAndUpdate(additionalCost._id, additionalCost)
+                .findOneAndUpdate({ _id: additionalCost._id }, additionalCost)
                 .exec();
             if (!updatedCost) {
                 throw new NotFoundException('Additional cost not found');

@@ -23,7 +23,9 @@ export class ProductService {
 
     public async update(product: UpdateProductDto): Promise<void> {
         try {
-            const result = await this.productModel.findByIdAndUpdate(product._id, product).exec();
+            const result = await this.productModel
+                .findOneAndUpdate({ _id: product._id }, product)
+                .exec();
             if (!result) {
                 throw new NotFoundException('Product not found');
             }
@@ -35,7 +37,7 @@ export class ProductService {
     public async updatePrice(productId: Types.ObjectId, price: number): Promise<void> {
         try {
             const updatedProduct = await this.productModel
-                .findByIdAndUpdate(productId, { price })
+                .findOneAndUpdate({ _id: productId }, { price })
                 .exec();
             if (!updatedProduct) {
                 throw new NotFoundException('Product not found');

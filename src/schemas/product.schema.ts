@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { log } from 'src/helpers/log.helper';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -10,3 +11,5 @@ export class Product {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
+
+log(ProductSchema, Product.name);

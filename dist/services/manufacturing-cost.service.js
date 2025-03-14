@@ -52,7 +52,7 @@ let ManufacturingCostService = class ManufacturingCostService {
     async updateInventory(inventory, id, session) {
         try {
             const updatedManufacturingCost = await this.manufacturingCostModel
-                .findByIdAndUpdate(id, { inventory })
+                .findOneAndUpdate({ _id: id }, { inventory })
                 .session(session)
                 .exec();
             if (!updatedManufacturingCost) {
@@ -66,7 +66,9 @@ let ManufacturingCostService = class ManufacturingCostService {
     }
     async updateJob(id, job) {
         try {
-            const result = await this.manufacturingCostModel.findByIdAndUpdate(id, { job }).exec();
+            const result = await this.manufacturingCostModel
+                .findOneAndUpdate({ _id: id }, { job })
+                .exec();
             if (!result) {
                 throw new common_1.NotFoundException('Fixed cost not found');
             }

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { log } from 'src/helpers/log.helper';
 
 export type OtherCostDocument = HydratedDocument<OtherCost>;
 
@@ -11,3 +12,5 @@ export class OtherCost {
 }
 
 export const OtherCostSchema = SchemaFactory.createForClass(OtherCost);
+
+log(OtherCostSchema, OtherCost.name);

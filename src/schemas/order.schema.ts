@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Variant } from '@schemas/variant.schema';
 import { HydratedDocument, Types } from 'mongoose';
+import { log } from 'src/helpers/log.helper';
 import { Client } from './client.schema';
 
 type VariantItemDocument = HydratedDocument<VariantItem>;
@@ -27,3 +28,5 @@ export class Order {
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
+
+log(OrderSchema, Order.name);

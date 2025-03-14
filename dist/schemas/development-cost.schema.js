@@ -5,6 +5,7 @@ const tslib_1 = require('tslib');
 const mongoose_1 = require('@nestjs/mongoose');
 const mongoose_2 = require('mongoose');
 const product_schema_1 = require('./product.schema');
+const log_helper_1 = require('../helpers/log.helper');
 let DevelopmentCost = class DevelopmentCost {};
 exports.DevelopmentCost = DevelopmentCost;
 tslib_1.__decorate(
@@ -50,4 +51,5 @@ exports.DevelopmentCost = DevelopmentCost = tslib_1.__decorate(
 );
 exports.DevelopmentCostSchema = mongoose_1.SchemaFactory.createForClass(DevelopmentCost);
 exports.DevelopmentCostSchema.index({ date: 1, description: 1, cost: 1 }, { unique: true });
+(0, log_helper_1.log)(exports.DevelopmentCostSchema, DevelopmentCost.name);
 //# sourceMappingURL=development-cost.schema.js.map

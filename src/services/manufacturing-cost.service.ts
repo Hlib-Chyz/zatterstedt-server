@@ -63,7 +63,7 @@ export class ManufacturingCostService {
     ): Promise<ManufacturingCostDocument> {
         try {
             const updatedManufacturingCost = await this.manufacturingCostModel
-                .findByIdAndUpdate(id, { inventory })
+                .findOneAndUpdate({ _id: id }, { inventory })
                 .session(session)
                 .exec();
             if (!updatedManufacturingCost) {
@@ -78,7 +78,9 @@ export class ManufacturingCostService {
 
     public async updateJob(id: Types.ObjectId, job: ManufacturingCostJobDto['job']): Promise<void> {
         try {
-            const result = await this.manufacturingCostModel.findByIdAndUpdate(id, { job }).exec();
+            const result = await this.manufacturingCostModel
+                .findOneAndUpdate({ _id: id }, { job })
+                .exec();
             if (!result) {
                 throw new NotFoundException('Fixed cost not found');
             }
