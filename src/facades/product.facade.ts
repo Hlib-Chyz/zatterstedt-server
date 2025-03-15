@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { AdditionalCostService } from '@services/additional-cost.service';
 import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
@@ -16,7 +15,6 @@ export class ProductFacade {
     public constructor(
         private readonly errorService: ErrorService,
         private readonly productService: ProductService,
-        private readonly additionalCostService: AdditionalCostService,
         private readonly developmentCostService: DevelopmentCostService,
         private readonly variantService: VariantService,
         private readonly stockService: StockService,
@@ -30,13 +28,11 @@ export class ProductFacade {
 
             const res = await Promise.all(
                 products.map(async (product) => {
-                    const [additionalCost, developmentCosts, variants, manufacturingCost] =
-                        await Promise.all([
-                            this.additionalCostService.getByProductId(product._id),
-                            this.developmentCostService.getByProductId(product._id),
-                            this.variantService.getAllByProductId(product._id),
-                            this.manufacturingCostService.getByProductId(product._id),
-                        ]);
+                    const [developmentCosts, variants, manufacturingCost] = await Promise.all([
+                        this.developmentCostService.getByProductId(product._id),
+                        this.variantService.getAllByProductId(product._id),
+                        this.manufacturingCostService.getByProductId(product._id),
+                    ]);
 
                     const resVariant = await Promise.all(
                         variants.map(async (variant) => {
@@ -60,10 +56,6 @@ export class ProductFacade {
                         price: product.price,
                         variants: resVariant,
                         developmentCosts,
-                        additionalCost: {
-                            _id: additionalCost._id,
-                            cost: additionalCost.cost,
-                        },
                         manufacturingCost: {
                             _id: manufacturingCost._id,
                             inventory: manufacturingCost.inventory,
@@ -86,10 +78,7 @@ export class ProductFacade {
         session.startTransaction();
         try {
             const newProduct = await this.productService.add(product, session);
-            await Promise.all([
-                this.additionalCostService.add(newProduct._id, session),
-                this.manufacturingCostService.add(newProduct._id, session),
-            ]);
+            await this.manufacturingCostService.add(newProduct._id, session);
             await session.commitTransaction();
         } catch (error) {
             await session.abortTransaction();

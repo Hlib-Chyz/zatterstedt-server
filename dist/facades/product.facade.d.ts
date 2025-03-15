@@ -1,4 +1,3 @@
-import { AdditionalCostService } from '@services/additional-cost.service';
 import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
 import { ManufacturingCostService } from '@services/manufacturing-cost.service';
@@ -10,7 +9,6 @@ import { CreateProductDto, ProductDto } from 'src/dto/product.dto';
 export declare class ProductFacade {
     private readonly errorService;
     private readonly productService;
-    private readonly additionalCostService;
     private readonly developmentCostService;
     private readonly variantService;
     private readonly stockService;
@@ -19,7 +17,6 @@ export declare class ProductFacade {
     constructor(
         errorService: ErrorService,
         productService: ProductService,
-        additionalCostService: AdditionalCostService,
         developmentCostService: DevelopmentCostService,
         variantService: VariantService,
         stockService: StockService,

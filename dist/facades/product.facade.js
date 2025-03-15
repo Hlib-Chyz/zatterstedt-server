@@ -4,7 +4,6 @@ exports.ProductFacade = void 0;
 const tslib_1 = require('tslib');
 const common_1 = require('@nestjs/common');
 const mongoose_1 = require('@nestjs/mongoose');
-const additional_cost_service_1 = require('../services/additional-cost.service');
 const development_cost_service_1 = require('../services/development-cost.service');
 const error_service_1 = require('../services/error.service');
 const manufacturing_cost_service_1 = require('../services/manufacturing-cost.service');
@@ -18,7 +17,6 @@ let ProductFacade = class ProductFacade {
     constructor(
         errorService,
         productService,
-        additionalCostService,
         developmentCostService,
         variantService,
         stockService,
@@ -27,7 +25,6 @@ let ProductFacade = class ProductFacade {
     ) {
         this.errorService = errorService;
         this.productService = productService;
-        this.additionalCostService = additionalCostService;
         this.developmentCostService = developmentCostService;
         this.variantService = variantService;
         this.stockService = stockService;
@@ -39,13 +36,11 @@ let ProductFacade = class ProductFacade {
             const products = await this.productService.getAll();
             const res = await Promise.all(
                 products.map(async (product) => {
-                    const [additionalCost, developmentCosts, variants, manufacturingCost] =
-                        await Promise.all([
-                            this.additionalCostService.getByProductId(product._id),
-                            this.developmentCostService.getByProductId(product._id),
-                            this.variantService.getAllByProductId(product._id),
-                            this.manufacturingCostService.getByProductId(product._id),
-                        ]);
+                    const [developmentCosts, variants, manufacturingCost] = await Promise.all([
+                        this.developmentCostService.getByProductId(product._id),
+                        this.variantService.getAllByProductId(product._id),
+                        this.manufacturingCostService.getByProductId(product._id),
+                    ]);
                     const resVariant = await Promise.all(
                         variants.map(async (variant) => {
                             const stock = await this.stockService.getByVariantId(variant._id);
@@ -67,10 +62,6 @@ let ProductFacade = class ProductFacade {
                         price: product.price,
                         variants: resVariant,
                         developmentCosts,
-                        additionalCost: {
-                            _id: additionalCost._id,
-                            cost: additionalCost.cost,
-                        },
                         manufacturingCost: {
                             _id: manufacturingCost._id,
                             inventory: manufacturingCost.inventory,
@@ -92,10 +83,7 @@ let ProductFacade = class ProductFacade {
         session.startTransaction();
         try {
             const newProduct = await this.productService.add(product, session);
-            await Promise.all([
-                this.additionalCostService.add(newProduct._id, session),
-                this.manufacturingCostService.add(newProduct._id, session),
-            ]);
+            await this.manufacturingCostService.add(newProduct._id, session);
             await session.commitTransaction();
         } catch (error) {
             await session.abortTransaction();
@@ -109,11 +97,10 @@ exports.ProductFacade = ProductFacade;
 exports.ProductFacade = ProductFacade = tslib_1.__decorate(
     [
         (0, common_1.Injectable)(),
-        tslib_1.__param(7, (0, mongoose_1.InjectConnection)()),
+        tslib_1.__param(6, (0, mongoose_1.InjectConnection)()),
         tslib_1.__metadata('design:paramtypes', [
             error_service_1.ErrorService,
             product_service_1.ProductService,
-            additional_cost_service_1.AdditionalCostService,
             development_cost_service_1.DevelopmentCostService,
             variant_service_1.VariantService,
             stock_service_1.StockService,

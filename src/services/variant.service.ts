@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateVariantType } from '@strategies/variant.types';
+import { CreateVariantType } from 'src/types/variant.types';
 import { ClientSession, Model, Types } from 'mongoose';
 import { Variant, VariantDocument } from 'src/schemas/variant.schema';
 import { ErrorService } from './error.service';
