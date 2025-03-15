@@ -3,6 +3,7 @@ import {
     IsArray,
     IsBoolean,
     IsDate,
+    IsDateString,
     IsMongoId,
     IsNotEmpty,
     IsNumber,
@@ -50,6 +51,10 @@ class ProductManufacturingCostJobDto {
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
+    @Expose()
+    @IsNotEmpty()
+    @IsDateString()
+    public date: string;
 }
 
 class ProductManufacturingCostInventoryDto {

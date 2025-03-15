@@ -101,6 +101,17 @@ tslib_1.__decorate(
     'cost',
     void 0
 );
+tslib_1.__decorate(
+    [
+        (0, class_transformer_1.Expose)(),
+        (0, class_validator_1.IsNotEmpty)(),
+        (0, class_validator_1.IsDateString)(),
+        tslib_1.__metadata('design:type', String),
+    ],
+    ProductManufacturingCostJobDto.prototype,
+    'date',
+    void 0
+);
 class ProductManufacturingCostInventoryDto {}
 tslib_1.__decorate(
     [

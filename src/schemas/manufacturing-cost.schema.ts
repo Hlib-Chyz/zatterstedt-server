@@ -8,6 +8,7 @@ import { Product } from './product.schema';
 class Job {
     @Prop({ type: String, required: true, unique: true }) public name: string;
     @Prop({ type: Number, required: true }) public cost: number;
+    @Prop({ type: Date, required: true }) public date: Date;
 }
 
 const JobSchema = SchemaFactory.createForClass(Job);

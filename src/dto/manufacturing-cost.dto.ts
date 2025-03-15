@@ -2,6 +2,7 @@ import { Expose, Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
+    IsDateString,
     IsMongoId,
     IsNotEmpty,
     IsNumber,
@@ -28,6 +29,10 @@ export class JobDto {
     @IsNumber()
     @IsNotEmpty()
     public cost: number;
+    @Expose()
+    @IsNotEmpty()
+    @IsDateString()
+    public date: string;
 }
 
 export class ManufacturingCostInventoryDto {

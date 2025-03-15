@@ -2,6 +2,7 @@ import { HydratedDocument, Types } from 'mongoose';
 declare class Job {
     name: string;
     cost: number;
+    date: Date;
 }
 declare class InventoryItem {
     inventoryId: Types.ObjectId;

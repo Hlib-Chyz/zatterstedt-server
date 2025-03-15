@@ -12,6 +12,7 @@ declare class ProductAdditionalCostDto {
 declare class ProductManufacturingCostJobDto {
     name: string;
     cost: number;
+    date: string;
 }
 declare class ProductManufacturingCostInventoryDto {
     inventoryId: Types.ObjectId;

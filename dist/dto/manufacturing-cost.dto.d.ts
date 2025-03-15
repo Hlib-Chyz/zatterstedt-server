@@ -5,6 +5,7 @@ export declare class ManufacturingCostJobDto {
 export declare class JobDto {
     name: string;
     cost: number;
+    date: string;
 }
 export declare class ManufacturingCostInventoryDto {
     inventory: InventoryDto[];

@@ -26,6 +26,12 @@ tslib_1.__decorate(
     'cost',
     void 0
 );
+tslib_1.__decorate(
+    [(0, mongoose_1.Prop)({ type: Date, required: true }), tslib_1.__metadata('design:type', Date)],
+    Job.prototype,
+    'date',
+    void 0
+);
 Job = tslib_1.__decorate([(0, mongoose_1.Schema)()], Job);
 const JobSchema = mongoose_1.SchemaFactory.createForClass(Job);
 let InventoryItem = class InventoryItem {};
