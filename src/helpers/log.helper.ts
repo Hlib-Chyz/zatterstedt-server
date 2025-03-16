@@ -29,12 +29,16 @@ function logUpdate(schema: Schema, collectionName: string): void {
         if (!doc) {
             return;
         }
+        const newData = (await this.model.findById(doc._id).lean()) as unknown as Omit<
+            Log,
+            'createdAt'
+        >;
         await saveLog(doc, {
             operation: 'update',
             collection: collectionName,
             documentId: doc._id as Types.ObjectId,
             oldData: (this as any)._oldData,
-            newData: doc.toObject(),
+            newData,
         });
     });
 }

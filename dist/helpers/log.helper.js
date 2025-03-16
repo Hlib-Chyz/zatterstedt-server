@@ -27,12 +27,13 @@ function logUpdate(schema, collectionName) {
         if (!doc) {
             return;
         }
+        const newData = await this.model.findById(doc._id).lean();
         await saveLog(doc, {
             operation: 'update',
             collection: collectionName,
             documentId: doc._id,
             oldData: this._oldData,
-            newData: doc.toObject(),
+            newData,
         });
     });
 }

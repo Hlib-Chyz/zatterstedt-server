@@ -4,14 +4,12 @@ export declare class UpdateInventoryDto {
     name: string;
     totalCost: number;
     amount: number;
-    used: number;
     date: string;
 }
 export declare class CreateInventoryDto {
     name: string;
     totalCost: number;
     amount: number;
-    used: number;
     date: string;
 }
 export declare class InventoryDto {

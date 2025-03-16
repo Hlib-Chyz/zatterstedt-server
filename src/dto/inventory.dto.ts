@@ -21,10 +21,6 @@ export class UpdateInventoryDto {
     public amount: number;
     @Expose()
     @IsNotEmpty()
-    @IsNumber()
-    public used: number;
-    @Expose()
-    @IsNotEmpty()
     @IsDateString()
     public date: string;
 }
@@ -42,10 +38,6 @@ export class CreateInventoryDto {
     @IsNotEmpty()
     @IsNumber()
     public amount: number;
-    @Expose()
-    @IsNotEmpty()
-    @IsNumber()
-    public used: number;
     @Expose()
     @IsNotEmpty()
     @IsDateString()

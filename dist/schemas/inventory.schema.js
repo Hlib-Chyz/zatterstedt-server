@@ -34,19 +34,13 @@ tslib_1.__decorate(
     void 0
 );
 tslib_1.__decorate(
-    [
-        (0, mongoose_1.Prop)({ type: Number, required: true }),
-        tslib_1.__metadata('design:type', Number),
-    ],
+    [(0, mongoose_1.Prop)({ type: Number, default: 0 }), tslib_1.__metadata('design:type', Number)],
     Inventory.prototype,
     'used',
     void 0
 );
 tslib_1.__decorate(
-    [
-        (0, mongoose_1.Prop)({ type: Number, required: true }),
-        tslib_1.__metadata('design:type', Number),
-    ],
+    [(0, mongoose_1.Prop)({ type: Number, default: 0 }), tslib_1.__metadata('design:type', Number)],
     Inventory.prototype,
     'paid',
     void 0
