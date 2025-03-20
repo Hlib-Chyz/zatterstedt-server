@@ -52,7 +52,7 @@ let ManufacturingCostService = class ManufacturingCostService {
     async updateInventory(inventory, id, session) {
         try {
             const updatedManufacturingCost = await this.manufacturingCostModel
-                .findOneAndUpdate({ _id: id }, { inventory })
+                .findOneAndUpdate({ _id: id }, { inventory }, { new: true })
                 .session(session)
                 .exec();
             if (!updatedManufacturingCost) {

@@ -4,7 +4,6 @@ import {
     IsBoolean,
     IsDate,
     IsDateString,
-    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsString,
@@ -60,7 +59,7 @@ class ProductManufacturingCostJobDto {
 class ProductManufacturingCostInventoryDto {
     @Expose()
     @IsNotEmpty()
-    @IsMongoId()
+    @Type(() => String)
     public inventoryId: Types.ObjectId;
     @Expose()
     @IsNotEmpty()

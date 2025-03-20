@@ -27,7 +27,10 @@ function logUpdate(schema, collectionName) {
         if (!doc) {
             return;
         }
-        const newData = await this.model.findById(doc._id).lean();
+        const newData = await this.model
+            .findById(doc._id)
+            .session(this.getOptions().session ?? null)
+            .lean();
         await saveLog(doc, {
             operation: 'update',
             collection: collectionName,
@@ -39,21 +42,21 @@ function logUpdate(schema, collectionName) {
 }
 function logDelete(schema, collectionName) {
     schema.pre(['findOneAndDelete', 'deleteMany'], async function (next) {
-        this._deletedDocs = await this.model.find(this.getFilter()).lean();
+        this._deletedDocs = await this.model.find(this.getFilter());
         next();
     });
-    schema.post(['findOneAndDelete', 'deleteMany'], async function (doc) {
+    schema.post(['findOneAndDelete', 'deleteMany'], async function () {
         const deletedDocs = this._deletedDocs || [];
         await Promise.all(
-            deletedDocs.map((deletedDoc) =>
-                saveLog(doc, {
+            deletedDocs.map((deletedDoc) => {
+                saveLog(deletedDoc, {
                     operation: 'delete',
                     collection: collectionName,
                     documentId: deletedDoc._id,
                     oldData: deletedDoc,
                     newData: null,
-                })
-            )
+                });
+            })
         );
     });
 }

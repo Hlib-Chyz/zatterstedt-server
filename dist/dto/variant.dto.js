@@ -73,7 +73,6 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
-        (0, class_validator_1.IsMongoId)(),
         (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(value)),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
@@ -98,7 +97,6 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsArray)(),
-        (0, class_validator_1.IsString)({ each: true }),
         (0, class_transformer_1.Transform)(({ value }) =>
             value.map((id) => new mongoose_1.Types.ObjectId(id))
         ),
@@ -115,7 +113,6 @@ tslib_1.__decorate(
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
         (0, class_validator_1.IsArray)(),
-        (0, class_validator_1.IsString)({ each: true }),
         (0, class_transformer_1.Transform)(({ value }) =>
             value.map((id) => new mongoose_1.Types.ObjectId(id))
         ),
@@ -135,7 +132,7 @@ tslib_1.__decorate(
         tslib_1.__metadata('design:type', Boolean),
     ],
     CanSaveVariantResponseDto.prototype,
-    'canSaveVariant',
+    'canSaveVariants',
     void 0
 );
 //# sourceMappingURL=variant.dto.js.map

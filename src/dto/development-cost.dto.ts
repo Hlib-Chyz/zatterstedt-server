@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { IsDateString, IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateDevelopmentCostDto {
@@ -17,7 +17,6 @@ export class CreateDevelopmentCostDto {
     public cost: number;
     @Expose()
     @IsNotEmpty()
-    @IsMongoId()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public productId: Types.ObjectId;
 }
@@ -25,7 +24,6 @@ export class CreateDevelopmentCostDto {
 export class UpdateDevelopmentCostDto {
     @Expose()
     @IsNotEmpty()
-    @IsMongoId()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public _id: Types.ObjectId;
     @Expose()

@@ -112,14 +112,14 @@ export class VariantFacade {
             );
             return plainToInstance(
                 CanSaveVariantResponseDto,
-                { canSaveVariant: !ordersByVariant.some((orders) => orders.length > 0) },
+                { canSaveVariants: !ordersByVariant.some((orders) => orders.length > 0) },
                 { excludeExtraneousValues: true }
             );
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to get canSaveVariant property');
+            this.errorService.throwError(error, 'Failed to get canSaveVariants property');
             return plainToInstance(
                 CanSaveVariantResponseDto,
-                { canSaveVariant: false },
+                { canSaveVariants: false },
                 { excludeExtraneousValues: true }
             );
         }

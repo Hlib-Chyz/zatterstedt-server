@@ -2,7 +2,6 @@ import { Expose, Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
-    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsString,
@@ -39,7 +38,6 @@ class VariantUpdateDto {
 export class UpdateVariantDto {
     @Expose()
     @IsNotEmpty()
-    @IsMongoId()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public productId: Types.ObjectId;
     @Expose()
@@ -50,7 +48,6 @@ export class UpdateVariantDto {
     public variants: VariantUpdateDto[];
     @Expose()
     @IsArray()
-    @IsString({ each: true })
     @Transform(({ value }: { value: string[] }) =>
         value.map((id: string) => new Types.ObjectId(id))
     )
@@ -61,7 +58,6 @@ export class CanSaveVariantDto {
     @Expose()
     @IsNotEmpty()
     @IsArray()
-    @IsString({ each: true })
     @Transform(({ value }: { value: string[] }) =>
         value.map((id: string) => new Types.ObjectId(id))
     )
@@ -72,5 +68,5 @@ export class CanSaveVariantResponseDto {
     @Expose()
     @IsNotEmpty()
     @IsBoolean()
-    public canSaveVariant: boolean;
+    public canSaveVariants: boolean;
 }

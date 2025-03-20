@@ -17,6 +17,6 @@ export declare class CanSaveVariantDto {
     variantIds: Types.ObjectId[];
 }
 export declare class CanSaveVariantResponseDto {
-    canSaveVariant: boolean;
+    canSaveVariants: boolean;
 }
 export {};

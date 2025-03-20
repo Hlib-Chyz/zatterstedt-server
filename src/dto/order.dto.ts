@@ -4,7 +4,6 @@ import {
     IsArray,
     IsDate,
     IsDateString,
-    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsString,
@@ -21,7 +20,6 @@ export class CreateOrderDto {
     public contact: string;
     @IsString()
     public clientName: string;
-    @IsMongoId()
     @ValidateIf((_, value) => Boolean(value))
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public clientId: Types.ObjectId;
@@ -35,7 +33,6 @@ export class CreateOrderDto {
 export class VariantOrderDto {
     @Expose()
     @IsNotEmpty()
-    @IsMongoId()
     public _id: Types.ObjectId;
     @Expose()
     @IsNumber()

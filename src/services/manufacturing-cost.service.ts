@@ -63,7 +63,7 @@ export class ManufacturingCostService {
     ): Promise<ManufacturingCostDocument> {
         try {
             const updatedManufacturingCost = await this.manufacturingCostModel
-                .findOneAndUpdate({ _id: id }, { inventory })
+                .findOneAndUpdate({ _id: id }, { inventory }, { new: true })
                 .session(session)
                 .exec();
             if (!updatedManufacturingCost) {

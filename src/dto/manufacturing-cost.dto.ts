@@ -3,7 +3,6 @@ import {
     IsArray,
     IsBoolean,
     IsDateString,
-    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsString,
@@ -53,7 +52,6 @@ export class ManufacturingCostInventoryDto {
 export class InventoryDto {
     @Expose()
     @IsNotEmpty()
-    @IsMongoId()
     @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public inventoryId: Types.ObjectId;
     @Expose()
@@ -78,7 +76,6 @@ export class CanSaveInventoryDto {
     @Expose()
     @IsNotEmpty()
     @IsArray()
-    @IsString({ each: true })
     @Transform(({ value }: { value: string[] }) =>
         value.map((id: string) => new Types.ObjectId(id))
     )

@@ -1,6 +1,6 @@
-import { CreateVariantType } from 'src/types/variant.types';
 import { ClientSession, Model, Types } from 'mongoose';
 import { VariantDocument } from 'src/schemas/variant.schema';
+import { CreateVariantType } from 'src/types/variant.types';
 import { ErrorService } from './error.service';
 export declare class VariantService {
     private variantModel;
