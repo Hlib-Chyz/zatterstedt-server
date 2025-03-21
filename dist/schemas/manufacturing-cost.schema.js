@@ -10,7 +10,7 @@ const product_schema_1 = require('./product.schema');
 let Job = class Job {};
 tslib_1.__decorate(
     [
-        (0, mongoose_1.Prop)({ type: String, required: true, unique: true }),
+        (0, mongoose_1.Prop)({ type: String, required: true }),
         tslib_1.__metadata('design:type', String),
     ],
     Job.prototype,
@@ -40,7 +40,6 @@ tslib_1.__decorate(
         (0, mongoose_1.Prop)({
             type: mongoose_2.Types.ObjectId,
             required: true,
-            unique: true,
             ref: inventory_schema_1.Inventory.name,
         }),
         tslib_1.__metadata('design:type', mongoose_2.Types.ObjectId),

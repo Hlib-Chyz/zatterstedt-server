@@ -1,7 +1,7 @@
 import { HydratedDocument, Types } from 'mongoose';
 type VariantItemDocument = HydratedDocument<VariantItem>;
 declare class VariantItem {
-    variantId: Types.ObjectId;
+    _id: Types.ObjectId;
     quantity: number;
     price: number;
 }

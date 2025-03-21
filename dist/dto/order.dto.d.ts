@@ -3,7 +3,7 @@ export declare class CreateOrderDto {
     date: string;
     contact: string;
     clientName: string;
-    clientId: Types.ObjectId;
+    clientId: Types.ObjectId | null;
     variants: VariantOrderDto[];
 }
 export declare class VariantOrderDto {

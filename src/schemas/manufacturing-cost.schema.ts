@@ -6,7 +6,7 @@ import { Product } from './product.schema';
 
 @Schema()
 class Job {
-    @Prop({ type: String, required: true, unique: true }) public name: string;
+    @Prop({ type: String, required: true }) public name: string;
     @Prop({ type: Number, required: true }) public cost: number;
     @Prop({ type: Date, required: true }) public date: Date;
 }
@@ -15,7 +15,7 @@ const JobSchema = SchemaFactory.createForClass(Job);
 
 @Schema()
 class InventoryItem {
-    @Prop({ type: Types.ObjectId, required: true, unique: true, ref: Inventory.name })
+    @Prop({ type: Types.ObjectId, required: true, ref: Inventory.name })
     public inventoryId: Types.ObjectId;
     @Prop({ type: Number, required: true }) public quantityInCost: number;
     @Prop({ type: Number, required: true }) public quantityInUse: number;

@@ -9,7 +9,7 @@ type VariantItemDocument = HydratedDocument<VariantItem>;
 @Schema()
 class VariantItem {
     @Prop({ type: Types.ObjectId, required: true, unique: true, ref: Variant.name })
-    public variantId: Types.ObjectId;
+    public _id: Types.ObjectId;
     @Prop({ type: Number, required: true }) public quantity: number;
     @Prop({ type: Number, required: true }) public price: number;
 }

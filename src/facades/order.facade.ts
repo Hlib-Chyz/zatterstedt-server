@@ -70,6 +70,7 @@ export class OrderFacade {
             if (!clientId) {
                 clientId = await this.clientService.add(order.clientName, order.contact, session);
             }
+            // Promise.all удалить stockUpdate зависит от soldUpdate
             await Promise.all(
                 order.variants.map(async (variant) => {
                     const productId = await this.variantService.getProductId(variant._id);
@@ -86,25 +87,23 @@ export class OrderFacade {
                     const manufacturingCost =
                         await this.manufacturingCostService.getByProductId(productId);
 
-                    const inventoryUpdates =
-                        manufacturingCost?.inventory
-                            ?.filter((inventory) => !inventory.duringManufacture)
-                            .map((inventory) =>
-                                this.inventoryService.updateUsedAndPaid(
-                                    inventory.inventoryId,
-                                    variant.quantity * inventory.quantityInUse,
-                                    variant.quantity * inventory.quantityInCost,
-                                    session
-                                )
-                            ) ?? [];
-
+                    for (const inventory of manufacturingCost?.inventory ?? []) {
+                        if (!inventory.duringManufacture) {
+                            await this.inventoryService.updateUsedAndPaid(
+                                inventory.inventoryId,
+                                variant.quantity * inventory.quantityInUse,
+                                variant.quantity * inventory.quantityInCost,
+                                session
+                            );
+                        }
+                    }
                     const soldUpdate = this.stockService.increaseSold(
                         variant._id,
                         variant.quantity,
                         session
                     );
 
-                    await Promise.all([stockUpdate, ...inventoryUpdates, soldUpdate]);
+                    await Promise.all([stockUpdate, soldUpdate]);
                 })
             );
             const ordersCount = (await this.orderService.getAll()).length;

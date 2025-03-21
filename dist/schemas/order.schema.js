@@ -19,7 +19,7 @@ tslib_1.__decorate(
         tslib_1.__metadata('design:type', mongoose_2.Types.ObjectId),
     ],
     VariantItem.prototype,
-    'variantId',
+    '_id',
     void 0
 );
 tslib_1.__decorate(

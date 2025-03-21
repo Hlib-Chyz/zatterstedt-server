@@ -21,8 +21,8 @@ export class CreateOrderDto {
     @IsString()
     public clientName: string;
     @ValidateIf((_, value) => Boolean(value))
-    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
-    public clientId: Types.ObjectId;
+    @Transform(({ value }: { value: string }) => (value ? new Types.ObjectId(value) : null))
+    public clientId: Types.ObjectId | null;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -33,6 +33,7 @@ export class CreateOrderDto {
 export class VariantOrderDto {
     @Expose()
     @IsNotEmpty()
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
     public _id: Types.ObjectId;
     @Expose()
     @IsNumber()

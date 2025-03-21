@@ -91,23 +91,22 @@ let OrderFacade = class OrderFacade {
                             : Promise.resolve();
                     const manufacturingCost =
                         await this.manufacturingCostService.getByProductId(productId);
-                    const inventoryUpdates =
-                        manufacturingCost?.inventory
-                            ?.filter((inventory) => !inventory.duringManufacture)
-                            .map((inventory) =>
-                                this.inventoryService.updateUsedAndPaid(
-                                    inventory.inventoryId,
-                                    variant.quantity * inventory.quantityInUse,
-                                    variant.quantity * inventory.quantityInCost,
-                                    session
-                                )
-                            ) ?? [];
+                    for (const inventory of manufacturingCost?.inventory ?? []) {
+                        if (!inventory.duringManufacture) {
+                            await this.inventoryService.updateUsedAndPaid(
+                                inventory.inventoryId,
+                                variant.quantity * inventory.quantityInUse,
+                                variant.quantity * inventory.quantityInCost,
+                                session
+                            );
+                        }
+                    }
                     const soldUpdate = this.stockService.increaseSold(
                         variant._id,
                         variant.quantity,
                         session
                     );
-                    await Promise.all([stockUpdate, ...inventoryUpdates, soldUpdate]);
+                    await Promise.all([stockUpdate, soldUpdate]);
                 })
             );
             const ordersCount = (await this.orderService.getAll()).length;

@@ -32,8 +32,10 @@ tslib_1.__decorate(
 tslib_1.__decorate(
     [
         (0, class_validator_1.ValidateIf)((_, value) => Boolean(value)),
-        (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(value)),
-        tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
+        (0, class_transformer_1.Transform)(({ value }) =>
+            value ? new mongoose_1.Types.ObjectId(value) : null
+        ),
+        tslib_1.__metadata('design:type', Object),
     ],
     CreateOrderDto.prototype,
     'clientId',
@@ -57,6 +59,7 @@ tslib_1.__decorate(
     [
         (0, class_transformer_1.Expose)(),
         (0, class_validator_1.IsNotEmpty)(),
+        (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(value)),
         tslib_1.__metadata('design:type', mongoose_1.Types.ObjectId),
     ],
     VariantOrderDto.prototype,
