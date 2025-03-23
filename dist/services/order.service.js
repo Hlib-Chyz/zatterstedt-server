@@ -38,7 +38,7 @@ let OrderService = class OrderService {
     }
     async add(clientId, order, ordersLength) {
         try {
-            const orderNumber = (ordersLength + 2).toString().padStart(5, '0');
+            const orderNumber = (ordersLength + 1).toString().padStart(5, '0');
             const newOrder = new this.orderModel({
                 clientId: clientId || order.clientId,
                 date: order.date,

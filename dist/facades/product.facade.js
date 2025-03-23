@@ -56,7 +56,6 @@ let ProductFacade = class ProductFacade {
                             };
                         })
                     );
-                    console.log(developmentCosts);
                     return {
                         _id: product._id,
                         name: product.name,

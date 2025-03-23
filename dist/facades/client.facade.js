@@ -19,7 +19,6 @@ let ClientFacade = class ClientFacade {
     async getAll() {
         try {
             const clients = await this.clientService.getAll();
-            console.log(clients);
             const res = await Promise.all(
                 clients.map(async (client) => {
                     const orders = await this.orderService.getByClientId(client._id);
@@ -33,8 +32,6 @@ let ClientFacade = class ClientFacade {
                             )
                         )
                     );
-                    console.log(client.toObject);
-                    console.log({ ...client, purchases });
                     return { ...client.toObject(), purchases };
                 })
             );

@@ -45,7 +45,7 @@ export class OrderService {
         ordersLength: number
     ): Promise<void> {
         try {
-            const orderNumber = (ordersLength + 2).toString().padStart(5, '0');
+            const orderNumber = (ordersLength + 1).toString().padStart(5, '0');
             const newOrder = new this.orderModel({
                 clientId: clientId || order.clientId,
                 date: order.date,
