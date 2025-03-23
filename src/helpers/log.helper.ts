@@ -22,7 +22,10 @@ function logCreate(schema: Schema, collectionName: string): void {
 
 function logUpdate(schema: Schema, collectionName: string): void {
     schema.pre('findOneAndUpdate', async function (next) {
-        (this as any)._oldData = await this.model.findOne(this.getFilter()).lean();
+        (this as any)._oldData = await this.model
+            .findOne(this.getFilter())
+            .session(this.getOptions().session ?? null)
+            .lean();
         next();
     });
     schema.post('findOneAndUpdate', async function (doc: Document) {
@@ -61,7 +64,6 @@ function logDelete(schema: Schema, collectionName: string): void {
                 });
             })
         );
-        // }
     });
 }
 

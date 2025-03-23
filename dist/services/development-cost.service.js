@@ -12,7 +12,7 @@ let DevelopmentCostService = class DevelopmentCostService {
         this.developmentCostModel = developmentCostModel;
         this.errorService = errorService;
     }
-    async getByProductId(productId) {
+    async getAllByProductId(productId) {
         try {
             return await this.developmentCostModel.find({ productId }).exec();
         } catch (error) {

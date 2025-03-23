@@ -31,7 +31,7 @@ export class ClientFacade {
                             )
                         )
                     );
-                    return { ...client, purchases };
+                    return { ...client.toObject(), purchases };
                 })
             );
             return plainToInstance(ClientDto, res, { excludeExtraneousValues: true });

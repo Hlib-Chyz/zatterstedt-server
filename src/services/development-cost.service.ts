@@ -13,7 +13,7 @@ export class DevelopmentCostService {
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByProductId(productId: Types.ObjectId): Promise<DevelopmentCostDocument[]> {
+    public async getAllByProductId(productId: Types.ObjectId): Promise<DevelopmentCostDocument[]> {
         try {
             return await this.developmentCostModel.find({ productId }).exec();
         } catch (error) {

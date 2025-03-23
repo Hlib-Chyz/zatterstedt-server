@@ -29,7 +29,7 @@ export class ProductFacade {
             const res = await Promise.all(
                 products.map(async (product) => {
                     const [developmentCosts, variants, manufacturingCost] = await Promise.all([
-                        this.developmentCostService.getByProductId(product._id),
+                        this.developmentCostService.getAllByProductId(product._id),
                         this.variantService.getAllByProductId(product._id),
                         this.manufacturingCostService.getByProductId(product._id),
                     ]);
@@ -49,7 +49,6 @@ export class ProductFacade {
                             };
                         })
                     );
-
                     return {
                         _id: product._id,
                         name: product.name,

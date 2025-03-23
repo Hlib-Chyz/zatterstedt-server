@@ -6,7 +6,7 @@ export declare class DevelopmentCostService {
     private developmentCostModel;
     private readonly errorService;
     constructor(developmentCostModel: Model<DevelopmentCostDocument>, errorService: ErrorService);
-    getByProductId(productId: Types.ObjectId): Promise<DevelopmentCostDocument[]>;
+    getAllByProductId(productId: Types.ObjectId): Promise<DevelopmentCostDocument[]>;
     add(developmentCost: CreateDevelopmentCostDto): Promise<void>;
     update(developmentCost: UpdateDevelopmentCostDto): Promise<void>;
     delete(id: Types.ObjectId): Promise<void>;

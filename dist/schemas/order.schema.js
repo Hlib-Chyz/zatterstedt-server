@@ -13,7 +13,6 @@ tslib_1.__decorate(
         (0, mongoose_1.Prop)({
             type: mongoose_2.Types.ObjectId,
             required: true,
-            unique: true,
             ref: variant_schema_1.Variant.name,
         }),
         tslib_1.__metadata('design:type', mongoose_2.Types.ObjectId),

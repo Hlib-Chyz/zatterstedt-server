@@ -78,37 +78,29 @@ let OrderFacade = class OrderFacade {
             if (!clientId) {
                 clientId = await this.clientService.add(order.clientName, order.contact, session);
             }
-            await Promise.all(
-                order.variants.map(async (variant) => {
-                    const productId = await this.variantService.getProductId(variant._id);
-                    const stockUpdate =
-                        variant.price === 0
-                            ? this.stockService.decreaseRealizedParty(
-                                  variant._id,
-                                  variant.quantity,
-                                  session
-                              )
-                            : Promise.resolve();
-                    const manufacturingCost =
-                        await this.manufacturingCostService.getByProductId(productId);
-                    for (const inventory of manufacturingCost?.inventory ?? []) {
-                        if (!inventory.duringManufacture) {
-                            await this.inventoryService.updateUsedAndPaid(
-                                inventory.inventoryId,
-                                variant.quantity * inventory.quantityInUse,
-                                variant.quantity * inventory.quantityInCost,
-                                session
-                            );
-                        }
-                    }
-                    const soldUpdate = this.stockService.increaseSold(
+            for (const variant of order.variants) {
+                const productId = await this.variantService.getProductId(variant._id);
+                if (variant.price === 0) {
+                    await this.stockService.decreaseRealizedParty(
                         variant._id,
                         variant.quantity,
                         session
                     );
-                    await Promise.all([stockUpdate, soldUpdate]);
-                })
-            );
+                }
+                const manufacturingCost =
+                    await this.manufacturingCostService.getByProductId(productId);
+                for (const inventory of manufacturingCost?.inventory ?? []) {
+                    if (!inventory.duringManufacture) {
+                        await this.inventoryService.updateUsedAndPaid(
+                            inventory.inventoryId,
+                            variant.quantity * inventory.quantityInUse,
+                            variant.quantity * inventory.quantityInCost,
+                            session
+                        );
+                    }
+                }
+                await this.stockService.increaseSold(variant._id, variant.quantity, session);
+            }
             const ordersCount = (await this.orderService.getAll()).length;
             await this.orderService.add(clientId, order, ordersCount);
             await session.commitTransaction();

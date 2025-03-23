@@ -20,7 +20,10 @@ function logCreate(schema, collectionName) {
 }
 function logUpdate(schema, collectionName) {
     schema.pre('findOneAndUpdate', async function (next) {
-        this._oldData = await this.model.findOne(this.getFilter()).lean();
+        this._oldData = await this.model
+            .findOne(this.getFilter())
+            .session(this.getOptions().session ?? null)
+            .lean();
         next();
     });
     schema.post('findOneAndUpdate', async function (doc) {
