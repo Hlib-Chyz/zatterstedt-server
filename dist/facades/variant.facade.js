@@ -2,36 +2,47 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.VariantFacade = void 0;
 const tslib_1 = require('tslib');
+const variant_dto_1 = require('../dto/variant.dto');
 const common_1 = require('@nestjs/common');
+const mongoose_1 = require('@nestjs/mongoose');
 const error_service_1 = require('../services/error.service');
-const orders_service_1 = require('../services/orders.service');
-const products_service_1 = require('../services/products.service');
+const order_service_1 = require('../services/order.service');
+const product_service_1 = require('../services/product.service');
 const stock_service_1 = require('../services/stock.service');
-const variants_service_1 = require('../services/variants.service');
-const mongodb_1 = require('mongodb');
+const variant_service_1 = require('../services/variant.service');
+const class_transformer_1 = require('class-transformer');
+const mongoose_2 = require('mongoose');
 let VariantFacade = class VariantFacade {
-    constructor(stockService, variantsService, productsService, ordersService, errorService) {
+    constructor(
+        stockService,
+        variantService,
+        productService,
+        orderService,
+        errorService,
+        connection
+    ) {
         this.stockService = stockService;
-        this.variantsService = variantsService;
-        this.productsService = productsService;
-        this.ordersService = ordersService;
+        this.variantService = variantService;
+        this.productService = productService;
+        this.orderService = orderService;
         this.errorService = errorService;
+        this.connection = connection;
     }
-    async getVariants() {
+    async getAll() {
         try {
-            const variants = await this.variantsService.getAll();
+            const variants = await this.variantService.getAll();
             const data = await Promise.all(
                 variants.map(async (variant) => {
-                    const product = await this.productsService.getProduct(
-                        new mongodb_1.ObjectId(variant.productId)
-                    );
+                    const product = await this.productService.getById(variant.productId);
                     return {
                         _id: variant._id,
                         name: `${product?.name ?? 'Unknown'} ${variant.color}/${variant.size}`,
                     };
                 })
             );
-            return data;
+            return (0, class_transformer_1.plainToInstance)(variant_dto_1.VariantLockupDto, data, {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get variants');
             return [];
@@ -39,15 +50,11 @@ let VariantFacade = class VariantFacade {
     }
     async getVariantInfo(variantId, additionalInfo) {
         try {
-            const variant = await this.variantsService.getVariant(
-                new mongodb_1.ObjectId(variantId)
-            );
+            const variant = await this.variantService.getById(variantId);
             if (!variant) {
                 throw new common_1.NotFoundException('Variant not found');
             }
-            const product = await this.productsService.getProduct(
-                new mongodb_1.ObjectId(variant.productId)
-            );
+            const product = await this.productService.getById(variant.productId);
             if (!product) {
                 throw new common_1.NotFoundException('Product not found');
             }
@@ -57,41 +64,57 @@ let VariantFacade = class VariantFacade {
             return '';
         }
     }
-    async setVariants(createVariants) {
+    async updateVariant(createVariant) {
+        const session = await this.connection.startSession();
+        session.startTransaction();
         try {
-            await this.variantsService.deleteVariantsByProductId(createVariants.productId);
-            await this.stockService.removeByVariantId(createVariants.oldVariantIds);
-            for (const variant of createVariants.variants) {
-                const newVariantId = await this.variantsService.add({
-                    size: variant.size,
-                    color: variant.color,
-                    productId: createVariants.productId,
-                });
-                await this.stockService.add({
-                    total: variant.quantity,
-                    variantId: newVariantId.toString(),
-                });
-            }
-            return { success: true };
+            await Promise.all([
+                this.variantService.deleteManyByProductId(createVariant.productId, session),
+                this.stockService.deleteManyByVariantIds(createVariant.oldVariantIds, session),
+            ]);
+            const variantPromises = createVariant.variants.map(async (variant) => {
+                const newVariantId = await this.variantService.add(
+                    {
+                        size: variant.size,
+                        color: variant.color,
+                        productId: createVariant.productId,
+                    },
+                    session
+                );
+                return this.stockService.add(
+                    {
+                        total: variant.quantity,
+                        variantId: newVariantId,
+                    },
+                    session
+                );
+            });
+            await Promise.all(variantPromises);
+            await session.commitTransaction();
         } catch (error) {
+            await session.abortTransaction();
             this.errorService.throwError(error, 'Failed to set variants');
-            return { success: false };
+        } finally {
+            session.endSession();
         }
     }
     async canSaveVariants({ variantIds }) {
         try {
-            let canSaveVariants = true;
-            for (const id of variantIds) {
-                const orders = await this.ordersService.getByVariantId(id);
-                if (orders.length) {
-                    canSaveVariants = false;
-                    break;
-                }
-            }
-            return { canSaveVariants };
+            const ordersByVariant = await Promise.all(
+                variantIds.map((id) => this.orderService.getByVariantId(id))
+            );
+            return (0, class_transformer_1.plainToInstance)(
+                variant_dto_1.CanSaveVariantResponseDto,
+                { canSaveVariants: !ordersByVariant.some((orders) => orders.length > 0) },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get canSaveVariants property');
-            return { canSaveVariants: false };
+            return (0, class_transformer_1.plainToInstance)(
+                variant_dto_1.CanSaveVariantResponseDto,
+                { canSaveVariants: false },
+                { excludeExtraneousValues: true }
+            );
         }
     }
 };
@@ -99,12 +122,14 @@ exports.VariantFacade = VariantFacade;
 exports.VariantFacade = VariantFacade = tslib_1.__decorate(
     [
         (0, common_1.Injectable)(),
+        tslib_1.__param(5, (0, mongoose_1.InjectConnection)()),
         tslib_1.__metadata('design:paramtypes', [
             stock_service_1.StockService,
-            variants_service_1.VariantsService,
-            products_service_1.ProductsService,
-            orders_service_1.OrdersService,
+            variant_service_1.VariantService,
+            product_service_1.ProductService,
+            order_service_1.OrderService,
             error_service_1.ErrorService,
+            mongoose_2.Connection,
         ]),
     ],
     VariantFacade

@@ -19,7 +19,7 @@ export declare class AuthService {
     );
     login(loginInfo: LoginDto): Promise<LoginResponseDto>;
     verifyCode(verifyCodeInfo: VerifyCodeDto): Promise<LoginResponseDto>;
-    generateVerificationCode(): string;
     sendVerificationEmail(email: string, code: string): Promise<void>;
+    generateVerificationCode(): string;
     private generateJwtToken;
 }

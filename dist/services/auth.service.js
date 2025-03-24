@@ -6,8 +6,10 @@ const mailer_1 = require('@nestjs-modules/mailer');
 const common_1 = require('@nestjs/common');
 const config_1 = require('@nestjs/config');
 const jwt_1 = require('@nestjs/jwt');
+const auth_dto_1 = require('../dto/auth.dto');
 const error_service_1 = require('./error.service');
 const user_service_1 = require('./user.service');
+const class_transformer_1 = require('class-transformer');
 let AuthService = class AuthService {
     constructor(userService, jwtService, errorService, mailerService, configService) {
         this.userService = userService;
@@ -23,36 +25,55 @@ let AuthService = class AuthService {
                 throw new common_1.NotFoundException('Invalid credentials');
             }
             const token = await this.generateJwtToken(user);
-            return { success: true, token };
+            return (0, class_transformer_1.plainToInstance)(
+                auth_dto_1.LoginResponseDto,
+                { success: true, token },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to login');
-            return { success: false, token: '' };
+            return (0, class_transformer_1.plainToInstance)(
+                auth_dto_1.LoginResponseDto,
+                { success: false, token: '' },
+                { excludeExtraneousValues: true }
+            );
         }
     }
     async verifyCode(verifyCodeInfo) {
         try {
             const user = await this.userService.findByEmail(verifyCodeInfo.email);
-            if (user?.emailVerificationCode === verifyCodeInfo.code) {
-                const token = await this.generateJwtToken(user);
-                return { success: true, token };
-            } else {
+            if (user?.emailVerificationCode !== verifyCodeInfo.code) {
                 throw new common_1.NotFoundException('Invalid verification code');
             }
+            const token = await this.generateJwtToken(user);
+            return (0, class_transformer_1.plainToInstance)(
+                auth_dto_1.LoginResponseDto,
+                { success: true, token },
+                { excludeExtraneousValues: true }
+            );
         } catch (error) {
             this.errorService.throwError(error, 'Failed to verify code');
-            return { success: false, token: '' };
+            return (0, class_transformer_1.plainToInstance)(
+                auth_dto_1.LoginResponseDto,
+                { success: false, token: '' },
+                { excludeExtraneousValues: true }
+            );
+        }
+    }
+    async sendVerificationEmail(email, code) {
+        try {
+            await this.mailerService.sendMail({
+                from: this.configService.get('MAIL') ?? '',
+                to: email,
+                subject: 'Welcome!',
+                text: `Your verification code is: ${code}`,
+            });
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to send verification code to email');
         }
     }
     generateVerificationCode() {
         return Math.floor(100000 + Math.random() * 900000).toString();
-    }
-    async sendVerificationEmail(email, code) {
-        await this.mailerService.sendMail({
-            from: this.configService.get('MAIL') ?? '',
-            to: email,
-            subject: 'Welcome!',
-            text: `Your verification code is: ${code}`,
-        });
     }
     async generateJwtToken(user) {
         return this.jwtService.sign({ email: user.email, sub: user._id }, { expiresIn: '7d' });

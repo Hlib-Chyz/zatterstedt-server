@@ -1,14 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class ClientDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     name: string;
-    contacts: string;
+    contact: string;
     purchases: string[];
 }
-export declare class CreateClientContactsDto {
-    name: string;
-    contacts: string;
-}
-export declare class UpdateClientContactsDto {
-    contacts: string;
+export declare class UpdateClientContactDto {
+    contact: string;
 }

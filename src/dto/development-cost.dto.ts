@@ -1,51 +1,41 @@
-import { Transform } from 'class-transformer';
-import { IsDateString, IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Expose, Transform } from 'class-transformer';
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateDevelopmentCostDto {
+    @Expose()
     @IsNotEmpty()
     @IsDateString()
     public date: string;
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public description: string;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
+    @Expose()
     @IsNotEmpty()
-    @IsMongoId()
-    public productId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public productId: Types.ObjectId;
 }
 
 export class UpdateDevelopmentCostDto {
+    @Expose()
     @IsNotEmpty()
-    @Transform(({ value }) => new ObjectId(value))
-    public _id: ObjectId;
-    @IsNotEmpty()
-    @IsDateString()
-    public date: string;
-    @IsNotEmpty()
-    @IsString()
-    public description: string;
-    @IsNotEmpty()
-    @IsNumber()
-    public cost: number;
-}
-
-export class DevelopmentCostDto {
-    @IsString()
-    @IsNotEmpty()
-    public _id: ObjectId;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsDateString()
     public date: string;
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public description: string;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
-    @IsNotEmpty()
-    @IsMongoId()
-    public productId: string;
 }

@@ -1,112 +1,102 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectId } from 'mongodb';
-import { Inventory } from 'src/entities/inventory.entity';
-import { Repository } from 'typeorm';
-import { ErrorService } from './error.service';
-import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
+import { ClientSession, Model, Types } from 'mongoose';
 import {
     CreateInventoryDto,
     InventoryDto,
     SetUsedFieldDto,
     UpdateInventoryDto,
 } from 'src/dto/inventory.dto';
+import { Inventory, InventoryDocument } from 'src/schemas/inventory.schema';
+import { ErrorService } from './error.service';
 
 @Injectable()
 export class InventoryService {
     public constructor(
-        @InjectRepository(Inventory) private inventoryRepository: Repository<Inventory>,
+        @InjectModel(Inventory.name) private inventoryModel: Model<InventoryDocument>,
         private readonly errorService: ErrorService
     ) {}
 
     public async getAll(): Promise<InventoryDto[]> {
         try {
-            const inventory = await this.inventoryRepository.find();
-            return inventory.reverse();
+            const inventory = await this.inventoryModel.find().exec();
+            return plainToInstance(InventoryDto, inventory.reverse(), {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all inventory');
             return [];
         }
     }
 
-    public async create(inventory: CreateInventoryDto): Promise<SuccessDto> {
+    public async add(inventory: CreateInventoryDto): Promise<void> {
         try {
-            await this.inventoryRepository.save({ ...inventory, paid: 0 });
-            return { success: true };
+            const inventoryCost = new this.inventoryModel(inventory);
+            await inventoryCost.save();
         } catch (error) {
             this.errorService.throwError(error, 'Failed to create inventory');
-            return { success: false };
         }
     }
 
-    public async update(inventory: UpdateInventoryDto): Promise<SuccessDto> {
+    public async update(inventory: UpdateInventoryDto): Promise<void> {
         try {
-            const foundInventory = await this.getInventory(inventory._id);
-            await this.inventoryRepository.save({ ...foundInventory, ...inventory });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to update inventory');
-            return { success: false };
-        }
-    }
-
-    public async delete(_id: ObjectId): Promise<DeleteGetDto> {
-        try {
-            const inventory = await this.getInventory(_id);
-            await this.inventoryRepository.remove(inventory);
-            return { _id };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to delete inventory');
-            return { _id };
-        }
-    }
-
-    public async changeInventoryAmount(
-        _id: string,
-        used: number,
-        paid: number
-    ): Promise<SuccessDto> {
-        try {
-            const foundInventory = await this.getInventory(new ObjectId(_id));
-            await this.inventoryRepository.save({
-                ...foundInventory,
-                _id: new ObjectId(_id),
-                used: foundInventory.used + used,
-                paid: foundInventory.paid + paid,
-            });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to change inventory amount');
-            return { success: false };
-        }
-    }
-
-    public async setUsedField(body: SetUsedFieldDto): Promise<SuccessDto> {
-        try {
-            const inventory = await this.getInventory(body._id);
-            await this.inventoryRepository.save({
-                ...inventory,
-                used: body.used,
-            });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to set used field');
-            return { success: false };
-        }
-    }
-
-    private async getInventory(_id: ObjectId): Promise<Inventory> {
-        try {
-            const foundInventory = await this.inventoryRepository.findOne({
-                where: { _id },
-            });
-            if (!foundInventory) {
+            const result = await this.inventoryModel
+                .findOneAndUpdate({ _id: inventory._id }, inventory)
+                .exec();
+            if (!result) {
                 throw new NotFoundException('Inventory not found');
             }
-            return foundInventory;
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to get inventory');
-            return {} as Inventory;
+            this.errorService.throwError(error, 'Failed to update inventory');
+        }
+    }
+
+    public async delete(id: Types.ObjectId): Promise<void> {
+        try {
+            const result = await this.inventoryModel.findOneAndDelete({ _id: id }).exec();
+            if (!result) {
+                throw new NotFoundException('Inventory not found');
+            }
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to delete inventory');
+        }
+    }
+
+    public async updateUsedAndPaid(
+        id: Types.ObjectId,
+        used: number,
+        paid: number,
+        session: ClientSession
+    ): Promise<void> {
+        try {
+            const result = await this.inventoryModel
+                .findOneAndUpdate(
+                    { _id: id },
+                    {
+                        $inc: { used, paid },
+                    }
+                )
+                .session(session)
+                .exec();
+            if (!result) {
+                throw new NotFoundException('Inventory not found');
+            }
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to change inventory amount');
+        }
+    }
+
+    public async updateUsed(body: SetUsedFieldDto): Promise<void> {
+        try {
+            const result = await this.inventoryModel
+                .findOneAndUpdate({ _id: body._id }, { used: body.used })
+                .exec();
+            if (!result) {
+                throw new NotFoundException('Inventory not found');
+            }
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to set used field');
         }
     }
 }

@@ -1,17 +1,6 @@
-import { ObjectId } from 'mongodb';
-export declare class VariantDto {
-    _id: ObjectId;
-    color: string;
-    size: string;
-    productId: string;
-}
-export declare class CreateVariantDto {
-    color: string;
-    size: string;
-    productId: string;
-}
+import { Types } from 'mongoose';
 export declare class VariantLockupDto {
-    _id: ObjectId;
+    _id: Types.ObjectId;
     name: string;
 }
 declare class VariantUpdateDto {
@@ -19,15 +8,15 @@ declare class VariantUpdateDto {
     color: string;
     quantity: number;
 }
-export declare class CreateVariantsDto {
-    productId: string;
+export declare class UpdateVariantDto {
+    productId: Types.ObjectId;
     variants: VariantUpdateDto[];
-    oldVariantIds: string[];
+    oldVariantIds: Types.ObjectId[];
 }
-export declare class CanSaveVariantsDto {
-    variantIds: string[];
+export declare class CanSaveVariantDto {
+    variantIds: Types.ObjectId[];
 }
-export declare class CanSaveVariantsResponseDto {
+export declare class CanSaveVariantResponseDto {
     canSaveVariants: boolean;
 }
 export {};

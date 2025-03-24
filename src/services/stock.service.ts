@@ -1,108 +1,120 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { SuccessDto } from 'src/dto/shared.dto';
-import { CreateStockDto, SetRealizedPartyDto, StockDto } from 'src/dto/stock.dto';
-import { Stock } from 'src/entities/stock.entity';
-import { Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
+import { SetRealizedPartyDto } from 'src/dto/stock.dto';
+import { Stock, StockDocument } from 'src/schemas/stock.schema';
+import { CreateStockType } from 'src/types/stock.types';
 import { ErrorService } from './error.service';
 
 @Injectable()
 export class StockService {
     public constructor(
-        @InjectRepository(Stock) private stockRepository: Repository<Stock>,
+        @InjectModel(Stock.name) private stockModel: Model<StockDocument>,
         private readonly errorService: ErrorService
     ) {}
 
-    public async getByVariantId(variantId: string): Promise<StockDto> {
+    public async getByVariantId(variantId: Types.ObjectId): Promise<StockDocument> {
         try {
-            const stock = await this.getStock(variantId);
-            return stock;
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to get stock by variant id');
-            return {} as StockDto;
-        }
-    }
-
-    public async removeByVariantId(variantIds: string[]): Promise<SuccessDto> {
-        try {
-            for (const variantId of variantIds) {
-                const stock = await this.getByVariantId(variantId);
-                await this.stockRepository.remove(stock);
-            }
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to remove by variant id');
-            return { success: false };
-        }
-    }
-
-    public async add(stock: CreateStockDto): Promise<SuccessDto> {
-        try {
-            const existingStock = await this.stockRepository.findOne({
-                where: { variantId: stock.variantId },
-            });
-            if (existingStock) {
-                throw new ConflictException('A stock with the given variant already exists');
-            }
-            await this.stockRepository.save({ ...stock, sold: 0, realizedParty: stock.total });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to create a new stock');
-            return { success: false };
-        }
-    }
-
-    public async increaseSold(variantId: string, quantity = 1): Promise<SuccessDto> {
-        try {
-            const stock = await this.getStock(variantId);
-            await this.stockRepository.save({ ...stock, sold: stock.sold + quantity });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to increase sold');
-            return { success: false };
-        }
-    }
-
-    public async setRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<SuccessDto> {
-        try {
-            const stock = await this.getStock(realizedPartyDto.variantId);
-            await this.stockRepository.save({
-                ...stock,
-                realizedParty: realizedPartyDto.realizedParty,
-            });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to set realized party');
-            return { success: false };
-        }
-    }
-
-    public async decreaseRealizedParty(variantId: string, amount: number): Promise<SuccessDto> {
-        try {
-            const stock = await this.getStock(variantId);
-            await this.stockRepository.save({
-                ...stock,
-                realizedParty: stock.realizedParty - amount,
-            });
-            return { success: true };
-        } catch (error) {
-            this.errorService.throwError(error, 'Failed to decrease realized party');
-            return { success: false };
-        }
-    }
-
-    private async getStock(variantId: string): Promise<Stock> {
-        try {
-            const stock = await this.stockRepository.findOne({
-                where: { variantId },
-            });
+            const stock = await this.stockModel.findOne({ variantId }).exec();
             if (!stock) {
                 throw new NotFoundException('Stock not found');
             }
             return stock;
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to get stock');
-            return {} as Stock;
+            this.errorService.throwError(error, 'Failed to get stock by variant id');
+            return {} as StockDocument;
+        }
+    }
+
+    // TODO TRANSACTION
+    public async deleteManyByVariantIds(
+        variantIds: Types.ObjectId[],
+        session: ClientSession
+    ): Promise<void> {
+        try {
+            const result = await this.stockModel
+                .deleteMany({ variantId: { $in: variantIds } })
+                .session(session)
+                .exec();
+            if (result.deletedCount !== variantIds.length) {
+                throw new NotFoundException('Some stocks not found');
+            }
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to remove by variant ids');
+        }
+    }
+
+    public async add(stock: CreateStockType, session: ClientSession): Promise<void> {
+        try {
+            const newStock = new this.stockModel({ ...stock, realizedParty: stock.total });
+            newStock.$session(session);
+            await newStock.save();
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to create a new stock');
+        }
+    }
+
+    public async increaseSold(
+        variantId: Types.ObjectId,
+        quantity = 1,
+        session: ClientSession
+    ): Promise<void> {
+        try {
+            const result = await this.stockModel
+                .findOneAndUpdate(
+                    { variantId },
+                    {
+                        $inc: { sold: quantity },
+                    }
+                )
+                .session(session)
+                .exec();
+            if (!result) {
+                throw new NotFoundException('Stock not found');
+            }
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to increase sold');
+        }
+    }
+
+    public async updateRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<void> {
+        try {
+            const result = await this.stockModel
+                .findOneAndUpdate(
+                    { variantId: realizedPartyDto.variantId },
+                    {
+                        realizedParty: realizedPartyDto.realizedParty,
+                    }
+                )
+                .exec();
+            if (!result) {
+                throw new NotFoundException('Stock not found');
+            }
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to set realized party');
+        }
+    }
+
+    public async decreaseRealizedParty(
+        variantId: Types.ObjectId,
+        amount: number,
+        session: ClientSession
+    ): Promise<void> {
+        try {
+            const result = await this.stockModel
+                .findOneAndUpdate(
+                    { variantId },
+                    {
+                        $inc: { realizedParty: -amount },
+                    }
+                )
+                .session(session)
+                .exec();
+            if (!result) {
+                throw new NotFoundException('Stock not found');
+            }
+        } catch (error) {
+            this.errorService.throwError(error, 'Failed to decrease realized party');
         }
     }
 }

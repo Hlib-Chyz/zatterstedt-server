@@ -1,73 +1,96 @@
-import { Transform, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
     IsArray,
     IsBoolean,
+    IsDate,
     IsDateString,
-    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsString,
     ValidateNested,
 } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
-export class ProductDevelopmentCostDto {
+class ProductDevelopmentCostDto {
+    @Expose()
     @IsNotEmpty()
-    public _id: ObjectId;
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
-    @IsDateString()
-    public date: string;
+    @IsDate()
+    public date: Date;
+    @Expose()
+    @IsNotEmpty()
+    @IsNumber()
+    public cost: number;
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public description: string;
+}
+
+class ProductAdditionalCostDto {
+    @Expose()
+    @IsNotEmpty()
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
 }
 
-export class ProductAdditionalCostDto {
-    @IsNotEmpty()
-    public _id: ObjectId;
-    @IsNotEmpty()
-    @IsNumber()
-    public cost: number;
-}
-
-export class ProductManufacturingCostJobDto {
+class ProductManufacturingCostJobDto {
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public name: string;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
+    @Expose()
+    @IsNotEmpty()
+    @IsDateString()
+    public date: string;
 }
 
-export class ProductManufacturingCostInventoryDto {
+class ProductManufacturingCostInventoryDto {
+    @Expose()
     @IsNotEmpty()
-    @IsMongoId()
-    public inventoryId: string;
+    @Type(() => String)
+    public inventoryId: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public quantityInUse: number;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public quantityInCost: number;
+    @Expose()
     @IsNotEmpty()
     @IsBoolean()
     public duringManufacture: boolean;
+    @Expose()
     @IsNotEmpty()
     @IsNumber()
     public cost: number;
 }
 
-export class ProductManufacturingCostDto {
+class ProductManufacturingCostDto {
+    @Expose()
     @IsNotEmpty()
-    public _id: ObjectId;
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductManufacturingCostJobDto)
     public job: ProductManufacturingCostJobDto[];
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -75,105 +98,104 @@ export class ProductManufacturingCostDto {
     public inventory: ProductManufacturingCostInventoryDto[];
 }
 
-export class ProductStockDto {
+class ProductStockDto {
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public total: number;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public sold: number;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public realizedParty: number;
 }
 
 export class ProductVariantDto {
+    @Expose()
     @IsNotEmpty()
-    public _id: ObjectId;
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public size: string;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public color: string;
+    @Expose()
     @IsNotEmpty()
     @Type(() => ProductStockDto)
     public stock: ProductStockDto;
 }
 
-export class ProductAdminDto {
-    @IsNotEmpty()
-    public _id: ObjectId;
-    @IsString()
-    @IsNotEmpty()
-    public name: string;
-    @IsString()
-    @IsNotEmpty()
-    public description: string;
-    @IsNumber()
-    @IsNotEmpty()
-    public price: number;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => ProductVariantDto)
-    public variants: ProductVariantDto[];
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => ProductDevelopmentCostDto)
-    public developmentCosts: ProductDevelopmentCostDto[];
-    @IsNotEmpty()
-    @Type(() => ProductAdditionalCostDto)
-    public additionalCost: ProductAdditionalCostDto;
-    @IsNotEmpty()
-    @Type(() => ProductManufacturingCostDto)
-    public manufacturingCost: ProductManufacturingCostDto;
-}
-
 export class CreateProductDto {
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
-    @IsString()
-    @IsNotEmpty()
-    public description: string;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public name: string;
 }
 
 export class UpdateProductDto {
+    @Expose()
     @IsNotEmpty()
-    @Transform(({ value }) => new ObjectId(value))
-    public _id: ObjectId;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public _id: Types.ObjectId;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
-    @IsString()
-    @IsNotEmpty()
-    public description: string;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public name: string;
 }
 
 export class ProductPriceDto {
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
 }
 
 export class ProductDto {
+    @Expose()
     @IsNotEmpty()
-    public _id: ObjectId;
-    @IsNotEmpty()
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
     @IsString()
+    @IsNotEmpty()
     public name: string;
-    @IsNotEmpty()
+    @Expose()
     @IsNumber()
-    public price: number;
     @IsNotEmpty()
-    @IsString()
-    public description: string;
+    public price: number;
+    @Expose()
+    @IsNotEmpty()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ProductVariantDto)
+    public variants: ProductVariantDto[];
+    @Expose()
+    @IsNotEmpty()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ProductDevelopmentCostDto)
+    public developmentCosts: ProductDevelopmentCostDto[];
+    @Expose()
+    @IsNotEmpty()
+    @Type(() => ProductAdditionalCostDto)
+    public additionalCost: ProductAdditionalCostDto;
+    @Expose()
+    @IsNotEmpty()
+    @Type(() => ProductManufacturingCostDto)
+    public manufacturingCost: ProductManufacturingCostDto;
 }

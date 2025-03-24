@@ -1,9 +1,9 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-const common_1 = require('@nestjs/common');
-const core_1 = require('@nestjs/core');
-const app_module_1 = require('./app.module');
-require('tsconfig-paths/register');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const common_1 = require("@nestjs/common");
+const core_1 = require("@nestjs/core");
+const app_module_1 = require("./app.module");
+require("tsconfig-paths/register");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
@@ -13,14 +13,12 @@ async function bootstrap() {
             'https://demo-zatterstedt-admin.vercel.app',
         ],
     });
-    app.useGlobalPipes(
-        new common_1.ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-            transform: true,
-            transformOptions: { enableImplicitConversion: true },
-        })
-    );
+    app.useGlobalPipes(new common_1.ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+    }));
     const port = process.env['PORT'] || 3000;
     await app.listen(port);
 }

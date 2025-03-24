@@ -1,29 +1,28 @@
-import { SuccessDto } from '@dto/shared.dto';
-import { AdditionalCostsService } from '@services/additional-costs.service';
-import { DevelopmentCostsService } from '@services/development-costs.service';
+import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
-import { ManufacturingCostsService } from '@services/manufacturing-costs.service';
-import { ProductsService } from '@services/products.service';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
-import { VariantsService } from '@services/variants.service';
-import { CreateProductDto, ProductAdminDto } from 'src/dto/product.dto';
+import { VariantService } from '@services/variant.service';
+import { Connection } from 'mongoose';
+import { CreateProductDto, ProductDto } from 'src/dto/product.dto';
 export declare class ProductFacade {
     private readonly errorService;
-    private readonly productsService;
-    private readonly additionalCostsService;
-    private readonly developmentCostsService;
-    private readonly variantsService;
+    private readonly productService;
+    private readonly developmentCostService;
+    private readonly variantService;
     private readonly stockService;
-    private readonly manufacturingCostsService;
+    private readonly manufacturingCostService;
+    private readonly connection;
     constructor(
         errorService: ErrorService,
-        productsService: ProductsService,
-        additionalCostsService: AdditionalCostsService,
-        developmentCostsService: DevelopmentCostsService,
-        variantsService: VariantsService,
+        productService: ProductService,
+        developmentCostService: DevelopmentCostService,
+        variantService: VariantService,
         stockService: StockService,
-        manufacturingCostsService: ManufacturingCostsService
+        manufacturingCostService: ManufacturingCostService,
+        connection: Connection
     );
-    getAll(): Promise<ProductAdminDto[]>;
-    add(product: CreateProductDto): Promise<SuccessDto>;
+    getAll(): Promise<ProductDto[]>;
+    add(product: CreateProductDto): Promise<void>;
 }

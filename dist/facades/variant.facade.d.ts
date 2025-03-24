@@ -1,30 +1,32 @@
-import { SuccessDto } from '@dto/shared.dto';
 import {
-    CanSaveVariantsDto,
-    CanSaveVariantsResponseDto,
-    CreateVariantsDto,
+    CanSaveVariantDto,
+    CanSaveVariantResponseDto,
+    UpdateVariantDto,
     VariantLockupDto,
 } from '@dto/variant.dto';
 import { ErrorService } from '@services/error.service';
-import { OrdersService } from '@services/orders.service';
-import { ProductsService } from '@services/products.service';
+import { OrderService } from '@services/order.service';
+import { ProductService } from '@services/product.service';
 import { StockService } from '@services/stock.service';
-import { VariantsService } from '@services/variants.service';
+import { VariantService } from '@services/variant.service';
+import { Connection, Types } from 'mongoose';
 export declare class VariantFacade {
     private readonly stockService;
-    private readonly variantsService;
-    private readonly productsService;
-    private readonly ordersService;
+    private readonly variantService;
+    private readonly productService;
+    private readonly orderService;
     private readonly errorService;
+    private readonly connection;
     constructor(
         stockService: StockService,
-        variantsService: VariantsService,
-        productsService: ProductsService,
-        ordersService: OrdersService,
-        errorService: ErrorService
+        variantService: VariantService,
+        productService: ProductService,
+        orderService: OrderService,
+        errorService: ErrorService,
+        connection: Connection
     );
-    getVariants(): Promise<VariantLockupDto[]>;
-    getVariantInfo(variantId: string, additionalInfo: string): Promise<string>;
-    setVariants(createVariants: CreateVariantsDto): Promise<SuccessDto>;
-    canSaveVariants({ variantIds }: CanSaveVariantsDto): Promise<CanSaveVariantsResponseDto>;
+    getAll(): Promise<VariantLockupDto[]>;
+    getVariantInfo(variantId: Types.ObjectId, additionalInfo: string): Promise<string>;
+    updateVariant(createVariant: UpdateVariantDto): Promise<void>;
+    canSaveVariants({ variantIds }: CanSaveVariantDto): Promise<CanSaveVariantResponseDto>;
 }

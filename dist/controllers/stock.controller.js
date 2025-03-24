@@ -10,8 +10,9 @@ let StockController = class StockController {
     constructor(stockService) {
         this.stockService = stockService;
     }
-    async setRealizedParty(body) {
-        return this.stockService.setRealizedParty(body);
+    async updateRealizedParty(body, res) {
+        await this.stockService.updateRealizedParty(body);
+        res.status(204).send();
     }
 };
 exports.StockController = StockController;
@@ -19,12 +20,13 @@ tslib_1.__decorate(
     [
         (0, common_1.Put)('realized-party'),
         tslib_1.__param(0, (0, common_1.Body)()),
+        tslib_1.__param(1, (0, common_1.Res)()),
         tslib_1.__metadata('design:type', Function),
-        tslib_1.__metadata('design:paramtypes', [stock_dto_1.SetRealizedPartyDto]),
+        tslib_1.__metadata('design:paramtypes', [stock_dto_1.SetRealizedPartyDto, Object]),
         tslib_1.__metadata('design:returntype', Promise),
     ],
     StockController.prototype,
-    'setRealizedParty',
+    'updateRealizedParty',
     null
 );
 exports.StockController = StockController = tslib_1.__decorate(

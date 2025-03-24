@@ -1,23 +1,25 @@
-import { ObjectId } from 'mongodb';
-import { Inventory } from 'src/entities/inventory.entity';
-import { Repository } from 'typeorm';
-import { ErrorService } from './error.service';
-import { DeleteGetDto, SuccessDto } from 'src/dto/shared.dto';
+import { ClientSession, Model, Types } from 'mongoose';
 import {
     CreateInventoryDto,
     InventoryDto,
     SetUsedFieldDto,
     UpdateInventoryDto,
 } from 'src/dto/inventory.dto';
+import { InventoryDocument } from 'src/schemas/inventory.schema';
+import { ErrorService } from './error.service';
 export declare class InventoryService {
-    private inventoryRepository;
+    private inventoryModel;
     private readonly errorService;
-    constructor(inventoryRepository: Repository<Inventory>, errorService: ErrorService);
+    constructor(inventoryModel: Model<InventoryDocument>, errorService: ErrorService);
     getAll(): Promise<InventoryDto[]>;
-    create(inventory: CreateInventoryDto): Promise<SuccessDto>;
-    update(inventory: UpdateInventoryDto): Promise<SuccessDto>;
-    delete(_id: ObjectId): Promise<DeleteGetDto>;
-    changeInventoryAmount(_id: string, used: number, paid: number): Promise<SuccessDto>;
-    setUsedField(body: SetUsedFieldDto): Promise<SuccessDto>;
-    private getInventory;
+    add(inventory: CreateInventoryDto): Promise<void>;
+    update(inventory: UpdateInventoryDto): Promise<void>;
+    delete(id: Types.ObjectId): Promise<void>;
+    updateUsedAndPaid(
+        id: Types.ObjectId,
+        used: number,
+        paid: number,
+        session: ClientSession
+    ): Promise<void>;
+    updateUsed(body: SetUsedFieldDto): Promise<void>;
 }

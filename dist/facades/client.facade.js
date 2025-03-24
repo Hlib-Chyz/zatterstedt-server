@@ -2,34 +2,42 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.ClientFacade = void 0;
 const tslib_1 = require('tslib');
+const client_dto_1 = require('../dto/client.dto');
 const common_1 = require('@nestjs/common');
-const clients_service_1 = require('../services/clients.service');
+const client_service_1 = require('../services/client.service');
 const error_service_1 = require('../services/error.service');
-const orders_service_1 = require('../services/orders.service');
+const order_service_1 = require('../services/order.service');
+const class_transformer_1 = require('class-transformer');
 const variant_facade_1 = require('./variant.facade');
 let ClientFacade = class ClientFacade {
-    constructor(variantFacade, errorService, clientsService, ordersService) {
+    constructor(variantFacade, errorService, clientService, orderService) {
         this.variantFacade = variantFacade;
         this.errorService = errorService;
-        this.clientsService = clientsService;
-        this.ordersService = ordersService;
+        this.clientService = clientService;
+        this.orderService = orderService;
     }
     async getAll() {
         try {
-            const res = [];
-            const clients = await this.clientsService.getAll();
-            for (const client of clients) {
-                const orders = await this.ordersService.getOrdersByClientId(client._id.toString());
-                const purchases = [];
-                for (const order of orders) {
-                    for (const variant of order.variants) {
-                        const newPurchase = `${await this.variantFacade.getVariantInfo(variant._id, `${variant.quantity}/${variant.price}`)}`;
-                        purchases.push(newPurchase);
-                    }
-                }
-                res.push({ ...client, purchases });
-            }
-            return res;
+            const clients = await this.clientService.getAll();
+            const res = await Promise.all(
+                clients.map(async (client) => {
+                    const orders = await this.orderService.getByClientId(client._id);
+                    const purchases = await Promise.all(
+                        orders.flatMap((order) =>
+                            order.variants.map((variant) =>
+                                this.variantFacade.getVariantInfo(
+                                    variant._id,
+                                    `${variant.quantity}/${variant.price}`
+                                )
+                            )
+                        )
+                    );
+                    return { ...client.toObject(), purchases };
+                })
+            );
+            return (0, class_transformer_1.plainToInstance)(client_dto_1.ClientDto, res, {
+                excludeExtraneousValues: true,
+            });
         } catch (error) {
             this.errorService.throwError(error, 'Failed to get all clients');
             return [];
@@ -43,8 +51,8 @@ exports.ClientFacade = ClientFacade = tslib_1.__decorate(
         tslib_1.__metadata('design:paramtypes', [
             variant_facade_1.VariantFacade,
             error_service_1.ErrorService,
-            clients_service_1.ClientsService,
-            orders_service_1.OrdersService,
+            client_service_1.ClientService,
+            order_service_1.OrderService,
         ]),
     ],
     ClientFacade

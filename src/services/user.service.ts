@@ -1,43 +1,45 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { LoginDto } from 'src/dto/auth.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
-import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { User, UserDocument } from 'src/schemas/user.schema';
 import { ErrorService } from './error.service';
 
 @Injectable()
 export class UserService {
     public constructor(
-        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
         private errorService: ErrorService
     ) {}
 
-    public async findByEmail(email: string): Promise<User | null> {
+    public async findByEmail(email: string): Promise<UserDocument | null> {
         try {
-            return this.userRepository.findOne({ where: { email } });
+            return this.userModel.findOne({ email }).exec();
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to login');
+            this.errorService.throwError(error, 'Failed to find user by email');
             return null;
         }
     }
 
     public async updateVerificationCode(email: string, code: string): Promise<void> {
         try {
-            await this.userRepository.update({ email }, { emailVerificationCode: code });
+            const result = await this.userModel
+                .updateOne({ email }, { emailVerificationCode: code })
+                .exec();
+            if (!result) {
+                throw new NotFoundException('User not found');
+            }
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to login');
+            this.errorService.throwError(error, 'Failed to update verification code');
         }
     }
 
-    public async createUser(loginInfo: LoginDto): Promise<SuccessDto> {
+    public async add(loginInfo: LoginDto): Promise<void> {
         try {
-            const newUser = this.userRepository.create(loginInfo);
-            await this.userRepository.save(newUser);
-            return { success: true };
+            const newUser = new this.userModel(loginInfo);
+            await newUser.save();
         } catch (error) {
-            this.errorService.throwError(error, 'Failed to login');
-            return { success: false };
+            this.errorService.throwError(error, 'Failed to create user');
         }
     }
 }

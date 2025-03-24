@@ -1,63 +1,28 @@
-import { Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
     ArrayNotEmpty,
     IsArray,
+    IsDate,
     IsDateString,
-    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsString,
     ValidateIf,
     ValidateNested,
 } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class CreateOrderDto {
     @IsNotEmpty()
     @IsDateString()
     public date: string;
     @IsString()
-    public contacts: string;
+    public contact: string;
     @IsString()
     public clientName: string;
-    @IsMongoId()
     @ValidateIf((_, value) => Boolean(value))
-    public clientId: string;
-    @IsNotEmpty()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => VariantOrderDto)
-    public variants: VariantOrderDto[];
-}
-
-export class OrderDto {
-    @IsNotEmpty()
-    public _id: ObjectId;
-    @IsNotEmpty()
-    @IsDateString()
-    public date: string;
-    @IsNotEmpty()
-    @IsString()
-    public orderNumber: string;
-    @IsNotEmpty()
-    @IsString()
-    public client: string;
-    @IsNotEmpty()
-    @IsArray()
-    @ArrayNotEmpty()
-    @IsString({ each: true })
-    public variants: string[];
-}
-
-export class OrderVariantDto {
-    @IsNotEmpty()
-    public _id: ObjectId;
-    @IsNotEmpty()
-    @IsDateString()
-    public date: string;
-    @IsNotEmpty()
-    @IsString()
-    public clientId: string;
+    @Transform(({ value }: { value: string }) => (value ? new Types.ObjectId(value) : null))
+    public clientId: Types.ObjectId | null;
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
@@ -66,13 +31,41 @@ export class OrderVariantDto {
 }
 
 export class VariantOrderDto {
+    @Expose()
     @IsNotEmpty()
-    @IsMongoId()
-    public _id: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public _id: Types.ObjectId;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public quantity: number;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public price: number;
+}
+
+export class OrderDto {
+    @Expose()
+    @IsNotEmpty()
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
+    @IsNotEmpty()
+    @IsDate()
+    public date: Date;
+    @Expose()
+    @IsNotEmpty()
+    @IsString()
+    public orderNumber: string;
+    @Expose()
+    @IsNotEmpty()
+    @IsString()
+    public client: string;
+    @Expose()
+    @IsNotEmpty()
+    @IsArray()
+    @ArrayNotEmpty()
+    @IsString({ each: true })
+    public variants: string[];
 }

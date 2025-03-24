@@ -1,16 +1,5 @@
-import { ObjectId } from 'mongodb';
-export declare class StockDto {
-    _id: ObjectId;
-    variantId: string;
-    sold: number;
-    total: number;
-    realizedParty: number;
-}
-export declare class CreateStockDto {
-    variantId: string;
-    total: number;
-}
+import { Types } from 'mongoose';
 export declare class SetRealizedPartyDto {
-    variantId: string;
+    variantId: Types.ObjectId;
     realizedParty: number;
 }

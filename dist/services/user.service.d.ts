@@ -1,13 +1,12 @@
+import { Model } from 'mongoose';
 import { LoginDto } from 'src/dto/auth.dto';
-import { SuccessDto } from 'src/dto/shared.dto';
-import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { UserDocument } from 'src/schemas/user.schema';
 import { ErrorService } from './error.service';
 export declare class UserService {
-    private userRepository;
+    private userModel;
     private errorService;
-    constructor(userRepository: Repository<User>, errorService: ErrorService);
-    findByEmail(email: string): Promise<User | null>;
+    constructor(userModel: Model<UserDocument>, errorService: ErrorService);
+    findByEmail(email: string): Promise<UserDocument | null>;
     updateVerificationCode(email: string, code: string): Promise<void>;
-    createUser(loginInfo: LoginDto): Promise<SuccessDto>;
+    add(loginInfo: LoginDto): Promise<void>;
 }

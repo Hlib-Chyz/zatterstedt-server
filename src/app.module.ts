@@ -1,32 +1,27 @@
-import { AdditionalCostsController } from '@controllers/additional-costs.controller';
 import { AuthController } from '@controllers/auth.controller';
-import { ClientsController } from '@controllers/clients.controller';
-import { DevelopmentCostsController } from '@controllers/development-costs.controller';
-import { FixedCostsController } from '@controllers/fixed-costs.controller';
+import { ClientController } from '@controllers/client.controller';
+import { DevelopmentCostController } from '@controllers/development-cost.controller';
 import { InventoryController } from '@controllers/inventory.controller';
-import { ManufacturingCostsController } from '@controllers/manufacturing-costs.controller';
-import { OrdersController } from '@controllers/orders.controller';
-import { OtherCostsController } from '@controllers/other-costs.controller';
-import { ProductsController } from '@controllers/products.controller';
+import { ManufacturingCostController } from '@controllers/manufacturing-cost.controller';
+import { OrderController } from '@controllers/order.controller';
+import { ProductController } from '@controllers/product.controller';
 import { StockController } from '@controllers/stock.controller';
-import { VariantsController } from '@controllers/variants.controller';
+import { VariantController } from '@controllers/variant.controller';
+import { schemas, ZatterstedtMongooseModule } from '@modules/mongoose.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AdditionalCostsService } from '@services/additional-costs.service';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from '@services/auth.service';
-import { ClientsService } from '@services/clients.service';
-import { DevelopmentCostsService } from '@services/development-costs.service';
+import { ClientService } from '@services/client.service';
+import { DevelopmentCostService } from '@services/development-cost.service';
 import { ErrorService } from '@services/error.service';
-import { FixedCostsService } from '@services/fixed-costs.service';
 import { InventoryService } from '@services/inventory.service';
-import { ManufacturingCostsService } from '@services/manufacturing-costs.service';
-import { OrdersService } from '@services/orders.service';
-import { OtherCostsService } from '@services/other-costs.service';
-import { ProductsService } from '@services/products.service';
+import { ManufacturingCostService } from '@services/manufacturing-cost.service';
+import { OrderService } from '@services/order.service';
+import { ProductService } from '@services/product.service';
 import { UserService } from '@services/user.service';
-import { VariantsService } from '@services/variants.service';
+import { VariantService } from '@services/variant.service';
 import { JwtStrategy } from '@strategies/jwt.strategy';
 import { ClientFacade } from 'src/facades/client.facade';
 import { ManufacturingCostFacade } from 'src/facades/manufacturing-cost.facade';
@@ -34,7 +29,6 @@ import { OrderFacade } from 'src/facades/order.facade';
 import { ProductFacade } from 'src/facades/product.facade';
 import { VariantFacade } from 'src/facades/variant.facade';
 import { ZatterstedtMailerModule } from './modules/mailer.module';
-import { entities, subscribers, ZatterstedtTypeOrmModule } from './modules/type-orm.module';
 import { StockService } from './services/stock.service';
 
 @Module({
@@ -43,8 +37,8 @@ import { StockService } from './services/stock.service';
             isGlobal: true,
             envFilePath: `.env.${process.env['NODE_ENV'] || 'demo'}`,
         }),
-        TypeOrmModule.forFeature(entities),
-        ZatterstedtTypeOrmModule,
+        MongooseModule.forFeature(schemas),
+        ZatterstedtMongooseModule,
         JwtModule.registerAsync({
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
@@ -55,41 +49,34 @@ import { StockService } from './services/stock.service';
         ZatterstedtMailerModule,
     ],
     controllers: [
-        VariantsController,
-        ProductsController,
-        OtherCostsController,
-        OrdersController,
-        ManufacturingCostsController,
+        VariantController,
+        ProductController,
+        OrderController,
+        ManufacturingCostController,
         InventoryController,
-        FixedCostsController,
-        DevelopmentCostsController,
-        ClientsController,
+        DevelopmentCostController,
+        ClientController,
         AuthController,
-        AdditionalCostsController,
         StockController,
     ],
     providers: [
-        VariantsService,
+        VariantService,
         StockService,
-        ProductsService,
-        OtherCostsService,
-        OrdersService,
-        ManufacturingCostsService,
+        ProductService,
+        OrderService,
+        ManufacturingCostService,
         InventoryService,
-        FixedCostsService,
-        DevelopmentCostsService,
-        ClientsService,
+        DevelopmentCostService,
+        ClientService,
         AuthService,
         UserService,
         JwtStrategy,
-        AdditionalCostsService,
         ErrorService,
         ProductFacade,
         ManufacturingCostFacade,
         OrderFacade,
         ClientFacade,
         VariantFacade,
-        ...subscribers,
     ],
 })
 export class AppModule {}

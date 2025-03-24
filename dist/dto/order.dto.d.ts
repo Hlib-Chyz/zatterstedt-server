@@ -1,26 +1,20 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 export declare class CreateOrderDto {
     date: string;
-    contacts: string;
+    contact: string;
     clientName: string;
-    clientId: string;
-    variants: VariantOrderDto[];
-}
-export declare class OrderDto {
-    _id: ObjectId;
-    date: string;
-    orderNumber: string;
-    client: string;
-    variants: string[];
-}
-export declare class OrderVariantDto {
-    _id: ObjectId;
-    date: string;
-    clientId: string;
+    clientId: Types.ObjectId | null;
     variants: VariantOrderDto[];
 }
 export declare class VariantOrderDto {
-    _id: string;
+    _id: Types.ObjectId;
     quantity: number;
     price: number;
+}
+export declare class OrderDto {
+    _id: Types.ObjectId;
+    date: Date;
+    orderNumber: string;
+    client: string;
+    variants: string[];
 }

@@ -1,8 +1,8 @@
-import { SuccessDto } from '@dto/shared.dto';
 import { SetRealizedPartyDto } from '@dto/stock.dto';
 import { StockService } from '@services/stock.service';
+import { Response } from 'express';
 export declare class StockController {
     private stockService;
     constructor(stockService: StockService);
-    setRealizedParty(body: SetRealizedPartyDto): Promise<SuccessDto>;
+    updateRealizedParty(body: SetRealizedPartyDto, res: Response): Promise<void>;
 }

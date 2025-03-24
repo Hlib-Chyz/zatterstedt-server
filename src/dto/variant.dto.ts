@@ -1,83 +1,71 @@
-import { Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
-    IsNotEmpty,
-    IsString,
-    IsMongoId,
     IsArray,
-    IsNumber,
-    ValidateNested,
     IsBoolean,
+    IsNotEmpty,
+    IsNumber,
+    IsString,
+    ValidateNested,
 } from 'class-validator';
-import { ObjectId } from 'mongodb';
-
-export class VariantDto {
-    @IsNotEmpty()
-    public _id: ObjectId;
-    @IsNotEmpty()
-    @IsString()
-    public color: string;
-    @IsNotEmpty()
-    @IsString()
-    public size: string;
-    @IsNotEmpty()
-    @IsMongoId()
-    public productId: string;
-}
-
-export class CreateVariantDto {
-    @IsNotEmpty()
-    @IsString()
-    public color: string;
-    @IsNotEmpty()
-    @IsString()
-    public size: string;
-    @IsNotEmpty()
-    @IsMongoId()
-    public productId: string;
-}
+import { Types } from 'mongoose';
 
 export class VariantLockupDto {
+    @Expose()
     @IsNotEmpty()
-    public _id: ObjectId;
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsString()
     public name: string;
 }
 
 class VariantUpdateDto {
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public size: string;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public color: string;
+    @Expose()
     @IsNumber()
     @IsNotEmpty()
     public quantity: number;
 }
 
-export class CreateVariantsDto {
+export class UpdateVariantDto {
+    @Expose()
     @IsNotEmpty()
-    @IsMongoId()
-    public productId: string;
+    @Transform(({ value }: { value: string }) => new Types.ObjectId(value))
+    public productId: Types.ObjectId;
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => VariantUpdateDto)
     public variants: VariantUpdateDto[];
+    @Expose()
     @IsArray()
-    @IsString({ each: true })
-    public oldVariantIds: string[];
+    @Transform(({ value }: { value: string[] }) =>
+        value.map((id: string) => new Types.ObjectId(id))
+    )
+    public oldVariantIds: Types.ObjectId[];
 }
 
-export class CanSaveVariantsDto {
+export class CanSaveVariantDto {
+    @Expose()
     @IsNotEmpty()
     @IsArray()
-    @IsString({ each: true })
-    public variantIds: string[];
+    @Transform(({ value }: { value: string[] }) =>
+        value.map((id: string) => new Types.ObjectId(id))
+    )
+    public variantIds: Types.ObjectId[];
 }
 
-export class CanSaveVariantsResponseDto {
+export class CanSaveVariantResponseDto {
+    @Expose()
     @IsNotEmpty()
     @IsBoolean()
     public canSaveVariants: boolean;

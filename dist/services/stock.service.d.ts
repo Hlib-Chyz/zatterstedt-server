@@ -1,17 +1,24 @@
-import { SuccessDto } from 'src/dto/shared.dto';
-import { CreateStockDto, SetRealizedPartyDto, StockDto } from 'src/dto/stock.dto';
-import { Stock } from 'src/entities/stock.entity';
-import { Repository } from 'typeorm';
+import { ClientSession, Model, Types } from 'mongoose';
+import { SetRealizedPartyDto } from 'src/dto/stock.dto';
+import { StockDocument } from 'src/schemas/stock.schema';
+import { CreateStockType } from 'src/types/stock.types';
 import { ErrorService } from './error.service';
 export declare class StockService {
-    private stockRepository;
+    private stockModel;
     private readonly errorService;
-    constructor(stockRepository: Repository<Stock>, errorService: ErrorService);
-    getByVariantId(variantId: string): Promise<StockDto>;
-    removeByVariantId(variantIds: string[]): Promise<SuccessDto>;
-    add(stock: CreateStockDto): Promise<SuccessDto>;
-    increaseSold(variantId: string, quantity?: number): Promise<SuccessDto>;
-    setRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<SuccessDto>;
-    decreaseRealizedParty(variantId: string, amount: number): Promise<SuccessDto>;
-    private getStock;
+    constructor(stockModel: Model<StockDocument>, errorService: ErrorService);
+    getByVariantId(variantId: Types.ObjectId): Promise<StockDocument>;
+    deleteManyByVariantIds(variantIds: Types.ObjectId[], session: ClientSession): Promise<void>;
+    add(stock: CreateStockType, session: ClientSession): Promise<void>;
+    increaseSold(
+        variantId: Types.ObjectId,
+        quantity: number | undefined,
+        session: ClientSession
+    ): Promise<void>;
+    updateRealizedParty(realizedPartyDto: SetRealizedPartyDto): Promise<void>;
+    decreaseRealizedParty(
+        variantId: Types.ObjectId,
+        amount: number,
+        session: ClientSession
+    ): Promise<void>;
 }

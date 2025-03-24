@@ -1,33 +1,31 @@
+import { Expose, Type } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class ClientDto {
+    @Expose()
     @IsString()
     @IsNotEmpty()
-    public _id: ObjectId;
+    @Type(() => String)
+    public _id: Types.ObjectId;
+    @Expose()
     @IsString()
     @IsNotEmpty()
     public name: string;
+    @Expose()
     @IsString()
     @IsNotEmpty()
-    public contacts: string;
+    public contact: string;
+    @Expose()
     @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
     public purchases: string[];
 }
 
-export class CreateClientContactsDto {
+export class UpdateClientContactDto {
+    @Expose()
     @IsString()
     @IsNotEmpty()
-    public name: string;
-    @IsString()
-    @IsNotEmpty()
-    public contacts: string;
-}
-
-export class UpdateClientContactsDto {
-    @IsString()
-    @IsNotEmpty()
-    public contacts: string;
+    public contact: string;
 }
